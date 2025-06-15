@@ -68,15 +68,6 @@ Campus Buddy solves this with a student-first, smart platform where:
 - Enable **clubs to manage** their events independently
 - Encourage student participation via **reminders and gamification**
 
----
-
-
----
-
-## 🧑‍💻 Contributing
-
-We welcome contributions! 🙌  
-Please read the [`CONTRIBUTING.md`](./CONTRIBUTING.md) file for guidelines and best practices before opening a Pull Request.
 
 ---
 

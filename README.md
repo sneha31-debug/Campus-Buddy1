@@ -1,52 +1,90 @@
 # 🎓 Campus Buddy
 
-> Centralized campus event discovery and RSVP platform for students and clubs.
+A centralized web-based platform to help students **discover, RSVP, and track campus events** — built for students and clubs to stay connected, updated, and engaged.
 
 ---
 
 ## 📌 Problem
 
-Students often miss campus events due to scattered communication. There's no smart, filtered system to discover or RSVP to events happening across college.
+Students often miss out on college events, workshops, hackathons, or club activities due to scattered communication and the lack of a centralized, smart event discovery system.
+
+---
 
 ## 🚀 Solution
 
-Campus Buddy is a smart platform for students to:
-- View and RSVP to upcoming and past events
-- Discover events by tags, department, or club
-- Let clubs manage and post events via their login
-- Filter events based on interests and types
+Campus Buddy solves this with a student-first, smart platform where:
 
+- 🎯 Students can view, filter, and RSVP to **upcoming and past events**
+- 🏛️ Clubs can post and manage **events and volunteer requests**
+- 🔍 Events can be filtered by **tag, type, department, or club**
+- 🔔 Email reminders (for RSVP’d events) help reduce no-shows
+- 📆 (Future) Google Calendar integration and gamified engagement
+
+---
+
+## 🔥 Core Features
+
+### 👥 Student Side
+
+- ✅ Login via student email
+- 📅 Browse upcoming and past events
+- 🏷️ Filter by club, department, tags, or type
+- 📩 RSVP to events (stored in MongoDB)
+- 🔔 Receive email reminders *(planned)*
+
+---
+
+### 🏛️ Club Side
+
+- ✅ Login via club email
+- ➕ Create, edit, and manage events
+- 🙋 Request volunteers for events
+
+---
+
+### 🧪 Extra (Future Plans)
+
+- 🗓️ Google Calendar sync for RSVP’d events
+- 🏆 Gamification system (points for attending/organizing)
+- 📨 Smart email reminders
 
 ---
 
 ## 🧰 Tech Stack
 
-| Frontend        | Backend     | Database |
-|-----------------|-------------|----------|
-| React (Vite)    | Node.js     | MongoDB  |
-| Tailwind CSS    |             |          |
+| Layer     | Technology                     |
+|-----------|--------------------------------|
+| Frontend  | React (Vite), Tailwind CSS     |
+| Backend   | Node.js                        |
+| Database  | MongoDB                        |
+| Hosting   | (To be decided – e.g., Vercel) |
 
 ---
 
-## 🔥 Features
+## 🧠 Project Objectives
 
-### 👥 Student
-- Login via student email
-- Browse upcoming and past events
-- Filter by club, department, tags, or type
-- RSVP to events
-- Receive email reminders (planned)
-
-### 🏛️ Club
-- Login via club email
-- Create, edit, and manage event posts
-- Request volunteers for events
-
-### 🗓️ Extras (Future)
-- Google Calendar sync
-- Gamification system 
-- Get email reminders for RSVP'd events
+- Build a **structured, centralized platform** for campus events
+- Make event discovery **easy, filtered, and personalized**
+- Enable **clubs to manage** their events independently
+- Encourage student participation via **reminders and gamification**
 
 ---
 
 
+---
+
+## 🧑‍💻 Contributing
+
+We welcome contributions! 🙌  
+Please read the [`CONTRIBUTING.md`](./CONTRIBUTING.md) file for guidelines and best practices before opening a Pull Request.
+
+---
+
+## 📬 Contact
+
+Maintainer: **Krish Patil**  
+For questions, suggestions, or doubts — connect on the group or via GitHub issues.
+
+---
+
+Let’s build a platform students actually use! 🚀

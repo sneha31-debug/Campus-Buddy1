@@ -53,9 +53,6 @@ export default function CampusBuddyHomepage() {
 
   return (
     <div className="campus-buddy-container">
-      
-
-      {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-container">
           <div className="hero-title-container">

@@ -1,10 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import Home from './pages/Home';
-import MyEvents from './pages/MyEvents';
-import Events from './pages/Events';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home'
+import MyEvents from './pages/MyEvents'
+import Events from './pages/Events'
+import Footer from './components/Footer.jsx'
 const App = () => {
   return (
+    <>
     <Router>
       <div>
         <div>
@@ -15,7 +17,9 @@ const App = () => {
           </Routes>
         </div>
       </div>
+      <Footer/>
     </Router>
+    </>
   );
 };
 

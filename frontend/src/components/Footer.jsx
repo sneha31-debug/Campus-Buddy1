@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 import {
     FaFacebookF,
@@ -31,7 +32,7 @@ const Footer = () => {
                         <li><a href="#">Home</a></li>
                         <li><a href="#">Events</a></li>
                         <li><a href="#">My Events</a></li>
-                        <li><a href="#">Leaderboard</a></li>
+                        <li><Link to="/login">Login</Link></li>
                         <li><a href="#">Notifications</a></li>
                     </ul>
                 </div>

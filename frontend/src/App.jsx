@@ -5,7 +5,7 @@ import MyEvents from './pages/MyEvents'
 import Events from './pages/Events'
 import Footer from './components/Footer.jsx'
 import AuthPage from './pages/AuthPage';
-
+import ProfileCard from './pages/ProfileCard';
 const App = () => {
   return (
     <>
@@ -17,6 +17,7 @@ const App = () => {
             <Route path="/home" element={<Home />} />
             <Route path="/myevents" element={<MyEvents />} />
             <Route path="/events" element={<Events />} />
+            <Route path='/profilecard' element={<ProfileCard/>} />
             <Route path="/login" element={<AuthPage />} />
           </Routes>
         </div>

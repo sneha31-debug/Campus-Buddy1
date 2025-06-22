@@ -40,7 +40,7 @@ const Footer = () => {
                 <div className="footer-section links">
                     <h3>For Clubs</h3>
                     <ul className="no-bullets">
-                        <li><a href="#">Create Event</a></li>
+                        <li><Link to="/createevent">Create Event</Link></li>
                         <li><a href="#">Club Dashboard</a></li>
                         <li><a href="#">Analytics</a></li>
                         <li><a href="#">Promote Events</a></li>

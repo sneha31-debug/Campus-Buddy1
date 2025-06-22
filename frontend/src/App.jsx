@@ -6,6 +6,7 @@ import Events from './pages/Events'
 import Footer from './components/Footer.jsx'
 import AuthPage from './pages/AuthPage';
 import ProfileCard from './pages/ProfileCard';
+import CreateEventForm from './pages/CreateEventForm';
 const App = () => {
   return (
     <>
@@ -19,6 +20,7 @@ const App = () => {
             <Route path="/events" element={<Events />} />
             <Route path='/profilecard' element={<ProfileCard/>} />
             <Route path="/login" element={<AuthPage />} />
+            <Route path="/createevent" element={<CreateEventForm />} />
           </Routes>
         </div>
       </div>

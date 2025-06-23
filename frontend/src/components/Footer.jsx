@@ -31,7 +31,7 @@ const Footer = () => {
                     <ul className="no-bullets">
                         <li><a href="#">Home</a></li>
                         <li><a href="#">Events</a></li>
-                        <li><a href="#">My Events</a></li>
+                        <li><Link to="/MyEvents">My Events</Link></li>
                         <li><Link to="/login">Login</Link></li>
                         <li><a href="#">Notifications</a></li>
                     </ul>

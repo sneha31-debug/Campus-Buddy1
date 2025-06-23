@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home'
-import MyEvents from './pages/MyEvents'
+import MyEvents from "./pages/MyEvents";
 import Events from './pages/Events'
+
 import Footer from './components/Footer.jsx'
 import AuthPage from './pages/AuthPage';
 import ProfileCard from './pages/ProfileCard';

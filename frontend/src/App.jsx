@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import MyEvents from './pages/MyEvents';
 import Events from './pages/Events';
 import ProfileCard from './pages/ProfileCard';
+import ClubProfileCard from './pages/ClubProfileCard'
 const App = () => {
   return (
     <Router>
@@ -14,6 +15,7 @@ const App = () => {
             <Route path="/myevents" element={<MyEvents />} />
             <Route path="/events" element={<Events />} />
             <Route path='/profilecard' element={<ProfileCard/>} />
+            <Route path='/clubprofilecard' element={<ClubProfileCard/>} />
           </Routes>
         </div>
       </div>

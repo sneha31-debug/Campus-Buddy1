@@ -8,6 +8,8 @@ import AuthPage from './pages/AuthPage';
 import ProfileCard from './pages/ProfileCard';
 import ClubProfileCard from './pages/ClubProfileCard'
 import CreateEventForm from './pages/CreateEventForm';
+import ClubDirectory from './pages/ClubDirectory';
+
 const App = () => {
   return (
     <>
@@ -23,6 +25,7 @@ const App = () => {
             <Route path='/clubprofilecard' element={<ClubProfileCard/>} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/createevent" element={<CreateEventForm />} />
+            <Route path='/clubpage' element={<ClubDirectory/>}/>
           </Routes>
         </div>
       </div>

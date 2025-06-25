@@ -3,10 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Home from './pages/Home'
 import MyEvents from "./pages/MyEvents";
 import Events from './pages/Events'
-
 import Footer from './components/Footer.jsx'
 import AuthPage from './pages/AuthPage';
 import ProfileCard from './pages/ProfileCard';
+import ClubProfileCard from './pages/ClubProfileCard'
 import CreateEventForm from './pages/CreateEventForm';
 import ClubDirectory from './pages/ClubDirectory';
 
@@ -22,6 +22,7 @@ const App = () => {
             <Route path="/myevents" element={<MyEvents />} />
             <Route path="/events" element={<Events />} />
             <Route path='/profilecard' element={<ProfileCard/>} />
+            <Route path='/clubprofilecard' element={<ClubProfileCard/>} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/createevent" element={<CreateEventForm />} />
             <Route path='/clubpage' element={<ClubDirectory/>}/>

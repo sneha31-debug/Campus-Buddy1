@@ -54,7 +54,7 @@ Campus Buddy solves this with a student-first, smart platform where:
 
 | Layer     | Technology                     |
 |-----------|--------------------------------|
-| Frontend  | React (Vite), Tailwind CSS     |
+| Frontend  | React (Vite), CSS     |
 | Backend   | Node.js                        |
 | Database  | MongoDB                        |
 | Hosting   | (To be decided – e.g., Vercel) |

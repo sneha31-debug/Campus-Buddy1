@@ -33,7 +33,7 @@ const Footer = () => {
                         <li><Link to='/clubpage'>Clubs</Link></li>
                         <li><Link to="/MyEvents">My Events</Link></li>
                         <li><Link to="/login">Login</Link></li>
-                        <li><a href="#">Student Profile</a></li>
+                        <li><a href="/ProfileCard">Student Profile</a></li>
                     </ul>
                 </div>
 
@@ -42,7 +42,7 @@ const Footer = () => {
                     <ul className="no-bullets">
                         <li><Link to="/createevent">Create Event</Link></li>
                         <li><a href="#">Club Dashboard</a></li>
-                        <li><a href="#">Club Profiles</a></li>
+                        <li><a href="/ClubProfileCard">Club Profiles</a></li>
                         
                         
                     </ul>

@@ -1,5 +1,6 @@
 // CampusEvents.jsx
 import React, { useState } from "react";
+import { TrendingUp, Calendar, Star, Heart } from "lucide-react";
 import "./CampusEvents.css";
 
 const CampusEvents = () => {
@@ -325,23 +326,33 @@ const CampusEvents = () => {
           >
             {showFilters ? "Hide Filters" : "Show Filters"}
           </button>
-          <div className="quick-stats">
-            <div className="stat">
-              <span className="stat-number">6</span>
-              <span className="stat-label">Total Events</span>
-            </div>
-            <div className="stat">
-              <span className="stat-number">2</span>
-              <span className="stat-label">My RSVPs</span>
-            </div>
-            <div className="stat">
-              <span className="stat-number">3</span>
-              <span className="stat-label">Upcoming</span>
-            </div>
-          </div>
         </div>
       </div>
 
+      {/* Floating Quick Stats */}
+      <div className="floating-quick-stats">
+        <div className="stats-header">
+          <TrendingUp className="stats-icon" />
+          <span className="stats-title">Quick Stats</span>
+        </div>
+        <div className="stats-list">
+          <div className="stat-item">
+            <Calendar className="stat-icon" />
+            <span className="stat-label">Total Events</span>
+            <span className="stat-number">6</span>
+          </div>
+          <div className="stat-item">
+            <Star className="stat-icon" />
+            <span className="stat-label">My RSVPs</span>
+            <span className="stat-number">2</span>
+          </div>
+          <div className="stat-item">
+            <Heart className="stat-icon" />
+            <span className="stat-label">Upcoming</span>
+            <span className="stat-number">1</span>
+          </div>
+        </div>
+      </div>
       <div className="main-content">
         {/* Filters Sidebar */}
         {showFilters && (
@@ -403,21 +414,23 @@ const CampusEvents = () => {
         {/* Events Content */}
         <div className="events-content">
           {/* Tabs */}
-          <div className="tabs">
+          <div className="content-tabs">
             <button
-              className={`tab ${activeTab === "all" ? "active" : ""}`}
+              className={`content-tab ${activeTab === "all" ? "active" : ""}`}
               onClick={() => setActiveTab("all")}
             >
               All Events
             </button>
             <button
-              className={`tab ${activeTab === "upcoming" ? "active" : ""}`}
+              className={`content-tab ${
+                activeTab === "upcoming" ? "active" : ""
+              }`}
               onClick={() => setActiveTab("upcoming")}
             >
               Upcoming
             </button>
             <button
-              className={`tab ${activeTab === "past" ? "active" : ""}`}
+              className={`content-tab ${activeTab === "past" ? "active" : ""}`}
               onClick={() => setActiveTab("past")}
             >
               Past

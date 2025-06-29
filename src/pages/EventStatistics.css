@@ -6,7 +6,6 @@
   justify-content: center;
   align-items: center;
   font-family: 'Segoe UI', 'Roboto', sans-serif;
-  z-index: 1000;
 }
 
 .event-statistics {
@@ -221,9 +220,6 @@
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
   animation: shimmer 2s infinite;
 }
-
-
-
 .rsvp-count {
   min-width: 50px;
   text-align: right;

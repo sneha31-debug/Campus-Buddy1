@@ -9,7 +9,7 @@ import ProfileCard from './pages/ProfileCard';
 import ClubProfileCard from './pages/ClubProfileCard'
 import CreateEventForm from './pages/CreateEventForm';
 import ClubDirectory from './pages/ClubDirectory';
-
+import EventStatistics from './pages/EventStatistics.jsx';
 const App = () => {
   return (
     <>
@@ -26,6 +26,7 @@ const App = () => {
             <Route path="/login" element={<AuthPage />} />
             <Route path="/createevent" element={<CreateEventForm />} />
             <Route path='/clubpage' element={<ClubDirectory/>}/>
+            <Route path='/eventstatistics' element={<EventStatistics/>}/>
           </Routes>
         </div>
       </div>

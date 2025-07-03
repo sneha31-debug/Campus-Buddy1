@@ -13,6 +13,8 @@ import ClubProfileCard from './pages/ClubProfileCard';
 import CreateEventForm from './pages/CreateEventForm';
 import ClubDirectory from './pages/ClubDirectory';
 import ClubDashboardPage from './pages/ClubDashboardPage'; 
+import EventStatistics from './pages/EventStatistics.jsx';
+import CampusEvents from "./pages/CampusEvents.jsx";
 const App = () => {
   return (
     <Router>
@@ -29,6 +31,8 @@ const App = () => {
           <Route path="/login" element={<AuthPage />} />
           <Route path="/createevent" element={<CreateEventForm />} />
           <Route path="/clubpage" element={<ClubDirectory />} />
+          <Route path='/eventstatistics' element={<EventStatistics/>}/>
+          <Route path="/campusevents" element={<CampusEvents />} />
         </Routes>
       </div>
       <Footer />

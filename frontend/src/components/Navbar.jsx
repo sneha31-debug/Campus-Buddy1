@@ -1,20 +1,32 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaCalendarAlt, FaBook, FaPlus, FaTachometerAlt, FaUser, FaSignInAlt } from 'react-icons/fa';
+import {
+  FaCalendarAlt,
+  FaBook,
+  FaPlus,
+  FaTachometerAlt,
+  FaUser,
+  FaSignInAlt,
+} from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar = ({ userType }) => {
-  const studentLinks = [
+  const clubId = 'robotics';
+
+  const commonLinks = [
     { to: '/home', label: 'Home', icon: <FaCalendarAlt /> },
     { to: '/events', label: 'Events', icon: <FaCalendarAlt /> },
+  ];
+
+  const studentLinks = [
+    ...commonLinks,
     { to: '/myevents', label: 'My Events', icon: <FaBook /> },
   ];
 
   const clubLinks = [
-    { to: '/home', label: 'Home', icon: <FaCalendarAlt /> },
-    { to: '/events', label: 'Events', icon: <FaCalendarAlt /> },
-    { to: '/create', label: 'Create', icon: <FaPlus /> },
-    { to: '/dashboard', label: 'Dashboard', icon: <FaTachometerAlt /> },
+    ...commonLinks,
+    { to: '/createevent', label: 'Create', icon: <FaPlus /> },
+    { to: `/club/${clubId}`, label: 'Dashboard', icon: <FaTachometerAlt /> },
   ];
 
   const links = userType === 'student' ? studentLinks : clubLinks;
@@ -40,7 +52,6 @@ const Navbar = ({ userType }) => {
             <FaSignInAlt /> Login
           </Link>
         </li>
-
         <li>
           <button className="theme-toggle">🌓</button>
         </li>

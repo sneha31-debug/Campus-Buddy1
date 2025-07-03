@@ -19,7 +19,7 @@ const App = () => {
   return (
     <Router>
       <Navbar />
-      <div className="main-content">
+       <div style={{ width: '100%' }}>
         <Routes>
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<Home />} />

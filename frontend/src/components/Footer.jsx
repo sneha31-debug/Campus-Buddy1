@@ -31,6 +31,7 @@ const Footer = () => {
                     <ul className="no-bullets">
                         <li><a href="/home">Home</a></li>
                         <li><Link to='/clubpage'>Clubs</Link></li>
+                        <li><Link to="/campusevents">Campus Events</Link></li>
                         <li><Link to="/MyEvents">My Events</Link></li>
                         <li><Link to="/login">Login</Link></li>
                         <li><a href="/ProfileCard">Student Profile</a></li>
@@ -41,7 +42,7 @@ const Footer = () => {
                     <h3>For Clubs</h3>
                     <ul className="no-bullets">
                         <li><Link to="/createevent">Create Event</Link></li>
-                        <li><a href="#">Club Dashboard</a></li>
+                        <li><a href="/clubdashboard">Club Dashboard</a></li>
                         <li><a href="/ClubProfileCard">Club Profiles</a></li>
                         
                         

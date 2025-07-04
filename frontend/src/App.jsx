@@ -1,13 +1,17 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-
-import Navbar from './components/Navbar.jsx';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Home from "./pages/Home";
+import MyEvents from "./pages/MyEvents";
 import Footer from './components/Footer.jsx';
-
-import Home from './pages/Home';
-import MyEvents from './pages/MyEvents';
-import Events from './pages/Events';
+import { AuthProvider } from './context/AuthContext';
+import Navbar from './components/Navbar.jsx';
 import AuthPage from './pages/AuthPage';
+import AuthCallback from './pages/AuthCallback.jsx'; // New callback component
 import ProfileCard from './pages/ProfileCard';
 import ClubProfileCard from './pages/ClubProfileCard';
 import CreateEventForm from './pages/CreateEventForm';
@@ -15,28 +19,108 @@ import ClubDirectory from './pages/ClubDirectory';
 import ClubDashboardPage from './pages/ClubDashboardPage'; 
 import EventStatistics from './pages/EventStatistics.jsx';
 import CampusEvents from "./pages/CampusEvents.jsx";
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+
 const App = () => {
   return (
+    <AuthProvider>
     <Router>
-      <Navbar />
-       <div style={{ width: '100%' }}>
+    <Navbar/>
+      <div>
         <Routes>
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/club/:clubId" element={<ClubDashboardPage />} /> 
-          <Route path="/myevents" element={<MyEvents />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/profilecard" element={<ProfileCard />} />
-          <Route path="/clubprofilecard" element={<ClubProfileCard />} />
+          {/* Public routes */}
           <Route path="/login" element={<AuthPage />} />
-          <Route path="/createevent" element={<CreateEventForm />} />
-          <Route path="/clubpage" element={<ClubDirectory />} />
-          <Route path='/eventstatistics' element={<EventStatistics/>}/>
-          <Route path="/campusevents" element={<CampusEvents />} />
+          <Route path="/auth" element={<Navigate to="/login" replace />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          
+          {/* Protected routes - accessible by any authenticated user */}
+          <Route 
+            path="/home" 
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            } 
+          />
+           <Route 
+            path="/clubdashboard" 
+            element={
+              <ProtectedRoute>
+                <ClubDashboardPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/campusevents" 
+            element={
+              <ProtectedRoute>
+                <CampusEvents />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* Student-specific routes */}
+          <Route 
+            path="/myevents" 
+            element={
+              <ProtectedRoute>
+                <MyEvents />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/profilecard" 
+            element={
+              <ProtectedRoute>
+                <ProfileCard />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* Club-specific routes */}
+          <Route 
+            path="/clubprofilecard" 
+            element={
+              <ProtectedRoute >
+                <ClubProfileCard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/createevent" 
+            element={
+              <ProtectedRoute>
+                <CreateEventForm />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/clubpage" 
+            element={
+              <ProtectedRoute>
+                <ClubDirectory />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/eventstatistics" 
+            element={
+              <ProtectedRoute>
+                <EventStatistics />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* Default redirect */}
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          
+          {/* Catch all route - redirect to home */}
+          <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
+        <Footer />
       </div>
-      <Footer />
     </Router>
+    </AuthProvider>
   );
 };
 

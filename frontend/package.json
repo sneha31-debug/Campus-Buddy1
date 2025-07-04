@@ -11,8 +11,13 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@supabase/auth-ui-react": "^0.4.7",
+    "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.50.3",
     "@tailwindcss/vite": "^4.1.10",
+    "cors": "^2.8.5",
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
     "lucide-react": "^0.519.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -30,5 +35,10 @@
     "globals": "^16.0.0",
     "postcss-cli": "^11.0.1",
     "vite": "^6.3.5"
-  }
+  },
+  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "main": "eslint.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

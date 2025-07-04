@@ -15,7 +15,7 @@ const Navbar = ({ userType }) => {
 
   const commonLinks = [
     { to: '/home', label: 'Home', icon: <FaCalendarAlt /> },
-    { to: '/events', label: 'Events', icon: <FaCalendarAlt /> },
+    { to: '/campusevents', label: 'Events', icon: <FaCalendarAlt /> },
   ];
 
   const studentLinks = [
@@ -26,7 +26,7 @@ const Navbar = ({ userType }) => {
   const clubLinks = [
     ...commonLinks,
     { to: '/createevent', label: 'Create', icon: <FaPlus /> },
-    { to: `/club/${clubId}`, label: 'Dashboard', icon: <FaTachometerAlt /> },
+    { to: '/clubdashboard', label: 'Dashboard', icon: <FaTachometerAlt /> },
   ];
 
   const links = userType === 'student' ? studentLinks : clubLinks;

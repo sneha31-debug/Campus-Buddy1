@@ -118,22 +118,22 @@
     transform: translateX(0.25rem);
   }
 
-  .stats-section {
+  .home-stats-section {
     padding: 4rem 1.5rem;
     background: white;
   }
   
-  .stats-container {
+  .home-stats-container {
     max-width: 1152px;
     margin: 0 auto;
   }
   
-  .stats-header {
+  .home-stats-header {
     text-align: center;
     margin-bottom: 3rem;
   }
   
-  .stats-title {
+  .home-stats-title {
     font-size: 2rem;
     font-weight: bold;
     color: #111827;
@@ -141,30 +141,30 @@
   }
   
   @media (min-width: 768px) {
-    .stats-title {
+    .home-stats-title {
       font-size: 2.5rem;
     }
   }
   
-  .stats-subtitle {
+  .home-stats-subtitle {
     font-size: 1.125rem;
     color: #4b5563;
     margin: 0;
   }
   
-  .stats-grid {
+  .home-stats-grid {
     display: grid;
     gap: 2rem;
     grid-template-columns: 1fr;
   }
   
   @media (min-width: 768px) {
-    .stats-grid {
+    .home-stats-grid {
       grid-template-columns: repeat(3, 1fr);
     }
   }
   
-  .stat-card {
+  .home-stat-card {
     position: relative;
     padding: 2rem;
     border-radius: 1rem;
@@ -175,19 +175,19 @@
     background: white;
   }
   
-  .stat-card:hover {
+  .home-stat-card:hover {
     border-color: #d1d5db;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
     transform: scale(1.05);
   }
   
-  .stat-card-hovered {
+  .home-stat-card-hovered {
     border-color: #60a5fa !important;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
     background: #dbeafe !important;
   }
   
-  .stat-icon-container {
+  .home-stat-icon-container {
     display: inline-flex;
     padding: 1rem;
     border-radius: 1rem;
@@ -195,31 +195,31 @@
     transition: all 0.3s ease;
   }
   
-  .stat-icon-hovered {
+  .home-stat-icon-hovered {
     transform: scale(1.1);
   }
   
-  .stat-icon {
+  .home-stat-icon {
     width: 2rem;
     height: 2rem;
   }
   
-  .stat-blue .stat-icon-container {
+  .home-stat-blue .home-stat-icon-container {
     background: #dbeafe;
     color: #2563eb;
   }
   
-  .stat-green .stat-icon-container {
+  .home-stat-green .home-stat-icon-container {
     background: #dcfce7;
     color: #16a34a;
   }
   
-  .stat-yellow .stat-icon-container {
+  .home-stat-yellow .home-stat-icon-container {
     background: #fef3c7;
     color: #d97706;
   }
   
-  .stat-number {
+  .home-stat-number {
     font-size: 3rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
@@ -227,37 +227,37 @@
     transition: all 0.3s ease;
   }
   
-  .stat-number-hovered {
+  .home-stat-number-hovered {
     color: #2563eb !important;
     transform: scale(1.1);
   }
   
-  .stat-label {
+  .home-stat-label {
     font-size: 1.25rem;
     font-weight: 600;
     color: #1f2937;
     margin: 0 0 0.5rem;
   }
   
-  .stat-description {
+  .home-stat-description {
     transition: all 0.3s ease;
     overflow: hidden;
     max-height: 0;
     opacity: 0;
   }
   
-  .stat-description-visible {
+  .home-stat-description-visible {
     max-height: 5rem;
     opacity: 1;
   }
   
-  .stat-description p {
+  .home-stat-description p {
     color: #4b5563;
     font-size: 0.875rem;
     margin: 0.5rem 0 0;
   }
   
-  .stat-trending-icon {
+  .home-stat-trending-icon {
     position: absolute;
     top: -0.5rem;
     right: -0.5rem;
@@ -419,6 +419,7 @@
   .cta-section {
     padding: 4rem 1.5rem;
     background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%);
+    margin-bottom: -2rem;
   }
   
   .cta-container {
@@ -514,7 +515,7 @@
       font-size: 1rem;
     }
     
-    .stats-title {
+    .home-stats-title {
       font-size: 1.75rem;
     }
     
@@ -526,12 +527,12 @@
       font-size: 1rem;
     }
     
-    .stat-card,
+    .home-stat-card,
     .feature-card {
       padding: 1.5rem;
     }
     
-    .stat-number {
+    .home-stat-number {
       font-size: 2.5rem;
     }
   }

@@ -111,7 +111,7 @@ body {
 /* Floating Quick Stats */
 .floating-quick-stats {
   position: fixed;
-  top: 20px;
+  top: 100px;
   right: 20px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px); /* Fixed typo: was "backdop-filter" */

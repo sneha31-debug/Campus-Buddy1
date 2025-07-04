@@ -7,11 +7,9 @@ import {
 } from "react-router-dom";
 import Home from "./pages/Home";
 import MyEvents from "./pages/MyEvents";
-import Events from './pages/Events';
 import Footer from './components/Footer.jsx';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar.jsx';
-import Footer from './components/Footer.jsx';
 import AuthPage from './pages/AuthPage';
 import AuthCallback from './pages/AuthCallback.jsx'; // New callback component
 import ProfileCard from './pages/ProfileCard';
@@ -27,6 +25,7 @@ const App = () => {
   return (
     <AuthProvider>
     <Router>
+    <Navbar/>
       <div>
         <Routes>
           {/* Public routes */}
@@ -43,11 +42,11 @@ const App = () => {
               </ProtectedRoute>
             } 
           />
-          <Route 
-            path="/events" 
+           <Route 
+            path="/clubdashboard" 
             element={
               <ProtectedRoute>
-                <Events />
+                <ClubDashboardPage />
               </ProtectedRoute>
             } 
           />
@@ -64,7 +63,7 @@ const App = () => {
           <Route 
             path="/myevents" 
             element={
-              <ProtectedRoute requiredRole="student">
+              <ProtectedRoute>
                 <MyEvents />
               </ProtectedRoute>
             } 
@@ -72,7 +71,7 @@ const App = () => {
           <Route 
             path="/profilecard" 
             element={
-              <ProtectedRoute requiredRole="student">
+              <ProtectedRoute>
                 <ProfileCard />
               </ProtectedRoute>
             } 
@@ -82,7 +81,7 @@ const App = () => {
           <Route 
             path="/clubprofilecard" 
             element={
-              <ProtectedRoute requiredRole="club">
+              <ProtectedRoute >
                 <ClubProfileCard />
               </ProtectedRoute>
             } 
@@ -90,7 +89,7 @@ const App = () => {
           <Route 
             path="/createevent" 
             element={
-              <ProtectedRoute requiredRole="club">
+              <ProtectedRoute>
                 <CreateEventForm />
               </ProtectedRoute>
             } 
@@ -98,7 +97,7 @@ const App = () => {
           <Route 
             path="/clubpage" 
             element={
-              <ProtectedRoute requiredRole="club">
+              <ProtectedRoute>
                 <ClubDirectory />
               </ProtectedRoute>
             } 
@@ -106,7 +105,7 @@ const App = () => {
           <Route 
             path="/eventstatistics" 
             element={
-              <ProtectedRoute requiredRole="club">
+              <ProtectedRoute>
                 <EventStatistics />
               </ProtectedRoute>
             } 

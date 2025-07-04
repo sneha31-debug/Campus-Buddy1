@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar, Users, Heart, Zap, Star, TrendingUp, Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import './Home.css';
 
 export default function CampusBuddyHomepage() {
@@ -8,24 +9,24 @@ export default function CampusBuddyHomepage() {
 
   const campusStats = [
     { 
-      icon: <Calendar className="stat-icon" />, 
+      icon: <Calendar className="home-stat-icon" />, 
       number: "6", 
       label: "Active Events",
-      colorClass: "stat-blue",
+      colorClass: "home-stat-blue",
       description: "Join exciting events happening this week"
     },
     { 
-      icon: <Users className="stat-icon" />, 
+      icon: <Users className="home-stat-icon" />, 
       number: "25+", 
       label: "Active Clubs",
-      colorClass: "stat-green",
+      colorClass: "home-stat-green",
       description: "Connect with diverse student organizations"
     },
     { 
-      icon: <Heart className="stat-icon" />, 
+      icon: <Heart className="home-stat-icon" />, 
       number: "500+", 
       label: "Student Members",
-      colorClass: "stat-yellow",
+      colorClass: "home-stat-yellow",
       description: "Growing community of active students"
     }
   ];
@@ -75,46 +76,47 @@ export default function CampusBuddyHomepage() {
             your campus experience. Whether you're looking to learn, compete, or just have 
             fun - we've got you covered! 🎉
           </p>
-
-          <button className="hero-cta-btn">
-            <Calendar className="cta-icon" />
-            <span>Explore Events</span>
-            <TrendingUp className="cta-arrow" />
-          </button>
+          <Link to = "/campusevents">
+            <button className="hero-cta-btn">
+              <Calendar className="cta-icon" />
+              <span>Explore Events</span>
+              <TrendingUp className="cta-arrow" />
+            </button>
+          </Link>
         </div>
       </section>
-      <section className="stats-section">
-        <div className="stats-container">
-          <div className="stats-header">
-            <h2 className="stats-title">Campus at a Glance</h2>
-            <p className="stats-subtitle">See what's happening on campus right now!</p>
+      <section className="home-stats-section">
+        <div className="home-stats-container">
+          <div className="home-stats-header">
+            <h2 className="home-stats-title">Campus at a Glance</h2>
+            <p className="home-stats-subtitle">See what's happening on campus right now!</p>
           </div>
 
-          <div className="stats-grid">
+          <div className="home-stats-grid">
             {campusStats.map((stat, index) => (
               <div 
                 key={index}
-                className={`stat-card ${stat.colorClass} ${hoveredStat === index ? 'stat-card-hovered' : ''}`}
+                className={`home-stat-card ${stat.colorClass} ${hoveredStat === index ? 'home-stat-card-hovered' : ''}`}
                 onMouseEnter={() => setHoveredStat(index)}
                 onMouseLeave={() => setHoveredStat(null)}
               >
-                <div className={`stat-icon-container ${hoveredStat === index ? 'stat-icon-hovered' : ''}`}>
+                <div className={`home-stat-icon-container ${hoveredStat === index ? 'home-stat-icon-hovered' : ''}`}>
                   {stat.icon}
                 </div>
                 
-                <div className={`stat-number ${hoveredStat === index ? 'stat-number-hovered' : ''}`}>
+                <div className={`home-stat-number ${hoveredStat === index ? 'home-stat-number-hovered' : ''}`}>
                   {stat.number}
                 </div>
                 
-                <h3 className="stat-label">{stat.label}</h3>
+                <h3 className="home-stat-label">{stat.label}</h3>
                 
-                <div className={`stat-description ${hoveredStat === index ? 'stat-description-visible' : ''}`}>
+                <div className={`home-stat-description ${hoveredStat === index ? 'home-stat-description-visible' : ''}`}>
                   <p>{stat.description}</p>
                 </div>
 
                 {hoveredStat === index && (
-                  <div className="stat-trending-icon">
-                    <TrendingUp className="trending-icon" />
+                  <div className="home-stat-trending-icon">
+                    <TrendingUp className="home-trending-icon" />
                   </div>
                 )}
               </div>
@@ -162,11 +164,12 @@ export default function CampusBuddyHomepage() {
             Browse upcoming events, RSVP to activities that interest you, and start 
             building your campus network today!
           </p>
-          
+          <Link to = "/campusevents">
           <button className="cta-btn">
             <TrendingUp className="cta-btn-icon" />
             <span>Get Started</span>
           </button>
+          </Link>
         </div>
       </section>
     </div>

@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from '../context/AuthContext'; // Adjust path as needed
 import './ProfileCard.css';
 
 const ProfileCard = () => {
   const navigate = useNavigate();
+  const { signOut, user, getUserDisplayName } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState('Alex Johnson');
-  const [email, setEmail] = useState('alex.johnson@university.edu');
+  const [name, setName] = useState(getUserDisplayName() || 'Alex Johnson');
+  const [email, setEmail] = useState(user?.email || 'alex.johnson@university.edu');
 
   const handleClose = () => {
     navigate('/home');
@@ -20,12 +22,25 @@ const ProfileCard = () => {
     setIsEditing(false);
   };
 
+  const handleSignOut = async () => {
+    try {
+      const result = await signOut();
+      if (result.success) {
+        navigate('/login'); // Redirect to login page after sign out
+      }
+    } catch (error) {
+      console.error('Sign out failed:', error);
+    }
+  };
+
   return (
     <div className="profile-overlay">
       <div className="profile-card">
         <div className="profile-header">
           <div className="profile-image">
-            <div className="avatar-placeholder">AJ</div>
+            <div className="avatar-placeholder">
+              {name.split(' ').map(n => n[0]).join('').toUpperCase()}
+            </div>
             <div className="online-indicator"></div>
           </div>
 
@@ -44,9 +59,11 @@ const ProfileCard = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   className="edit-input"
                 />
-                <button className="edit-btn" onClick={handleSave}>
-                  Save
-                </button>
+                <div className="button-group">
+                  <button className="edit-btn" onClick={handleSave}>
+                    Save
+                  </button>
+                </div>
               </>
             ) : (
               <>
@@ -56,9 +73,14 @@ const ProfileCard = () => {
                   <span className="status-dot"></span>
                   Active Member
                 </div>
-                <button className="edit-btn" onClick={handleEdit}>
-                  Edit
-                </button>
+                <div className="button-group">
+                  <button className="edit-btn" onClick={handleEdit}>
+                    Edit
+                  </button>
+                  <button className="signout-btn" onClick={handleSignOut}>
+                    Sign Out
+                  </button>
+                </div>
               </>
             )}
           </div>
@@ -122,8 +144,3 @@ const ProfileCard = () => {
 };
 
 export default ProfileCard;
-
-
-
-
-

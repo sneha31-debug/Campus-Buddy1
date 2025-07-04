@@ -10,12 +10,15 @@ import MyEvents from "./pages/MyEvents";
 import Events from './pages/Events';
 import Footer from './components/Footer.jsx';
 import { AuthProvider } from './context/AuthContext';
+import Navbar from './components/Navbar.jsx';
+import Footer from './components/Footer.jsx';
 import AuthPage from './pages/AuthPage';
 import AuthCallback from './pages/AuthCallback.jsx'; // New callback component
 import ProfileCard from './pages/ProfileCard';
 import ClubProfileCard from './pages/ClubProfileCard';
 import CreateEventForm from './pages/CreateEventForm';
 import ClubDirectory from './pages/ClubDirectory';
+import ClubDashboardPage from './pages/ClubDashboardPage'; 
 import EventStatistics from './pages/EventStatistics.jsx';
 import CampusEvents from "./pages/CampusEvents.jsx";
 import ProtectedRoute from './components/ProtectedRoute.jsx';

@@ -1,13 +1,13 @@
-import { useContext } from 'react';
-import AuthContext from '../context/AuthContext';
+import { useContext } from "react";
+import AuthContext from "../context/AuthContext";
 
 // Custom hook to use auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
-  
+
   // Ensure all functions are available with fallbacks
   return {
     ...context,
@@ -16,7 +16,7 @@ export const useAuth = () => {
     hasRole: context.hasRole || (() => false),
     isStudent: context.isStudent || (() => false),
     isClub: context.isClub || (() => false),
-    getUserDisplayName: context.getUserDisplayName || (() => 'User'),
+    getUserDisplayName: context.getUserDisplayName || (() => "User"),
     getUserAvatar: context.getUserAvatar || (() => null),
   };
 };

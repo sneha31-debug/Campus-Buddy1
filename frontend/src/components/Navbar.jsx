@@ -11,12 +11,15 @@ import {
   Sun,
   Moon,
   Users,
+  Menu,
+  X,
 } from "lucide-react";
 import { useAuth } from "../hook/useAuth";
 import "./Navbar.css";
 
 const Navbar = ({ userType = "student" }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, getUserRole, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [currentUserRole, setCurrentUserRole] = useState(null);
@@ -28,7 +31,6 @@ const Navbar = ({ userType = "student" }) => {
     }
   }, [user, isAuthenticated, getUserRole]);
 
-  // Use the current user's role if authenticated, otherwise fall back to prop
   const effectiveUserType = currentUserRole || userType;
 
   const commonLinks = [
@@ -49,44 +51,33 @@ const Navbar = ({ userType = "student" }) => {
 
   const links = effectiveUserType === "student" ? studentLinks : clubLinks;
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+  const toggleTheme = () => setIsDarkMode(!isDarkMode);
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
   const handleProfileClick = () => {
     if (isAuthenticated && isAuthenticated()) {
-      // Route to appropriate profile based on user role
-      if (effectiveUserType === "club") {
-        navigate("/clubprofilecard");
-      } else {
-        navigate("/profilecard");
-      }
+      navigate(effectiveUserType === "club" ? "/clubprofilecard" : "/profilecard");
     } else {
       navigate("/login");
     }
   };
 
   const handleLoginClick = () => {
-    if (isAuthenticated && isAuthenticated()) {
-      // If already logged in, go to appropriate dashboard
-      if (effectiveUserType === "club") {
-        navigate("/clubpage");
-      } else {
-        navigate("/home");
-      }
-    } else {
-      navigate("/login");
-    }
+    navigate("/login");
   };
 
   return (
     <nav className={`navbar ${isDarkMode ? "dark" : ""}`}>
       <div className="navbar-container">
-        <div className="logo">
+        <div className="logo" onClick={() => navigate("/")}>
           <div className="logo-icon">
             <Users size={24} />
           </div>
           <span className="logo-text">Campus-Buddy</span>
+        </div>
+
+        <div className="mobile-toggle" onClick={toggleMobileMenu}>
+          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </div>
 
         <div className="nav-center">
@@ -112,23 +103,36 @@ const Navbar = ({ userType = "student" }) => {
 
           <button className="login-btn" onClick={handleLoginClick}>
             <LogIn size={18} />
-            <span>
-              {isAuthenticated && isAuthenticated()
-                ? effectiveUserType === "club"
-                  ? "Dashboard"
-                  : "Home"
-                : "Login"}
-            </span>
+            <span>Login</span>
           </button>
 
           <button className="profile-btn" onClick={handleProfileClick}>
             <User size={18} />
-            {isAuthenticated && isAuthenticated() && (
-              <span className="profile-indicator"></span>
-            )}
           </button>
         </div>
       </div>
+
+      {mobileMenuOpen && (
+        <div className={`mobile-menu ${isDarkMode ? "dark" : ""}`}>
+          <ul>
+            {links.map((link) => {
+              const Icon = link.icon;
+              return (
+                <li key={link.to}>
+                  <a
+                    href={link.to}
+                    className="nav-link"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Icon size={18} />
+                    <span>{link.label}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
     </nav>
   );
 };

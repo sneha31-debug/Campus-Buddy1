@@ -8,6 +8,7 @@ const MyEvents = () => {
   const [events, setEvents] = useState([]);
   const [tab, setTab] = useState("All");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const today = new Date();
 
@@ -23,11 +24,15 @@ const MyEvents = () => {
         tag.toLowerCase().includes(selectedCategory.toLowerCase())
       );
 
-    if (tab === "All") return matchesCategory;
-    if (tab === "Upcoming") return eventDate >= today && matchesCategory;
-    if (tab === "Past") return eventDate < today && matchesCategory;
-    if (tab === "Attending") return event.status === "Going" && matchesCategory;
-    return matchesCategory;
+    const matchesSearch =
+      event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+    if (tab === "All") return matchesCategory && matchesSearch;
+    if (tab === "Upcoming") return eventDate >= today && matchesCategory && matchesSearch;
+    if (tab === "Past") return eventDate < today && matchesCategory && matchesSearch;
+    if (tab === "Attending") return event.status === "Going" && matchesCategory && matchesSearch;
+    return matchesCategory && matchesSearch;
   });
 
   const getAttendancePercentage = (event) => {
@@ -50,12 +55,13 @@ const MyEvents = () => {
     { name: "All Categories", icon: "✨", count: 24 },
     { name: "Technology", icon: "💻", count: 6 },
     { name: "Arts & Culture", icon: "🎨", count: 5 },
+    { name: "Robotics", icon: "🤖", count: 2 },
+    { name: "Astronomy", icon: "🔭", count: 2 },
     { name: "Sports & Fitness", icon: "🏆", count: 4 },
-    { name: "Music & Performance", icon: "🎵", count: 3 },
-    { name: "Environment", icon: "🌱", count: 2 },
-    { name: "Business", icon: "💼", count: 4 },
+    { name: "Music", icon: "🎵", count: 3 },
+    { name: "Esports", icon: "🎮", count: 3 },
+    { name: "E-cell", icon: "💼", count: 4 },
     { name: "Workshops", icon: "🛠️", count: 3 },
-    { name: "AI", icon: "🧠", count: 2 },
     { name: "Hackathons", icon: "⚡", count: 2 },
   ];
 
@@ -64,9 +70,22 @@ const MyEvents = () => {
       <div className="my-events-header">
         <h1>✨ My Events ✨</h1>
         <p>Events you're attending or considering</p>
+
+        {/* 🔍 Search Bar */}
+        <div className="my-events-search-bar">
+          <span className="search-icon">🔍</span>
+          <input
+            type="text"
+            placeholder="Search clubs, activities, or interests..."
+            className="search-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button className="search-btn">Search</button>
+        </div>
       </div>
 
-      {/* 🔄 Scrollable Categories (No white wrapper) */}
+      {/* 🔄 Scrollable Categories */}
       <div className="my-events-categories">
         {categories.map((cat, index) => (
           <button

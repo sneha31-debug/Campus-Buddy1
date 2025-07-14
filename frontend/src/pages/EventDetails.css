@@ -4,8 +4,7 @@
     padding: 0 20px;
     font-family: "Segoe UI", sans-serif;
   }
-  
-  /* Back Button */
+
   .back-btn {
     background: none;
     border: none;
@@ -24,7 +23,6 @@
     color: #4338ca;
   }
   
-  /* Card Container */
   .event-details-card {
     background: linear-gradient(135deg, #f9f9ff, #edf2ff);
     border-radius: 20px;
@@ -34,7 +32,6 @@
     backdrop-filter: blur(4px);
   }
   
-  /* Title */
   .event-title {
     font-size: 36px;
     color: #1e3a8a;
@@ -44,7 +41,6 @@
     padding-bottom: 10px;
   }
   
-  /* Section */
   .event-section {
     margin-top: 30px;
   }
@@ -107,43 +103,47 @@
     font-size: 14px;
     cursor: pointer;
     font-weight: 600;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.2s ease;
+    transform: scale(1);
+  }
+  
+  .going {
+    background: linear-gradient(to right, #34d399, #10b981);
+    color: white;
+  }
+  
+  .not-going {
+    background: linear-gradient(to right, #fca5a5, #f87171);
+    color: white;
+  }
+  
+  .maybe {
+    background: linear-gradient(to right, #fde68a, #fcd34d);
+    color: #1f2937;
+  }
+  
+  .going:hover,
+  .going.selected {
+    background: darkgreen ;
+    color: white;
+  }
+  
+  .not-going:hover,
+  .not-going.selected {
+    background: #dc2626;
+    color: white;
+  }
+  
+  .maybe:hover,
+  .maybe.selected {
+    background: #f59e0b;
+    color: #1f2937;
   }
   
   .rsvp-buttons button:hover {
     transform: scale(1.04);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
   }
-  
-  /* Button Colors */
-  .going {
-    background: linear-gradient(to right, #34d399, #10b981);
-    color: white;
-  }
-  
-  .going:hover {
-    background: linear-gradient(to right, #10b981, #059669);
-  }
-  
-  .not-going {
-    background: linear-gradient(to right, #f87171, #ef4444);
-    color: white;
-  }
-  
-  .not-going:hover {
-    background: linear-gradient(to right, #ef4444, #dc2626);
-  }
-  
-  .maybe {
-    background: linear-gradient(to right, #fcd34d, #fbbf24);
-    color: #1f2937;
-  }
-  
-  .maybe:hover {
-    background: linear-gradient(to right, #fbbf24, #f59e0b);
-  }
-  
-  /* Loading text */
   .loading {
     text-align: center;
     margin-top: 100px;

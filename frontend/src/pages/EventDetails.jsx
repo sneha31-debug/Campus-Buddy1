@@ -16,7 +16,6 @@ const EventDetails = () => {
 
   const updateStatus = (status) => {
     setEvent({ ...event, status });
-    alert(`RSVP status updated to ${status}`);
   };
 
   if (!event) return <p className="loading">Loading...</p>;
@@ -57,9 +56,24 @@ const EventDetails = () => {
         <section className="event-section">
           <h2>RSVP</h2>
           <div className="rsvp-buttons">
-            <button onClick={() => updateStatus("Going")} className="going">✔ Going</button>
-            <button onClick={() => updateStatus("Not Going")} className="not-going">✖ Not Going</button>
-            <button onClick={() => updateStatus("Maybe")} className="maybe">🤔 Maybe</button>
+            <button
+              onClick={() => updateStatus("Going")}
+              className={`going ${event.status === "Going" ? "selected" : ""}`}
+            >
+              ✔ Going
+            </button>
+            <button
+              onClick={() => updateStatus("Not Going")}
+              className={`not-going ${event.status === "Not Going" ? "selected" : ""}`}
+            >
+              ✖ Not Going
+            </button>
+            <button
+              onClick={() => updateStatus("Maybe")}
+              className={`maybe ${event.status === "Maybe" ? "selected" : ""}`}
+            >
+              🤔 Maybe
+            </button>
           </div>
         </section>
       </div>

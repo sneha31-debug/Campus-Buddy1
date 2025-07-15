@@ -11,11 +11,21 @@ const EventDetails = () => {
 
   useEffect(() => {
     const foundEvent = mockEvents.find((e) => e.id === parseInt(id));
-    setEvent(foundEvent);
+
+    const rsvpStatus = JSON.parse(localStorage.getItem("rsvpStatus")) || {};
+    if (foundEvent) {
+      foundEvent.status = rsvpStatus[foundEvent.id] || foundEvent.status || "";
+      setEvent(foundEvent);
+    }
   }, [id]);
 
   const updateStatus = (status) => {
-    setEvent({ ...event, status });
+    const updatedEvent = { ...event, status };
+    setEvent(updatedEvent);
+
+    const rsvpStatus = JSON.parse(localStorage.getItem("rsvpStatus")) || {};
+    rsvpStatus[event.id] = status;
+    localStorage.setItem("rsvpStatus", JSON.stringify(rsvpStatus));
   };
 
   if (!event) return <p className="loading">Loading...</p>;
@@ -40,7 +50,7 @@ const EventDetails = () => {
             <li><strong>Date:</strong> {event.date}</li>
             <li><strong>Time:</strong> {event.time}</li>
             <li><strong>Location:</strong> {event.location}</li>
-            <li><strong>Status:</strong> {event.status}</li>
+            <li><strong>Status:</strong> {event.status || "Not responded"}</li>
           </ul>
         </section>
 

@@ -33,7 +33,7 @@ body {
 .my-events-header p {
   font-size: 16px;
   color: #6b7280;
-  margin-top: 0px; 
+  margin-top: 0px;
 }
 
 /* 🔷 Categories */
@@ -219,28 +219,6 @@ body {
   margin-bottom: 4px;
 }
 
-/* 🔷 Progress */
-.my-events-progress p {
-  font-size: 12px;
-  color: #6b7280;
-  margin-top: 10px;
-}
-
-.my-events-bar {
-  height: 6px;
-  border-radius: 6px;
-  background: #e5e7eb;
-  overflow: hidden;
-  margin-top: 4px;
-}
-
-.my-events-fill {
-  height: 100%;
-  background: linear-gradient(to right, #34d399, #3b82f6);
-  width: 0;
-  transition: width 0.3s ease;
-}
-
 /* 🔷 Tags */
 .my-events-tags {
   margin-top: 10px;
@@ -248,20 +226,106 @@ body {
 
 .my-events-tag {
   display: inline-block;
-  background: #f3f4f6;
-  color: #374151;
   font-size: 12px;
   padding: 4px 10px;
   border-radius: 9999px;
   margin-right: 8px;
   margin-bottom: 6px;
   font-weight: 500;
-  transition: background 0.3s ease, transform 0.3s ease;
+  transition: transform 0.3s ease;
+  background: linear-gradient(to right, #f0f4ff, #e0e7ff);
+  color: #1e293b;
 }
 
 .my-events-tag:hover {
-  background: #e5e7eb;
   transform: scale(1.05);
+}
+
+/* Individual colorful gradients for each tag */
+.tag-tech {
+  background: linear-gradient(to right, #dbeafe, #bfdbfe);
+  color: #1e3a8a;
+}
+
+.tag-hackathon {
+  background: linear-gradient(to right, #fef3c7, #fde68a);
+  color: #92400e;
+}
+
+.tag-dev-club {
+  background: linear-gradient(to right, #e0f2fe, #bae6fd);
+  color: #0369a1;
+}
+
+.tag-ai {
+  background: linear-gradient(to right, #e0f7fa, #b2ebf2);
+  color: #006064;
+}
+
+.tag-workshop,
+.tag-workshops {
+  background: linear-gradient(to right, #d1fae5, #a7f3d0);
+  color: #065f46;
+}
+
+.tag-cultural {
+  background: linear-gradient(to right, #f3e8ff, #e9d5ff);
+  color: #7e22ce;
+}
+
+.tag-drama {
+  background: linear-gradient(to right, #fbcfe8, #f9a8d4);
+  color: #9d174d;
+}
+
+.tag-dance {
+  background: linear-gradient(to right, #fde68a, #fcd34d);
+  color: #78350f;
+}
+
+.tag-auditions {
+  background: linear-gradient(to right, #e0f2fe, #bae6fd);
+  color: #0284c7;
+}
+
+.tag-environment {
+  background: linear-gradient(to right, #d1fae5, #a7f3d0);
+  color: #065f46;
+}
+
+.tag-coding {
+  background: linear-gradient(to right, #e0f7fa, #b2ebf2);
+  color: #00796b;
+}
+
+.tag-sports {
+  background: linear-gradient(to right, #e0f2f1, #b2dfdb);
+  color: #004d40;
+}
+
+.tag-esports {
+  background: linear-gradient(to right, #fee2e2, #fecaca);
+  color: #b91c1c;
+}
+
+.tag-e-cell {
+  background: linear-gradient(to right, #ede9fe, #ddd6fe);
+  color: #5b21b6;
+}
+
+.tag-robotics {
+  background: linear-gradient(to right, #e0f2fe, #bae6fd);
+  color: #0369a1;
+}
+
+.tag-astronomy {
+  background: linear-gradient(to right, #fef9c3, #fde68a);
+  color: #854d0e;
+}
+
+.tag-fun {
+  background: linear-gradient(to right, #fdf2f8, #fbcfe8);
+  color: #9d174d;
 }
 
 /* 🔷 Buttons */
@@ -326,6 +390,7 @@ body {
     justify-content: center;
   }
 }
+
 .my-events-search-bar {
   max-width: 640px;
   margin: 24px auto 32px auto;
@@ -353,13 +418,13 @@ body {
 }
 
 .search-input:focus {
-  outline: none ;
-  box-shadow: none ;
-  border: none ;
+  outline: none;
+  box-shadow: none;
+  border: none;
 }
 
 .search-btn {
-  background: linear-gradient(to right, #3b82f6, #6366f1); 
+  background: linear-gradient(to right, #3b82f6, #6366f1);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -374,4 +439,19 @@ body {
 .search-btn:hover {
   background: linear-gradient(to right, #2563eb, #4f46e5);
   transform: scale(1.03);
+}
+
+.event-ended-message {
+  margin-top: 16px;
+  text-align: right;
+}
+
+.ended-text {
+  background: #fef3c7;
+  color: #b45309;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  display: inline-block;
+  font-size: 14px;
 }

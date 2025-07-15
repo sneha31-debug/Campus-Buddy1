@@ -98,6 +98,7 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
+  height: 1200px;
 }
 
 .club-card-featured {
@@ -211,6 +212,7 @@ h3 {
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s ease;
+  margin-top: 70px;
 }
 
 .join-btn:hover {
@@ -220,6 +222,7 @@ h3 {
 .socials {
   display: flex;
   gap: 0.5rem;
+  margin-top: 70px;
 }
 
 .social-icon {

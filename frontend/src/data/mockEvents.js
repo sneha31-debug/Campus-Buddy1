@@ -7,7 +7,7 @@ export const mockEvents = [
     time: "4:00 PM – 7:00 PM",
     location: "Auditorium Main Stage",
     tags: ["Arts (Drama)", "Cultural", "Auditions"],
-    image: "https://images.unsplash.com/photo-1529101091764-c3526daf38fe?auto=format&fit=crop&w=1050&q=80",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkvPGCtKbCu7RSwW_thz1bcMhWWVGWBafKdg&s",
     photos: 2,
     interested: 89,
     status: "Going",

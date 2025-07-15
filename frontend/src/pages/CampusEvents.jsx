@@ -1,4 +1,3 @@
-// CampusEvents.jsx
 import React, { useState } from "react";
 import { TrendingUp, Calendar, Star, Heart } from "lucide-react";
 import "./CampusEvents.css";

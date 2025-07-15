@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './ClubDirectory.css';
+import { useNavigate } from 'react-router-dom';
 import {
   FaFacebook,
   FaTwitter,
@@ -11,22 +12,20 @@ import {
   FaGithub,
   FaUsers,
   FaCalendarAlt,
-  FaClock,
-  FaMapMarkerAlt,
-  FaBookmark,
 } from 'react-icons/fa';
+
 
 const clubsData = [
   {
-    name: 'Dev Club',
+    name: 'Devclub',
     category: 'Technology',
     featured: true,
     rating: 4.8,
     members: 300,
     events: 8,
-    time: 'Wednesdays 7:00 PM',
+    description: 'A hub for passionate web developers, open-source contributors, and hackathon enthusiasts.',
     tags: ['Web Dev', 'Open Source', 'Hackathons'],
-    social: ['github', 'linkedin', 'email'],
+    social: ['linkedin', 'email'],
     email: 'devclub@university.com',
     bg: '#e0f2ff',
   },
@@ -37,23 +36,36 @@ const clubsData = [
     rating: 4.9,
     members: 240,
     events: 6,
-    time: 'Mondays 6:00 PM',
+    description: 'Build intelligent robots and explore AI, IoT, and mechatronics hands-on.',
     tags: ['Hardware', 'AI', 'Mechatronics'],
     social: ['instagram', 'email'],
     email: 'robotics@university.com',
     bg: '#e8f5e9',
   },
   {
-    name: 'Performing Arts Club',
+    name: 'Creators corner',
     category: 'Arts & Culture',
     featured: true,
     rating: 4.7,
     members: 180,
     events: 10,
-    time: 'Fridays 5:00 PM',
-    tags: ['Drama', 'Dance', 'Theatre'],
+    description: 'Celebrate creativity through visual arts, design, photography, and storytelling.',
+    tags: ['Creativity', 'Media', 'Art'],
     social: ['youtube', 'instagram', 'email'],
-    email: 'performing@university.com',
+    email: 'creatorscorner@university.com',
+    bg: 'skyblue'
+  },
+  {
+    name: 'Ensemble Club',
+    category: 'Theatre',
+    featured: true,
+    rating: 4.7,
+    members: 180,
+    events: 10,
+    description: 'A performing arts club for theatre, drama, music, and expressive dance lovers.',
+    tags: ['Drama', 'Dance', 'music'],
+    social: ['youtube', 'instagram', 'email'],
+    email: 'ensembleclub@university.com',
     bg: '#fff8e1',
   },
   {
@@ -61,28 +73,68 @@ const clubsData = [
     category: 'Technology',
     featured: true,
     rating: 5.0,
-    members: 150,
+    members: 50,
     events: 4,
-    time: 'Saturdays 10:00 AM',
+    description: 'Join coding battles, master DSA, and prep for ICPC with fellow problem solvers.',
     tags: ['CP', 'DSA', 'ICPC'],
     social: ['linkedin', 'email'],
     email: 'algonauts@university.com',
     bg: '#ede7f6',
   },
   {
-    name: 'Oratos - Speaking Club',
-    category: 'Arts & Culture',
+    name: 'Orators',
+    category: 'Public Speaking',
     featured: true,
     rating: 4.6,
-    members: 130,
+    members: 100,
     events: 5,
-    time: 'Tuesdays 6:00 PM',
+    description: 'Sharpen your voice, debate ideas, and master the art of impactful communication.',
     tags: ['Debate', 'Public Speaking', 'Anchoring'],
     social: ['instagram', 'email'],
     email: 'oratos@university.com',
-    bg: '#f3e5f5',
+    bg: '#fff8e1',
+  },
+  {
+    name: 'Trailblazers',
+    category: 'Sports',
+    featured: true,
+    rating: 4.6,
+    members: 315,
+    events: 5,
+    description: 'Unite with sports enthusiasts and compete in cricket, kabaddi, badminton, and more.',
+    tags: ['Badminton', 'Cricket', 'Kabaddi'],
+    social: ['instagram', 'email'],
+    email: 'sports@university.com',
+    bg: 'skyblue',
+  },
+  {
+    name: 'Sharksphere',
+    category: 'Entrepreneur',
+    featured: true,
+    rating: 5.0,
+    members: 50,
+    events: 4,
+    description: 'Fuel your startup dreams with mentorship, pitch events, and business simulations.',
+    tags: ['Startup', 'Business', 'Leadership'],
+    social: ['linkedin', 'email'],
+    email: 'sharksphere@university.com',
+    bg: '#e8f5e9',
+  },
+  {
+    name: 'Stellarquest - Astronomy',
+    category: 'Space',
+    featured: true,
+    rating: 4.9,
+    members: 240,
+    events: 6,
+    description: 'Explore the cosmos, study stars, and engage in space research and skywatching.',
+    tags: ['Space', 'Research', 'Astrophysics'],
+    social: ['instagram', 'email'],
+    email: 'robotics@university.com',
+    bg: '#e0f2ff',
   },
 ];
+
 
 const getSocialIcon = (platform) => {
   switch (platform) {
@@ -110,24 +162,7 @@ const getSocialIcon = (platform) => {
 const ClubDirectory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
-  const [joinedClubs, setJoinedClubs] = useState([]);
-  const [bookmarked, setBookmarked] = useState([]);
-
-  const handleJoin = (clubName) => {
-    setJoinedClubs((prev) =>
-      prev.includes(clubName)
-        ? prev.filter((name) => name !== clubName)
-        : [...prev, clubName]
-    );
-  };
-
-  const handleBookmark = (clubName) => {
-    setBookmarked((prev) =>
-      prev.includes(clubName)
-        ? prev.filter((name) => name !== clubName)
-        : [...prev, clubName]
-    );
-  };
+  const navigate = useNavigate();
 
   const filteredClubs = clubsData.filter((club) => {
     const matchesSearch = club.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -140,10 +175,11 @@ const ClubDirectory = () => {
     'All Categories',
     'Technology',
     'Arts & Culture',
-    'Sports & Fitness',
-    'Music & Performance',
-    'Environment',
-    'Business',
+    'Public Speaking',
+    'Sports',
+    'Theatre',
+    'Space',
+    'Entrepreneur'
   ];
 
   return (
@@ -183,9 +219,6 @@ const ClubDirectory = () => {
           <div className="club-card-featured" key={index} style={{ backgroundColor: club.bg }}>
             <div className="top-labels">
               <span className="category">{club.category}</span>
-              <span className="bookmark" onClick={() => handleBookmark(club.name)}>
-                <FaBookmark color={bookmarked.includes(club.name) ? '#9333ea' : '#555'} />
-              </span>
             </div>
             <h3>{club.name}</h3>
             <p className="desc">{club.description || ''}</p>
@@ -197,14 +230,6 @@ const ClubDirectory = () => {
                 <FaCalendarAlt /> {club.events} events
               </span>
             </div>
-            <div className="time-loc">
-              <span>
-                <FaClock /> {club.time}
-              </span>
-              <span>
-                <FaMapMarkerAlt /> {club.location}
-              </span>
-            </div>
             <div className="tags">
               {club.tags.map((tag, i) => (
                 <span key={i} className="tag">
@@ -213,9 +238,13 @@ const ClubDirectory = () => {
               ))}
             </div>
             <div className="actions">
-              <button className="join-btn" onClick={() => handleJoin(club.name)}>
-                {joinedClubs.includes(club.name) ? 'Joined' : 'Join Club'}
+              <button
+                className="join-btn"
+                onClick={() => navigate('/campus-events')}
+              >
+                Explore
               </button>
+
               <div className="socials">
                 {club.social.map((s, i) => (
                   <a key={i} href="#" target="_blank" rel="noreferrer" className="social-icon">

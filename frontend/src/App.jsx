@@ -33,6 +33,8 @@ const App = () => {
             <Route path="/login" element={<AuthPage />} />
             <Route path="/auth" element={<Navigate to="/login" replace />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/campus-events" element={<CampusEvents />} />
+
             
             {/* Protected routes - accessible by any authenticated user */}
             <Route 

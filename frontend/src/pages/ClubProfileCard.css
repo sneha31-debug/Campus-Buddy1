@@ -110,7 +110,7 @@
   border-bottom: 1px solid #e2e8f0;
 }
 
-.stat-item {
+.club-stat-item {
   flex: 1;
   display: flex;
   align-items: center;
@@ -122,27 +122,27 @@
   transition: transform 0.2s ease;
 }
 
-.stat-item:hover {
+.club-stat-item:hover {
   transform: translateY(-2px);
 }
 
-.stat-icon {
+.club-stat-icon {
   font-size: 24px;
 }
 
-.stat-content {
+.club-stat-content {
   display: flex;
   flex-direction: column;
 }
 
-.stat-number {
+.club-stat-number {
   font-size: 20px;
   font-weight: 700;
   color: #1e40af;
   line-height: 1;
 }
 
-.stat-label {
+.club-stat-label {
   font-size: 12px;
   color: #636e72;
   margin-top: 2px;

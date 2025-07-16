@@ -19,15 +19,14 @@ const ClubProfileCard = () => {
     website: "",
   });
 
-  // Function to insert initial club data
   const insertInitialClubData = async () => {
     if (!user?.id || !supabase) return;
 
     try {
       const clubRecord = {
         id: user.id,
-        name: user.user_metadata?.club_name || "", // Map to 'name' column
-        contact_email: user.user_metadata?.club_email || user.email || "", // Map to 'contact_email' column
+        name: user.user_metadata?.club_name || "", 
+        contact_email: user.user_metadata?.club_email || user.email || "", 
         contact_phone: user.user_metadata?.contact_phone || "",
         description: user.user_metadata?.description || "",
         created_at: new Date().toISOString(),
@@ -46,7 +45,6 @@ const ClubProfileCard = () => {
         return;
       }
 
-      // Map the inserted data back to component format
       const mappedData = {
         id: data.id,
         club_name: data.name,
@@ -82,13 +80,11 @@ const ClubProfileCard = () => {
     }
   };
 
-  // Load club data from auth metadata and database
   useEffect(() => {
     if (!user) {
       return;
     }
 
-    // Use auth metadata immediately
     const fallbackData = {
       id: user.id,
       club_name: user.user_metadata?.club_name || "",
@@ -117,10 +113,8 @@ const ClubProfileCard = () => {
     });
     setLoading(false);
 
-    // Try to fetch from database in background
     const fetchFromDatabase = async () => {
       try {
-        // Check if supabase is available
         if (!supabase) {
           return;
         }
@@ -132,7 +126,6 @@ const ClubProfileCard = () => {
           .single();
 
         if (dbError) {
-          // If it's a "not found" error, create the record
           if (dbError.code === "PGRST116") {
             await insertInitialClubData();
           } else {
@@ -142,11 +135,10 @@ const ClubProfileCard = () => {
         }
 
         if (dbClubData) {
-          // Map database columns to expected format
           const mappedData = {
             id: dbClubData.id,
-            club_name: dbClubData.name || "", // Map 'name' to 'club_name'
-            club_email: dbClubData.contact_email || "", // Map 'contact_email' to 'club_email'
+            club_name: dbClubData.name || "", 
+            club_email: dbClubData.contact_email || "",
             contact_person:
               user.user_metadata?.contact_person ||
               user.user_metadata?.full_name ||
@@ -200,8 +192,8 @@ const ClubProfileCard = () => {
       const { error } = await supabase
         .from("clubs")
         .update({
-          name: editData.club_name, // Map 'club_name' to 'name'
-          contact_email: editData.club_email, // Map 'club_email' to 'contact_email'
+          name: editData.club_name, 
+          contact_email: editData.club_email, 
           contact_phone: editData.contact_phone,
           description: editData.description,
           updated_at: new Date().toISOString(),
@@ -487,18 +479,18 @@ const ClubProfileCard = () => {
         )}
 
         <div className="quick-stats">
-          <div className="stat-item">
-            <div className="stat-icon">🎉</div>
-            <div className="stat-content">
-              <span className="stat-number">-</span>
-              <span className="stat-label">Events Hosted</span>
+          <div className="club-stat-item">
+            <div className="club-stat-icon">🎉</div>
+            <div className="club-stat-content">
+              <span className="club-stat-number">-</span>
+              <span className="club-stat-label">Events Hosted</span>
             </div>
           </div>
-          <div className="stat-item">
-            <div className="stat-icon">👥</div>
-            <div className="stat-content">
-              <span className="stat-number">-</span>
-              <span className="stat-label">Active Members</span>
+          <div className="club-stat-item">
+            <div className="club-stat-icon">👥</div>
+            <div className="club-stat-content">
+              <span className="club-stat-number">-</span>
+              <span className="club-stat-label">Active Members</span>
             </div>
           </div>
         </div>

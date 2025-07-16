@@ -34,7 +34,7 @@ body {
   position: relative;
   min-height: 100vh;
   background: linear-gradient(135deg, var(--background-light) 0%, #ffffff 100%);
-  margin-top: -150px; 
+  margin-top: -127px; 
   padding-top: 80px;
 }
 
@@ -161,8 +161,8 @@ body {
 }
 
 .heroIcon {
-  margin-bottom: 1rem;
-  padding: 1.5rem;
+  margin-bottom: 1.3rem;
+  padding: 1.2rem;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 50%;
   border: 2px solid rgba(99, 102, 241, 0.3);
@@ -173,8 +173,8 @@ body {
 }
 
 .heroCalendar {
-  width: 3rem;
-  height: 3rem;
+  width: 2.7rem;
+  height: 2.4rem;
   color: var(--primary-color);
 }
 
@@ -244,7 +244,7 @@ body {
   font-size: clamp(1.1rem, 2vw, 1.3rem);
   color: var(--text-secondary);
   line-height: 1.7;
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
@@ -255,6 +255,7 @@ body {
 }
 
 .heroCtaBtn {
+  /* margin-bottom: 1rem; */
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
@@ -311,11 +312,12 @@ body {
 .statsSection {
   padding: 5rem 2rem;
   background: rgba(255, 255, 255, 0.6);
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-top: 30px solid rgba(255, 255, 255, 0.4);
   border-bottom: 1px solid rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(10px);
   position: relative;
   margin-top: -100px;
+  margin-bottom: 50px;
 }
 
 .statsContainer {
@@ -357,7 +359,7 @@ body {
   padding: 2.3rem;
   text-align: center;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(42, 60, 121, 0.168);
   box-shadow: 
     var(--shadow-sm),
     0 0 20px rgba(99, 102, 241, 0.05);
@@ -370,7 +372,7 @@ body {
   transform: translateY(-5px);
   box-shadow: 
     var(--shadow-md),
-    0 0 30px rgba(99, 102, 241, 0.1);
+    0 0 30px rgba(99, 101, 241, 0.205);
 }
 
 .statCardHovered {
@@ -529,13 +531,14 @@ body {
   transition: var(--transition-smooth);
   cursor: pointer;
   backdrop-filter: blur(10px);
+  border: 1px solid rgba(42, 42, 42, 0.11);
 }
 
 .clubCard:hover {
   transform: translateY(-5px);
   box-shadow: 
     var(--shadow-lg),
-    0 0 30px rgba(99, 102, 241, 0.15);
+    0 0 30px rgba(34, 34, 71, 0.212);
 }
 
 .clubCardHovered {
@@ -988,6 +991,7 @@ body {
   backdrop-filter: blur(10px);
   position: relative;
   margin-top: -70px;
+  margin-bottom: 50px;
 }
 .faqContainer {
   max-width: 800px;

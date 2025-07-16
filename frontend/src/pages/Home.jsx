@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Users, Heart, Zap, Star, TrendingUp, Menu, X, 
-         ChevronRight, CheckCircle, MessageCircle, Shield, 
-         Clock, Globe, Award, Code, Github, Linkedin, 
-         ChevronDown, ChevronUp, UserPlus, Search, Bell } from 'lucide-react';
+import { Calendar, Users, Heart, Zap, Star, TrendingUp, Menu, X,Shield, Clock, Globe,Github, Linkedin, ChevronDown, ChevronUp, UserPlus, Search, Bell } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import './Home.css';
 
 export default function CampusBuddyHomepage() {
   const [hoveredStat, setHoveredStat] = useState(null);
-  const [hoveredFeature, setHoveredFeature] = useState(null);
   const [hoveredClub, setHoveredClub] = useState(null);
   const [hoveredDeveloper, setHoveredDeveloper] = useState(null);
   const [openFAQ, setOpenFAQ] = useState(null);
@@ -53,28 +49,6 @@ export default function CampusBuddyHomepage() {
       description: "Growing community of active students"
     }
   ];
-
-  const features = [
-    {
-      icon: <Users className="featureIcon" />,
-      title: "Connect & Network",
-      description: "Meet like-minded students, join clubs, and build lasting friendships through shared interests and activities.",
-      colorClass: "featureBlue"
-    },
-    {
-      icon: <Zap className="featureIcon" />,
-      title: "Stay Updated",
-      description: "Never miss out on exciting events, workshops, competitions, and activities happening around campus.",
-      colorClass: "featureGreen"
-    },
-    {
-      icon: <Star className="featureIcon" />,
-      title: "Grow & Learn",
-      description: "Participate in workshops, hackathons, and skill-building events to enhance your academic and personal growth.",
-      colorClass: "featureYellow"
-    }
-  ];
-
   const topClubs = [
     {
       name: "Dev Club",
@@ -130,16 +104,14 @@ export default function CampusBuddyHomepage() {
     {
       name: "Krish Patil",
       role: "Maintainer",
-      image: "https://api.dicebear.com/9.x/glass/svg?seed=KrishPatil&backgroundColor=3b82f6&glasses=variant01&hair=variant04&beard=variant02",
       bio: "Computer Science student and project maintainer passionate about UI/UX design. Created the complete design system and loves solving frontend challenges.",
       github: "https://github.com/krishx06",
       linkedin: "https://www.linkedin.com/in/krish-patil-nst/",
-      skills: ["React", "Figma", "UI/UX Design", "JavaScript"]
+      skills: ["React", "Figma", "UI/UX Design", "JavaScript","Supabase"]
     },
     {
       name: "Gayatri Jaiswal",
       role: "Full-stack developer",
-      image: "https://api.dicebear.com/9.x/glass/svg?seed=GayatriJaiswal&backgroundColor=ec4899&glasses=variant05&hair=variant12",
       bio: "Full-stack development enthusiast studying Computer Engineering. Enjoys building end-to-end applications and exploring new technologies.",
       github: "https://github.com/TechGenie-awake",
       linkedin: "https://www.linkedin.com/in/gayatrijaiswal2006/",
@@ -148,7 +120,6 @@ export default function CampusBuddyHomepage() {
     {
       name: "Sneha Chepurwar",
       role: "Frontend Developer",
-      image: "https://api.dicebear.com/9.x/glass/svg?seed=SnehaChepurwar&backgroundColor=10b981&glasses=variant03&hair=variant08",
       bio: "Frontend development student with a keen eye for responsive design. Loves creating interactive user interfaces and learning modern web technologies.",
       github: "https://github.com/sneha31-debug",
       linkedin: "https://www.linkedin.com/in/sneha-chepurwar-754892325/",
@@ -157,7 +128,6 @@ export default function CampusBuddyHomepage() {
     {
       name: "Divya Pahuja",
       role: "Frontend Developer",
-      image: "https://api.dicebear.com/9.x/glass/svg?seed=DivyaPahuja&backgroundColor=f59e0b&glasses=variant02&hair=variant15",
       bio: "Web development student passionate about creating beautiful and functional user interfaces. Focuses on clean code and modern CSS techniques.",
       github: "https://github.com/Divyapahuja31",
       linkedin: "https://www.linkedin.com/in/divya-pahuja25/",
@@ -166,16 +136,14 @@ export default function CampusBuddyHomepage() {
     {
       name: "Saurav Kumar",
       role: "Frontend Developer",
-      image: "https://api.dicebear.com/9.x/glass/svg?seed=SauravKumar&backgroundColor=8b5cf6&glasses=variant04&hair=variant02&beard=variant01",
       bio: "Computer Science student specializing in frontend development. Enjoys building responsive web applications and learning React ecosystem.",
       github: "https://github.com/Magnus1X",
       linkedin: "https://www.linkedin.com/in/saurav-kumar-b7b87b338/",
-      skills: ["React", "CSS", "JavaScript", "Git"]
+      skills: ["React", "CSS", "JavaScript"]
     },
     {
       name: "Kumar Manak",
       role: "Frontend Developer",
-      image: "https://api.dicebear.com/9.x/glass/svg?seed=KumarManak&backgroundColor=ef4444&glasses=variant06&hair=variant06&beard=variant03",
       bio: "Web development student with a passion for creating modern and interactive web experiences. Focuses on React development and styling.",
       github: "https://github.com/manak-sharma20",
       linkedin: "https://www.linkedin.com/in/kumar-manak-064bbb361/",
@@ -208,13 +176,13 @@ export default function CampusBuddyHomepage() {
   const benefits = [
     {
       icon: <Shield className="benefitIcon" />,
-      title: "Safe & Secure",
-      description: "Your data is protected with enterprise-grade security measures"
+      title: "Smart Event Discovery",
+      description: "Find events tailored to your interests — browse by club, department, or tags with a clean interface"
     },
     {
       icon: <Clock className="benefitIcon" />,
-      title: "Real-time Updates",
-      description: "Get instant notifications about events and club activities"
+      title: "Seamless RSVP & Calendar Integration",
+      description: "Quickly RSVP to events and add them to your calendar with one click — no more missed events"
     },
     {
       icon: <Globe className="benefitIcon" />,
@@ -225,25 +193,32 @@ export default function CampusBuddyHomepage() {
 
   const faqs = [
     {
-      question: "How do I join a club on CampusBuddy?",
-      answer: "Simply browse through our clubs section, find one that interests you, and click 'Join Club'. You can also contact club administrators directly through our messaging system."
+      question: " How can I RSVP to events?",
+      answer: "After logging in, browse events and use the “Going”, “Not Going”, or “Maybe” options on each event card."
     },
     {
-      question: "Is CampusBuddy free to use?",
-      answer: "Yes! CampusBuddy is completely free for all students. We believe in making campus life accessible to everyone."
+      question: "Where can I see my RSVP'd events?",
+      answer: "You can view all your responses in the My Events section — categorized as Upcoming or Past."
     },
     {
-      question: "How do I create an event for my club?",
-      answer: "Club administrators can create events through their club dashboard. Simply log in, go to your club page, and click 'Create Event' to get started."
+      question: "What can I manage from the Club Dashboard?",
+      answer: "Clubs can create, edit, and delete events, view RSVP stats, and update their club profile details."
     },
     {
-      question: "Can I get notifications for specific types of events?",
-      answer: "Absolutely! You can customize your notification preferences in your profile settings to receive updates only for events and clubs that interest you."
+      question: "Can I get reminders for events?",
+      answer: "For now, you can use the 'Add to Calendar' button on each event page. Email reminders are coming soon"
+    },
+    {
+      question: " Can I contribute to this project?",
+      answer: "Absolutely! Head to the GitHub repo, check the README, pick an issue, and start contributing. We welcome all contributors!"
     },
   ];
 
   const toggleFAQ = (index) => {
     setOpenFAQ(openFAQ === index ? null : index);
+  };
+  const handleSocialClick = (url) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -331,41 +306,6 @@ export default function CampusBuddyHomepage() {
           </div>
         </div>
       </section>
-      <section className="featuresSection">
-        <div className="featuresContainer">
-          <div className="featuresGrid">
-            {features.map((feature, index) => (
-              <div 
-                key={index}
-                className={`featureCard ${feature.colorClass} ${hoveredFeature === index ? 'featureCardHovered' : ''}`}
-                onMouseEnter={() => setHoveredFeature(index)}
-                onMouseLeave={() => setHoveredFeature(null)}
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
-              >
-                <div className={`featureIconContainer ${hoveredFeature === index ? 'featureIconHovered' : ''}`}>
-                  {feature.icon}
-                </div>
-                
-                <h3 className={`featureTitle ${hoveredFeature === index ? 'featureTitleHovered' : ''}`}>
-                  {feature.title}
-                </h3>
-                
-                <p className="featureDescription">{feature.description}</p>
-
-                {hoveredFeature === index && (
-                  <>
-                    <div className="featureGradientOverlay"></div>
-                    <div className="featureStarIcon">
-                      <Star className="starIcon" />
-                    </div>
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
       <section className="topClubsSection">
         <div className="topClubsContainer">
           <div className="sectionHeader" data-aos="fade-up">
@@ -385,10 +325,6 @@ export default function CampusBuddyHomepage() {
               >
                 <div className="clubImageContainer">
                   <img src={club.image} alt={club.name} className="clubImage" />
-                  <div className="clubRating">
-                    <Star className="ratingStar" />
-                    <span>{club.rating}</span>
-                  </div>
                 </div>
                 
                 <div className="clubContent">
@@ -466,52 +402,59 @@ export default function CampusBuddyHomepage() {
         </div>
       </section>
       <section className="developersSection">
-        <div className="developersContainer">
-          <div className="sectionHeader" data-aos="fade-up">
-            <h2 className="sectionTitle">Meet the Developers</h2>
-            <p className="sectionSubtitle">The passionate team behind CampusBuddy</p>
-          </div>
+      <div className="developersContainer">
+        <div className="sectionHeader" data-aos="fade-up">
+          <h2 className="sectionTitle">Meet the Developers</h2>
+          <p className="sectionSubtitle">The passionate team behind CampusBuddy</p>
+        </div>
 
-          <div className="developersGrid">
-            {developers.map((developer, index) => (
-              <div 
-                key={index}
-                className={`developerCard ${hoveredDeveloper === index ? 'developerCardHovered' : ''}`}
-                onMouseEnter={() => setHoveredDeveloper(index)}
-                onMouseLeave={() => setHoveredDeveloper(null)}
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
-              >
-                <div className="developerImageContainer">
-                  <img src={developer.image} alt={developer.name} className="developerImage" />
-                  <div className="developerOverlay">
-                    <div className="developerSocial">
-                      <a href={developer.github} className="socialLink">
-                        <Github className="socialIcon" />
-                      </a>
-                      <a href={developer.linkedin} className="socialLink">
-                        <Linkedin className="socialIcon" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="developerContent">
-                  <h3 className="developerName">{developer.name}</h3>
-                  <p className="developerRole">{developer.role}</p>
-                  <p className="developerBio">{developer.bio}</p>
-                  
-                  <div className="developerSkills">
-                    {developer.skills.map((skill, skillIndex) => (
-                      <span key={skillIndex} className="skillTag">{skill}</span>
-                    ))}
-                  </div>
+        <div className="developersGrid">
+          {developers.map((developer, index) => (
+            <div 
+              key={index}
+              className={`developerCard ${hoveredDeveloper === index ? 'developerCardHovered' : ''}`}
+              onMouseEnter={() => setHoveredDeveloper(index)}
+              onMouseLeave={() => setHoveredDeveloper(null)}
+              data-aos="fade-up"
+              data-aos-delay={index * 100}
+            >
+              {/* Social Links Overlay */}
+              <div className={`developerOverlay ${hoveredDeveloper === index ? 'developerOverlayVisible' : ''}`}>
+                <div className="developerSocial">
+                  <button
+                    className="socialLink"
+                    onClick={() => handleSocialClick(developer.github)}
+                    aria-label={`Visit ${developer.name}'s GitHub`}
+                  >
+                    <Github className="socialIcon" />
+                  </button>
+                  <button
+                    className="socialLink"
+                    onClick={() => handleSocialClick(developer.linkedin)}
+                    aria-label={`Visit ${developer.name}'s LinkedIn`}
+                  >
+                    <Linkedin className="socialIcon" />
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
+
+              {/* Card Content */}
+              <div className="developerContent">
+                <h3 className="developerName">{developer.name}</h3>
+                <p className="developerRole">{developer.role}</p>
+                <p className="developerBio">{developer.bio}</p>
+                
+                <div className="developerSkills">
+                  {developer.skills.map((skill, skillIndex) => (
+                    <span key={skillIndex} className="skillTag">{skill}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      </section>
+      </div>
+    </section>
       <section className="faqSection">
         <div className="faqContainer">
           <div className="sectionHeader" data-aos="fade-up">

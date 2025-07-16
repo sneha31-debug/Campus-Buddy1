@@ -1,81 +1,139 @@
+
 # 🎓 Campus Buddy
 
-A centralized web-based platform to help students **discover, RSVP, and track campus events** — built for students and clubs to stay connected, updated, and engaged.
+A centralized platform for **students and clubs at NST** to discover, manage, and track campus events — helping the campus stay connected and engaged.
 
 ---
 
 ## 📌 Problem
 
-Students often miss out on college events, workshops, hackathons, or club activities due to scattered communication and the lack of a centralized, smart event discovery system.
+Students often **miss out on campus events** — workshops, fests, hackathons — due to **scattered communication** across Slack, WhatsApp, or word of mouth.
 
 ---
 
 ## 🚀 Solution
 
-Campus Buddy solves this with a student-first, smart platform where:
+**Campus Buddy** brings everything under one roof with a **student-first, modern web app** that:
 
-- 🎯 Students can view, filter, and RSVP to **upcoming and past events**
-- 🏛️ Clubs can post and manage **events and volunteer requests**
-- 🔍 Events can be filtered by **tag, type, department, or club**
-- 🔔 Email reminders (for RSVP’d events) help reduce no-shows
-- 📆 (Future) Google Calendar integration and gamified engagement
-
----
-
-## 🔥 Core Features
-
-### 👥 Student Side
-
-- ✅ Login via student email
-- 📅 Browse upcoming and past events
-- 🏷️ Filter by club, department, tags, or type
-- 📩 RSVP to events (stored in MongoDB)
-- 🔔 Receive email reminders *(planned)*
+* Helps **students explore, RSVP**, and track events
+* Allows **clubs to create/manage events**
+* Provides personalized **dashboards and profiles**
+* Lets students quickly **add events to their calendar** with one click
+* Will soon support features like **volunteering, gamification, and email reminders**
 
 ---
 
-### 🏛️ Club Side
+## 🔥 Key Features
 
-- ✅ Login via club email
-- ➕ Create, edit, and manage events
-- 🙋 Request volunteers for events
+### 👨‍🎓 Students
 
----
+* ✅ Login via Google Sign-in
+* 📅 Browse upcoming & past events
+* 🏷️ Filter by club, category, department
+* 📩 RSVP with "Going", "Not Going", "Maybe"
+* 📂 View your RSVP’d events in **My Events**
+* 🪪 **Student Mini Profile Card** showing:
 
-### 🧪 Extra (Future Plans)
-
-- 🗓️ Google Calendar sync for RSVP’d events
-- 🏆 Gamification system (points for attending/organizing)
-- 📨 Smart email reminders
-
----
-
-## 🧰 Tech Stack
-
-| Layer     | Technology                     |
-|-----------|--------------------------------|
-| Frontend  | React (Vite), CSS     |
-| Backend   | Node.js                        |
-| Database  | MongoDB                        |
-| Hosting   | (To be decided – e.g., Vercel) |
+  * Name, Course, Year, etc.
+* 🗓️ **Add to Calendar** option for each event
 
 ---
 
-## 🧠 Project Objectives
+### 🏛️ Clubs
 
-- Build a **structured, centralized platform** for campus events
-- Make event discovery **easy, filtered, and personalized**
-- Enable **clubs to manage** their events independently
-- Encourage student participation via **reminders and gamification**
+* ✅ Login via Google (verified club ID)
+* ➕ Create, edit, and delete events
+* 📊 Track RSVP stats (Going, Not Going, Maybe)
+* 🗂️ **Club Mini Profile Card** showing:
+
+  * Club Name, Department, Bio, etc.
+  * Total Events Created
+* 📋 **Club Dashboard** for quick access to:
+
+  * List of Events
+  * Event stats
+  * Create New Event
+  * Edit & Delete Events
+
+---
+
+### 💡 Future Additions
+
+* 🔔 Email reminders
+* 🏆 Gamification (points, badges, streaks)
+
+---
+
+## 💻 Tech Stack
+
+| Layer        | Technology                                                   |
+| ------------ | ------------------------------------------------------------ |
+| Frontend     | React (Vite), **External CSS**                               |
+| Auth & DB    | Supabase (PostgreSQL + Auth)                                 |
+| UI Libraries | Selectively using components from Aceternity UI / React Bits |
+| Hosting      | Vercel                                                       |
 
 
 ---
 
-## 📬 Contact
 
-Maintainer: **Krish Patil**  
-For questions, suggestions, or doubts — connect on the group or via GitHub issues.
+## 🤝 Getting Started as a Contributor
+
+> Want to contribute? Start here 👇
+
+1. **Fork** this repo
+2. Clone your fork
+
+   ```bash
+   git clone https://github.com/your-username/campusbuddy.git
+   ```
+3. Navigate to the frontend folder
+
+   ```bash
+   cd campusbuddy/frontend
+   ```
+4. Install dependencies
+
+   ```bash
+   npm install
+   ```
+5. Start the dev server
+
+   ```bash
+   npm run dev
+   ```
+6. Create a new branch
+
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+7. Make your changes and push
+
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+8. Create a **Pull Request** and link to the corresponding issue (if any)
+
+📌 **Note:** All `.env.local` files are ignored — never push secret keys or tokens.
+> 🔐 Don't forget to configure `.env.local` (and keep it out of version control).
+
 
 ---
 
-Let’s build a platform students actually use! 🚀
+
+## 🛠️ Project Objectives
+
+* Centralize event discovery and management
+* Personalize experience through role-based dashboards
+* Simplify event creation for clubs
+* Help students stay informed and organized through RSVP and calendar support
+
+---
+
+## 💬 Let’s Build It Together
+
+Campus Buddy is built by students, for students. Whether you're a coder, designer, or organizer — your contribution matters!
+
+> Let’s build something that brings campus life together. 🚀
+
+---

@@ -1,7 +1,5 @@
-/* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
-/* CSS Variables for Theme */
 :root {
   --primary-color: #6366f1;
   --accent-color: #06b6d4;
@@ -22,7 +20,6 @@
   --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* Global Styles */
 * {
   margin: 0;
   padding: 0;
@@ -37,14 +34,12 @@ body {
   overflow-x: hidden;
 }
 
-/* Main Container */
 .campus-buddy-container {
   position: relative;
   min-height: 100vh;
   background: var(--background-light);
 }
 
-/* Dynamic Background Animation with Morphing Shapes */
 .campus-buddy-container::before {
   content: '';
   position: fixed;
@@ -66,7 +61,6 @@ body {
   50% { transform: translateY(-20px) rotate(180deg); }
 }
 
-/* Animated Grid Background with Particle Effect */
 .campus-buddy-container::after {
   content: '';
   position: fixed;
@@ -90,7 +84,6 @@ body {
   100% { transform: translate(60px, 60px); }
 }
 
-/* Hero Section */
 .hero-section {
   min-height: 100vh;
   display: flex;
@@ -364,7 +357,6 @@ body {
   z-index: -1;
 }
 
-/* Additional Modern Animations */
 @keyframes diagonalMove {
   0% {
     transform: translateX(-100px) translateY(-100px);
@@ -567,7 +559,6 @@ body {
   color: var(--accent-color);
 }
 
-/* Features Section */
 .features-section {
   padding: 5rem 2rem;
   background: var(--background-light);
@@ -715,7 +706,6 @@ body {
   animation: pulse 2s ease-in-out infinite;
 }
 
-/* CTA Section */
 .cta-section {
   padding: 5rem 2rem;
   background: rgba(255, 255, 255, 0.5);
@@ -812,7 +802,6 @@ body {
   transform: rotate(15deg);
 }
 
-/* Enhanced Animations */
 @keyframes morphBackground {
   0%, 100% {
     filter: hue-rotate(0deg) brightness(1);
@@ -994,7 +983,6 @@ body {
   }
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .hero-section {
     min-height: 90vh;

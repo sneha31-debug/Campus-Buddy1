@@ -205,8 +205,6 @@ const ClubProfileCard = () => {
         setError(`Failed to update profile: ${error.message}`);
         return;
       }
-
-      // Update local state
       setClubData((prev) => ({
         ...prev,
         club_name: editData.club_name,

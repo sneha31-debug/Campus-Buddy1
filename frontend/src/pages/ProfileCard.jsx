@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
 import "./ProfileCard.css";
 
 const ProfileCard = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { signOut, user, supabase } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
@@ -62,7 +63,11 @@ const ProfileCard = () => {
   }, [user, supabase]);
 
   const handleClose = () => {
-    navigate("/home");
+    if (location.state && location.state.from) {
+      navigate(location.state.from, { replace: true });
+    } else {
+      navigate("/home", { replace: true });
+    }
   };
 
   const handleEdit = () => {

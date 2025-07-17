@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Footer.css';
 import {
@@ -10,8 +10,20 @@ import {
     FaPhoneAlt,
     FaMapMarkerAlt
 } from 'react-icons/fa';
+import { useAuth } from '../hook/useAuth';
 
 const Footer = () => {
+    const { getUserRole, isAuthenticated } = useAuth();
+    const [role, setRole] = useState(null);
+
+    useEffect(() => {
+        if (isAuthenticated && isAuthenticated()) {
+            setRole(getUserRole());
+        } else {
+            setRole(null);
+        }
+    }, [getUserRole, isAuthenticated]);
+
     return (
         <footer className="footer">
             <div className="footer-content">
@@ -19,43 +31,76 @@ const Footer = () => {
                     <h2 className="gradient-heading">Campus-Buddy</h2>
                     <p>Connecting students with campus events and creating memorable experiences.</p>
                     <div className="social-icons">
-                        <a href="#"><FaFacebookF /></a>
-                        <a href="#"><FaTwitter /></a>
-                        <a href="#"><FaInstagram /></a>
-                        <a href="#"><FaLinkedinIn /></a>
+                        <a href="#" aria-label="Facebook"><FaFacebookF /></a>
+                        <a href="#" aria-label="Twitter"><FaTwitter /></a>
+                        <a href="#" aria-label="Instagram"><FaInstagram /></a>
+                        <a href="#" aria-label="LinkedIn"><FaLinkedinIn /></a>
                     </div>
                 </div>
 
                 <div className="footer-section links" style={{ marginLeft: '100px' }}>
                     <h3>Quick Links</h3>
                     <ul className="no-bullets">
-                        <li><a href="/home">Home</a></li>
-                        <li><Link to='/clubpage'>Clubs</Link></li>
+                        <li><Link to="/home">Home</Link></li>
                         <li><Link to="/campusevents">Campus Events</Link></li>
-                        <li><Link to="/MyEvents">My Events</Link></li>
-                        <li><Link to="/login">Login</Link></li>
-                        <li><a href="/ProfileCard">Student Profile</a></li>
+                        <li><Link to="/clubpage">Clubs Directory</Link></li>
+                        <li><a href="/home#howItWorksSection">About</a></li>
                     </ul>
                 </div>
 
-                <div className="footer-section links">
-                    <h3>For Clubs</h3>
-                    <ul className="no-bullets">
-                        <li><Link to="/createevent">Create Event</Link></li>
-                        <li><a href="/clubdashboard">Club Dashboard</a></li>
-                        <li><a href="/ClubProfileCard">Club Profiles</a></li>
-                        
-                        
-                    </ul>
-                </div>
+                {role === 'student' && (
+                    <div className="footer-section links">
+                        <h3>Student Resources</h3>
+                        <ul className="no-bullets">
+                            <li><Link to="/MyEvents">My Events</Link></li>
+                            <li><Link to="/ProfileCard">My Profile</Link></li>
+                            <li><a href="https://github.com/nst-sdc/campus-buddy" target="_blank" rel="noopener noreferrer">Contribute</a></li>
+                        </ul>
+                    </div>
+                )}
+
+                {role === 'club' && (
+                    <div className="footer-section links">
+                        <h3>Club Resources</h3>
+                        <ul className="no-bullets">
+                            <li><Link to="/clubdashboard">Club Dashboard</Link></li>
+                            <li><Link to="/createevent">Create Event</Link></li>
+                            <li><Link to="/ClubProfileCard">Manage Club Profile</Link></li>
+                        </ul>
+                    </div>
+                )}
+
+                {/* Fallback: show both if not authenticated */}
+                {!role && (
+                    <>
+                        <div className="footer-section links">
+                            <h3>Student Resources</h3>
+                            <ul className="no-bullets">
+                                <li><Link to="/MyEvents">My Events</Link></li>
+                                <li><Link to="/ProfileCard">My Profile</Link></li>
+                                <li><a href="https://github.com/nst-sdc/campus-buddy" target="_blank" rel="noopener noreferrer">Contribute</a></li>
+                            </ul>
+                        </div>
+                        <div className="footer-section links">
+                            <h3>Club Resources</h3>
+                            <ul className="no-bullets">
+                                <li><Link to="/clubdashboard">Club Dashboard</Link></li>
+                                <li><Link to="/createevent">Create Event</Link></li>
+                                <li><Link to="/ClubProfileCard">Manage Club Profile</Link></li>
+                            </ul>
+                        </div>
+                    </>
+                )}
 
                 <div className="footer-section contact">
                     <h3>Contact Us</h3>
-                    <p><FaEnvelope /> support@campus-buddy.com</p>
+                    <p><FaEnvelope /> <span style={{whiteSpace: 'nowrap'}}>campusbuddy@gmail.com</span></p>
                     <p><FaPhoneAlt /> 123 456 7890</p>
-                    <p><FaMapMarkerAlt />   Lohegaon, Pune</p>
+                    <p><FaMapMarkerAlt /> Lohegaon, Pune</p>
                 </div>
             </div>
+
+            <hr className="footer-divider" />
 
             <div className="footer-bottom">
                 <p>© 2025 Campus-Buddy. All rights reserved. Made with <span className="heart">❤</span> for students.</p>

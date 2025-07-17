@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import './ClubDirectory.css';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import "./ClubDirectory.css";
+import { useNavigate } from "react-router-dom";
 import {
   FaFacebook,
   FaTwitter,
@@ -12,147 +12,154 @@ import {
   FaGithub,
   FaUsers,
   FaCalendarAlt,
-} from 'react-icons/fa';
-
+} from "react-icons/fa";
 
 const clubsData = [
   {
-    name: 'Devclub',
-    category: 'Technology',
+    name: "Devclub",
+    category: "Technology",
     featured: true,
     rating: 4.8,
     members: 300,
     events: 8,
-    description: 'A hub for passionate web developers, open-source contributors, and hackathon enthusiasts.',
-    tags: ['Web Dev', 'Open Source', 'Hackathons'],
-    social: ['linkedin', 'email'],
-    email: 'devclub@university.com',
-    bg: '#e0f2ff',
+    description:
+      "A hub for passionate web developers, open-source contributors, and hackathon enthusiasts.",
+    tags: ["Web Dev", "Open Source", "Hackathons"],
+    social: ["linkedin", "email"],
+    email: "devclub@university.com",
+    bg: "#e0f2ff",
   },
   {
-    name: 'Robotics Club',
-    category: 'Technology',
+    name: "Robotics Club",
+    category: "Technology",
     featured: true,
     rating: 4.9,
     members: 240,
     events: 6,
-    description: 'Build intelligent robots and explore AI, IoT, and mechatronics hands-on.',
-    tags: ['Hardware', 'AI', 'Mechatronics'],
-    social: ['instagram', 'email'],
-    email: 'robotics@university.com',
-    bg: '#e8f5e9',
+    description:
+      "Build intelligent robots and explore AI, IoT, and mechatronics hands-on.",
+    tags: ["Hardware", "AI", "Mechatronics"],
+    social: ["instagram", "email"],
+    email: "robotics@university.com",
+    bg: "#e8f5e9",
   },
   {
-    name: 'Creators corner',
-    category: 'Arts & Culture',
+    name: "Creators corner",
+    category: "Arts & Culture",
     featured: true,
     rating: 4.7,
     members: 180,
     events: 10,
-    description: 'Celebrate creativity through visual arts, design, photography, and storytelling.',
-    tags: ['Creativity', 'Media', 'Art'],
-    social: ['youtube', 'instagram', 'email'],
-    email: 'creatorscorner@university.com',
-    bg: 'skyblue'
+    description:
+      "Celebrate creativity through visual arts, design, photography, and storytelling.",
+    tags: ["Creativity", "Media", "Art"],
+    social: ["youtube", "instagram", "email"],
+    email: "creatorscorner@university.com",
+    bg: "skyblue",
   },
   {
-    name: 'Ensemble Club',
-    category: 'Theatre',
+    name: "Ensemble Club",
+    category: "Theatre",
     featured: true,
     rating: 4.7,
     members: 180,
     events: 10,
-    description: 'A performing arts club for theatre, drama, music, and expressive dance lovers.',
-    tags: ['Drama', 'Dance', 'music'],
-    social: ['youtube', 'instagram', 'email'],
-    email: 'ensembleclub@university.com',
-    bg: '#fff8e1',
+    description:
+      "A performing arts club for theatre, drama, music, and expressive dance lovers.",
+    tags: ["Drama", "Dance", "music"],
+    social: ["youtube", "instagram", "email"],
+    email: "ensembleclub@university.com",
+    bg: "#fff8e1",
   },
   {
-    name: 'Algonauts - CP Club',
-    category: 'Technology',
+    name: "Algonauts - CP Club",
+    category: "Technology",
     featured: true,
     rating: 5.0,
     members: 50,
     events: 4,
-    description: 'Join coding battles, master DSA, and prep for ICPC with fellow problem solvers.',
-    tags: ['CP', 'DSA', 'ICPC'],
-    social: ['linkedin', 'email'],
-    email: 'algonauts@university.com',
-    bg: '#ede7f6',
+    description:
+      "Join coding battles, master DSA, and prep for ICPC with fellow problem solvers.",
+    tags: ["CP", "DSA", "ICPC"],
+    social: ["linkedin", "email"],
+    email: "algonauts@university.com",
+    bg: "#ede7f6",
   },
   {
-    name: 'Orators',
-    category: 'Public Speaking',
+    name: "Orators",
+    category: "Public Speaking",
     featured: true,
     rating: 4.6,
     members: 100,
     events: 5,
-    description: 'Sharpen your voice, debate ideas, and master the art of impactful communication.',
-    tags: ['Debate', 'Public Speaking', 'Anchoring'],
-    social: ['instagram', 'email'],
-    email: 'oratos@university.com',
-    bg: '#fff8e1',
+    description:
+      "Sharpen your voice, debate ideas, and master the art of impactful communication.",
+    tags: ["Debate", "Public Speaking", "Anchoring"],
+    social: ["instagram", "email"],
+    email: "oratos@university.com",
+    bg: "#fff8e1",
   },
   {
-    name: 'Trailblazers',
-    category: 'Sports',
+    name: "Trailblazers",
+    category: "Sports",
     featured: true,
     rating: 4.6,
     members: 315,
     events: 5,
-    description: 'Unite with sports enthusiasts and compete in cricket, kabaddi, badminton, and more.',
-    tags: ['Badminton', 'Cricket', 'Kabaddi'],
-    social: ['instagram', 'email'],
-    email: 'sports@university.com',
-    bg: 'skyblue',
+    description:
+      "Unite with sports enthusiasts and compete in cricket, kabaddi, badminton, and more.",
+    tags: ["Badminton", "Cricket", "Kabaddi"],
+    social: ["instagram", "email"],
+    email: "sports@university.com",
+    bg: "skyblue",
   },
   {
-    name: 'Sharksphere',
-    category: 'Entrepreneur',
+    name: "Sharksphere",
+    category: "Entrepreneur",
     featured: true,
     rating: 5.0,
     members: 50,
     events: 4,
-    description: 'Fuel your startup dreams with mentorship, pitch events, and business simulations.',
-    tags: ['Startup', 'Business', 'Leadership'],
-    social: ['linkedin', 'email'],
-    email: 'sharksphere@university.com',
-    bg: '#e8f5e9',
+    description:
+      "Fuel your startup dreams with mentorship, pitch events, and business simulations.",
+    tags: ["Startup", "Business", "Leadership"],
+    social: ["linkedin", "email"],
+    email: "sharksphere@university.com",
+    bg: "#e8f5e9",
   },
   {
-    name: 'Stellarquest - Astronomy',
-    category: 'Space',
+    name: "Stellarquest - Astronomy",
+    category: "Space",
     featured: true,
     rating: 4.9,
     members: 240,
     events: 6,
-    description: 'Explore the cosmos, study stars, and engage in space research and skywatching.',
-    tags: ['Space', 'Research', 'Astrophysics'],
-    social: ['instagram', 'email'],
-    email: 'robotics@university.com',
-    bg: '#e0f2ff',
+    description:
+      "Explore the cosmos, study stars, and engage in space research and skywatching.",
+    tags: ["Space", "Research", "Astrophysics"],
+    social: ["instagram", "email"],
+    email: "robotics@university.com",
+    bg: "#e0f2ff",
   },
 ];
 
-
 const getSocialIcon = (platform) => {
   switch (platform) {
-    case 'facebook':
+    case "facebook":
       return <FaFacebook />;
-    case 'twitter':
+    case "twitter":
       return <FaTwitter />;
-    case 'instagram':
+    case "instagram":
       return <FaInstagram />;
-    case 'linkedin':
+    case "linkedin":
       return <FaLinkedin />;
-    case 'youtube':
+    case "youtube":
       return <FaYoutube />;
-    case 'email':
+    case "email":
       return <FaEnvelope />;
-    case 'tiktok':
+    case "tiktok":
       return <FaTiktok />;
-    case 'github':
+    case "github":
       return <FaGithub />;
     default:
       return null;
@@ -160,52 +167,59 @@ const getSocialIcon = (platform) => {
 };
 
 const ClubDirectory = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All Categories');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const navigate = useNavigate();
 
   const filteredClubs = clubsData.filter((club) => {
-    const matchesSearch = club.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = club.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     const matchesCategory =
-      selectedCategory === 'All Categories' || club.category === selectedCategory;
+      selectedCategory === "All Categories" ||
+      club.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
   const categories = [
-    'All Categories',
-    'Technology',
-    'Arts & Culture',
-    'Public Speaking',
-    'Sports',
-    'Theatre',
-    'Space',
-    'Entrepreneur'
+    "All Categories",
+    "Technology",
+    "Arts & Culture",
+    "Public Speaking",
+    "Sports",
+    "Theatre",
+    "Space",
+    "Entrepreneur",
   ];
 
   return (
-    <div className="club-page">
-      <h1>
+    <div className="club-directory-page">
+      <h1 className="club-directory-title">
         <span>Campus</span> Clubs
       </h1>
-      <p className="subtitle">
-        Discover amazing communities, build lifelong friendships, and explore your passions with like-minded students
+      <p className="club-directory-subtitle">
+        Discover amazing communities, build lifelong friendships, and explore
+        your passions with like-minded students
       </p>
 
-      <div className="search-bar">
+      <div className="club-directory-search-bar">
         <input
           type="text"
           placeholder="Search clubs, activities, or interests..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          className="club-directory-search-input"
         />
-        <button>Search</button>
+        <button className="club-directory-search-button">Search</button>
       </div>
 
-      <div className="category-tabs">
+      <div className="club-directory-category-tabs">
         {categories.map((cat, i) => (
           <div
             key={i}
-            className={`tab ${selectedCategory === cat ? 'active-tab' : ''}`}
+            className={`club-directory-tab ${
+              selectedCategory === cat ? "club-directory-active-tab" : ""
+            }`}
             onClick={() => setSelectedCategory(cat)}
           >
             {cat}
@@ -213,16 +227,20 @@ const ClubDirectory = () => {
         ))}
       </div>
 
-      <h2 className="featured-title">Featured Clubs</h2>
-      <div className="club-card-list">
+      <h2 className="club-directory-featured-title">Featured Clubs</h2>
+      <div className="club-directory-card-list">
         {filteredClubs.map((club, index) => (
-          <div className="club-card-featured" key={index} style={{ backgroundColor: club.bg }}>
-            <div className="top-labels">
-              <span className="category">{club.category}</span>
+          <div
+            className="club-directory-card-featured"
+            key={index}
+            style={{ backgroundColor: club.bg }}
+          >
+            <div className="club-directory-top-labels">
+              <span className="club-directory-category">{club.category}</span>
             </div>
-            <h3>{club.name}</h3>
-            <p className="desc">{club.description || ''}</p>
-            <div className="stats">
+            <h3 className="club-directory-club-name">{club.name}</h3>
+            <p className="club-directory-desc">{club.description || ""}</p>
+            <div className="club-directory-stats">
               <span>
                 <FaUsers /> {club.members} members
               </span>
@@ -230,24 +248,30 @@ const ClubDirectory = () => {
                 <FaCalendarAlt /> {club.events} events
               </span>
             </div>
-            <div className="tags">
+            <div className="club-directory-tags">
               {club.tags.map((tag, i) => (
-                <span key={i} className="tag">
+                <span key={i} className="club-directory-tag">
                   {tag}
                 </span>
               ))}
             </div>
-            <div className="actions">
+            <div className="club-directory-actions">
               <button
-                className="join-btn"
-                onClick={() => navigate('/campus-events')}
+                className="club-directory-join-btn"
+                onClick={() => navigate("/campus-events")}
               >
                 Explore
               </button>
 
-              <div className="socials">
+              <div className="club-directory-socials">
                 {club.social.map((s, i) => (
-                  <a key={i} href="#" target="_blank" rel="noreferrer" className="social-icon">
+                  <a
+                    key={i}
+                    href="#"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="club-directory-social-icon"
+                  >
                     {getSocialIcon(s)}
                   </a>
                 ))}

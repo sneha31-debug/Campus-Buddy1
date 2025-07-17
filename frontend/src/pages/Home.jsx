@@ -350,7 +350,7 @@ export default function CampusBuddyHomepage() {
           </div>
         </div>
       </section>
-      <section className="howItWorksSection">
+      <section className="howItWorksSection" id="howItWorksSection">
         <div className="howItWorksContainer">
           <div className="sectionHeader" data-aos="fade-up">
             <h2 className="sectionTitle">How Campus Buddy Works</h2>

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
 import "./ClubProfileCard.css";
 
 const ClubProfileCard = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { signOut, user, supabase } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
@@ -175,7 +176,11 @@ const ClubProfileCard = () => {
   }, [user, supabase]);
 
   const handleClose = () => {
-    navigate("/clubpage");
+    if (location.state && location.state.from) {
+      navigate(location.state.from, { replace: true });
+    } else {
+      navigate("/clubpage", { replace: true });
+    }
   };
 
   const handleEdit = () => {

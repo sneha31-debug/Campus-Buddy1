@@ -22,7 +22,7 @@
       "poster_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
       "status": "upcoming",
       "is_active": true,
-      "attendees_count": 50,
+      "attendees_count": 9,
       "created_at": "2025-07-10T09:00:00.000Z",
       "updated_at": "2025-07-17T12:00:00.000Z",
       "duration_hours": 3,
@@ -51,7 +51,7 @@
       "poster_url": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80",
       "status": "upcoming",
       "is_active": true,
-      "attendees_count": 24,
+      "attendees_count": 2,
       "created_at": "2025-07-15T11:30:00.000Z",
       "updated_at": "2025-07-17T10:15:00.000Z",
       "duration_hours": 2,
@@ -80,7 +80,7 @@
       "poster_url": "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&w=800&q=80",
       "status": "upcoming",
       "is_active": true,
-      "attendees_count": 20,
+      "attendees_count": 11,
       "created_at": "2025-07-12T14:20:00.000Z",
       "updated_at": "2025-07-16T09:30:00.000Z",
       "duration_hours": 4,
@@ -167,7 +167,7 @@
       "poster_url": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=800&q=80",
       "status": "upcoming",
       "is_active": true,
-      "attendees_count": 234,
+      "attendees_count": 11,
       "created_at": "2025-07-01T10:30:00.000Z",
       "updated_at": "2025-07-17T16:10:00.000Z",
       "duration_hours": 4,
@@ -283,7 +283,7 @@
       "poster_url": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80",
       "status": "upcoming",
       "is_active": true,
-      "attendees_count": 89,
+      "attendees_count": 90,
       "created_at": "2025-07-07T08:30:00.000Z",
       "updated_at": "2025-07-17T17:45:00.000Z",
       "duration_hours": 48,
@@ -291,27 +291,25 @@
       "registration_fee": 100
     },
     {
-      "id": "8c98",
-      "title": "Photo compi",
-      "description": "competition",
-      "event_date": "2025-07-30",
-      "event_time": "14:48",
-      "venue": "Lab 2",
-      "created_by": "e74c9ea4-86d9-4fbd-b349-33d791352daa",
-      "club_id": "club_photography",
-      "event_type": "competition",
-      "tags": [
-        "seminar"
-      ],
-      "max_volunteers": 100,
-      "target_batch_year": 2028,
-      "needs_volunteers": true,
-      "rsvp_limit": 15,
-      "poster_url": null,
+      "id": "81da",
+      "title": "jskdcdsac",
+      "description": "cndjkadc",
+      "event_date": "2025-07-19",
+      "event_time": "18:54",
+      "venue": "aKDSCj,asdc",
+      "created_by": "c8827a31-f87b-4638-8984-75f5f4473116",
+      "club_id": "club_debate",
+      "event_type": "optional",
+      "tags": [],
+      "max_volunteers": 0,
+      "target_batch_year": null,
+      "needs_volunteers": "",
+      "rsvp_limit": null,
+      "poster_url": "https://comicbook.com/wp-content/uploads/sites/4/2021/06/add2cca4877d511e3067c1aa31235800.jpeg",
       "status": "upcoming",
       "is_active": true,
       "attendees_count": 0,
-      "created_at": "2025-07-17T17:19:05.629Z"
+      "created_at": "2025-07-17T13:24:34.620Z"
     }
   ],
   "clubs": [
@@ -669,24 +667,24 @@
     },
     {
       "id": "1bb1",
-      "event_id": "evt_002",
+      "event_id": null,
       "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
-      "status": "not_going",
-      "updated_at": "2025-07-17T09:23:48.364Z"
+      "status": "going",
+      "updated_at": "2025-07-17T17:11:55.384Z"
     },
     {
       "id": "6b8a",
-      "event_id": "evt_001",
+      "event_id": null,
       "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
       "status": "not_going",
-      "updated_at": "2025-07-17T09:28:10.645Z"
+      "updated_at": "2025-07-17T17:11:06.988Z"
     },
     {
       "id": "06de",
       "event_id": "evt_003",
       "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
-      "status": "not_going",
-      "updated_at": "2025-07-17T09:21:03.120Z"
+      "status": "going",
+      "updated_at": "2025-07-17T16:51:05.767Z"
     },
     {
       "id": "0895",
@@ -694,6 +692,20 @@
       "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
       "status": "going",
       "updated_at": "2025-07-17T09:23:16.601Z"
+    },
+    {
+      "id": "28aa",
+      "event_id": null,
+      "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
+      "status": "going",
+      "updated_at": "2025-07-17T17:03:36.577Z"
+    },
+    {
+      "id": "1271",
+      "event_id": null,
+      "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
+      "status": "not_going",
+      "updated_at": "2025-07-17T16:52:55.271Z"
     }
   ],
   "event_volunteers": [
@@ -720,6 +732,27 @@
       "status": "approved",
       "created_at": "2025-07-16T15:45:00.000Z",
       "updated_at": "2025-07-17T10:00:00.000Z"
+    },
+    {
+      "id": "2320",
+      "event_id": "evt_001",
+      "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
+      "status": "pending",
+      "created_at": "2025-07-17T16:39:49.397Z"
+    },
+    {
+      "id": "ea47",
+      "event_id": "evt_001",
+      "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
+      "status": "pending",
+      "created_at": "2025-07-17T16:39:49.912Z"
+    },
+    {
+      "id": "f51c",
+      "event_id": "evt_001",
+      "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
+      "status": "pending",
+      "created_at": "2025-07-17T16:39:50.214Z"
     }
   ],
   "users": [

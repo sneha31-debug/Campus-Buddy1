@@ -27,7 +27,7 @@ const ClubProfileCard = () => {
       const clubRecord = {
         id: user.id,
         name: user.user_metadata?.club_name || "", // Map to 'name' column
-        contact_email: user.user_metadata?.club_email || user.email || "", // Map to 'contact_email' column
+        contact_email: user.user_metadata?.email || user.email || "", // Map to 'contact_email' column
         contact_phone: user.user_metadata?.contact_phone || "",
         description: user.user_metadata?.description || "",
         created_at: new Date().toISOString(),
@@ -88,22 +88,23 @@ const ClubProfileCard = () => {
       return;
     }
 
-    // Use auth metadata immediately
+    // Use auth metadata immediately - accessing metadata directly from user object
+    const metadata = user.user_metadata || {};
+
     const fallbackData = {
       id: user.id,
-      club_name: user.user_metadata?.club_name || "",
-      club_email: user.user_metadata?.club_email || "",
-      contact_person:
-        user.user_metadata?.contact_person ||
-        user.user_metadata?.full_name ||
-        "",
-      contact_phone: user.user_metadata?.contact_phone || "",
-      club_category: user.user_metadata?.club_category || "",
-      established_year: user.user_metadata?.established_year || null,
-      description: user.user_metadata?.description || "",
-      website: user.user_metadata?.website || "",
-      role: user.user_metadata?.role || "club",
+      club_name: metadata.club_name || "",
+      club_email: metadata.email || user.email || "",
+      contact_person: metadata.contact_person || metadata.full_name || "",
+      contact_phone: metadata.contact_phone || "",
+      club_category: metadata.club_category || "",
+      established_year: metadata.established_year || null,
+      description: metadata.description || "",
+      website: metadata.website || "",
+      role: metadata.role || metadata.user_type || "club",
       created_at: user.created_at,
+      email_verified: metadata.email_verified || false,
+      phone_verified: metadata.phone_verified || false,
     };
 
     setClubData(fallbackData);
@@ -147,20 +148,19 @@ const ClubProfileCard = () => {
             id: dbClubData.id,
             club_name: dbClubData.name || "", // Map 'name' to 'club_name'
             club_email: dbClubData.contact_email || "", // Map 'contact_email' to 'club_email'
-            contact_person:
-              user.user_metadata?.contact_person ||
-              user.user_metadata?.full_name ||
-              "",
+            contact_person: metadata.contact_person || metadata.full_name || "",
             contact_phone: dbClubData.contact_phone || "",
-            club_category: user.user_metadata?.club_category || "",
-            established_year: user.user_metadata?.established_year || null,
+            club_category: metadata.club_category || "",
+            established_year: metadata.established_year || null,
             description: dbClubData.description || "",
-            website: user.user_metadata?.website || "",
+            website: metadata.website || "",
             logo_url: dbClubData.logo_url,
             is_active: dbClubData.is_active,
             created_at: dbClubData.created_at,
             updated_at: dbClubData.updated_at,
-            role: user.user_metadata?.role || "club",
+            role: metadata.role || metadata.user_type || "club",
+            email_verified: metadata.email_verified || false,
+            phone_verified: metadata.phone_verified || false,
           };
 
           setClubData(mappedData);
@@ -443,6 +443,11 @@ const ClubProfileCard = () => {
                 <div className="status-badge">
                   <span className="status-dot"></span>
                   Active Club
+                  {clubData.email_verified && (
+                    <span style={{ marginLeft: "8px", fontSize: "12px" }}>
+                      ✓ Email Verified
+                    </span>
+                  )}
                 </div>
                 <div className="button-group">
                   <button className="edit-btn" onClick={handleEdit}>
@@ -540,6 +545,9 @@ const ClubProfileCard = () => {
                 <span className="detail-label">Contact Phone</span>
                 <span className="detail-value">
                   {clubData.contact_phone || "Not provided"}
+                  {clubData.phone_verified && (
+                    <span style={{ marginLeft: "4px", color: "green" }}>✓</span>
+                  )}
                 </span>
               </div>
             </div>

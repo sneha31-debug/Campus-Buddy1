@@ -289,6 +289,29 @@
       "duration_hours": 48,
       "contact_email": "hackathon@college.edu",
       "registration_fee": 100
+    },
+    {
+      "id": "8c98",
+      "title": "Photo compi",
+      "description": "competition",
+      "event_date": "2025-07-30",
+      "event_time": "14:48",
+      "venue": "Lab 2",
+      "created_by": "e74c9ea4-86d9-4fbd-b349-33d791352daa",
+      "club_id": "club_photography",
+      "event_type": "competition",
+      "tags": [
+        "seminar"
+      ],
+      "max_volunteers": 100,
+      "target_batch_year": 2028,
+      "needs_volunteers": true,
+      "rsvp_limit": 15,
+      "poster_url": null,
+      "status": "upcoming",
+      "is_active": true,
+      "attendees_count": 0,
+      "created_at": "2025-07-17T17:19:05.629Z"
     }
   ],
   "clubs": [

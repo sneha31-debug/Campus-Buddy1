@@ -7,7 +7,10 @@ import clubData from '../data/clubdata';
 const ClubDashboardPage = () => {
   const { clubId } = useParams();
   const navigate = useNavigate();
-  const club = clubData[clubId];
+  const club = clubData[clubId] || 
+              clubData[parseInt(clubId)] || 
+              Object.values(clubData).find(c => c.id === clubId) ||
+              Object.values(clubData).find(c => c.id === parseInt(clubId));
 
   const [events, setEvents] = useState([]);
 

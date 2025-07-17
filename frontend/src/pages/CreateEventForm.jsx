@@ -610,36 +610,30 @@ const CreateEventForm = () => {
               <label htmlFor="event_date" className="form-label">
                 Date <span className="required">*</span>
               </label>
-              <div className="input-with-icon">
-                <input
-                  id="event_date"
-                  type="date"
-                  name="event_date"
-                  value={formData.event_date}
-                  onChange={handleInputChange}
-                  className="form-input icon-input"
-                  min={new Date().toISOString().split("T")[0]}
-                  required
-                />
-                <Calendar className="input-icon" />
-              </div>
+              <input
+                id="event_date"
+                type="date"
+                name="event_date"
+                value={formData.event_date}
+                onChange={handleInputChange}
+                className="form-input"
+                min={new Date().toISOString().split("T")[0]}
+                required
+              />
             </div>
             <div className="form-group">
               <label htmlFor="event_time" className="form-label">
                 Time <span className="required">*</span>
               </label>
-              <div className="input-with-icon">
-                <input
-                  id="event_time"
-                  type="time"
-                  name="event_time"
-                  value={formData.event_time}
-                  onChange={handleInputChange}
-                  className="form-input icon-input"
-                  required
-                />
-                <Clock className="input-icon" />
-              </div>
+              <input
+                id="event_time"
+                type="time"
+                name="event_time"
+                value={formData.event_time}
+                onChange={handleInputChange}
+                className="form-input"
+                required
+              />
             </div>
           </div>
 

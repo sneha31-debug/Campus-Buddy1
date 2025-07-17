@@ -28,7 +28,7 @@ const CreateEventForm = () => {
     venue: "",
     tags: [],
     rsvp_limit: "",
-    poster: null,
+    poster_url: "", // Changed from 'poster: null' to 'poster_url: ""'
     event_type: "optional",
     target_batch_year: "",
     max_volunteers: "",
@@ -220,23 +220,9 @@ const CreateEventForm = () => {
     setFormData((prev) => ({ ...prev, tags: newTags }));
   };
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        addToast({ type: "error", message: "File size exceeds 10MB limit." });
-        return;
-      }
-      const allowedTypes = ["image/png", "image/jpeg", "image/gif"];
-      if (!allowedTypes.includes(file.type)) {
-        addToast({
-          type: "error",
-          message: "Invalid file type. Please use PNG, JPG, or GIF.",
-        });
-        return;
-      }
-      setFormData((prev) => ({ ...prev, poster: file }));
-    }
+  const handlePosterUrlChange = (e) => {
+    const { value } = e.target;
+    setFormData((prev) => ({ ...prev, poster_url: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -290,7 +276,7 @@ const CreateEventForm = () => {
         needs_volunteers:
           formData.max_volunteers && parseInt(formData.max_volunteers) > 0,
         rsvp_limit: formData.rsvp_limit ? parseInt(formData.rsvp_limit) : null,
-        poster_url: null,
+        poster_url: formData.poster_url.trim() || null, // Save URL directly
         status: "upcoming",
         is_active: true,
         attendees_count: 0,
@@ -312,20 +298,7 @@ const CreateEventForm = () => {
 
       const insertedEvent = await response.json();
 
-      // Handle poster upload if provided
-      if (formData.poster && insertedEvent) {
-        const mockPosterUrl = `http://example.com/posters/${
-          insertedEvent.id
-        }-${Date.now()}.jpg`;
-
-        await fetch(`http://localhost:3001/events/${insertedEvent.id}`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ poster_url: mockPosterUrl }),
-        });
-      }
+      // Remove the poster upload logic - URL is already saved above
 
       addToast({ type: "success", message: "Event created successfully!" });
 
@@ -338,7 +311,7 @@ const CreateEventForm = () => {
         venue: "",
         tags: [],
         rsvp_limit: "",
-        poster: null,
+        poster_url: "", // Changed from 'poster: null' to 'poster_url: ""'
         event_type: "optional",
         target_batch_year: "",
         max_volunteers: "",
@@ -366,7 +339,7 @@ const CreateEventForm = () => {
       venue: "",
       tags: [],
       rsvp_limit: "",
-      poster: null,
+      poster_url: "", // Changed from 'poster: null' to 'poster_url: ""'
       event_type: "optional",
       target_batch_year: "",
       max_volunteers: "",
@@ -809,30 +782,50 @@ const CreateEventForm = () => {
             </div>
           </div>
 
-          {/* Event Poster */}
           <div className="form-group">
-            <label className="form-label">Event Poster</label>
-            <div
-              className="file-upload-area"
-              onClick={() => document.getElementById("file-input")?.click()}
+            <label htmlFor="poster_url" className="form-label">
+              Event Poster URL
+            </label>
+            <input
+              id="poster_url"
+              type="url"
+              name="poster_url"
+              value={formData.poster_url}
+              onChange={handlePosterUrlChange}
+              className="form-input"
+              placeholder="https://example.com/poster.jpg"
+            />
+            <p
+              className="upload-subtext"
+              style={{
+                marginTop: "0.5rem",
+                fontSize: "0.875rem",
+                color: "#6b7280",
+              }}
             >
-              <input
-                type="file"
-                id="file-input"
-                className="file-input"
-                accept="image/png,image/jpeg,image/gif"
-                onChange={handleFileUpload}
-              />
-              <label htmlFor="file-input" className="file-upload-label">
-                <Upload className="upload-icon" />
-                <p className="upload-text">
-                  {formData.poster
-                    ? `Selected: ${formData.poster.name}`
-                    : "Click to upload a poster"}
-                </p>
-                <p className="upload-subtext">PNG, JPG, GIF up to 10MB</p>
-              </label>
-            </div>
+              Enter a direct URL to an image (PNG, JPG, GIF)
+            </p>
+            {/* Optional: Preview the image if URL is provided */}
+            {formData.poster_url && (
+              <div style={{ marginTop: "1rem" }}>
+                <img
+                  src={formData.poster_url}
+                  alt="Poster preview"
+                  style={{
+                    maxWidth: "200px",
+                    maxHeight: "200px",
+                    borderRadius: "8px",
+                    border: "1px solid #d1d5db",
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                  }}
+                  onLoad={(e) => {
+                    e.target.style.display = "block";
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           {/* Form Buttons */}

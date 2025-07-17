@@ -6,10 +6,11 @@ import "./CreateEventForm.css";
 
 const CreateEventForm = () => {
   const { addToast } = useToast();
-  const { user } = useAuth();
+  const { user, getUserRole, isClub } = useAuth();
 
   const [allClubs, setAllClubs] = useState([]);
   const [selectedClubId, setSelectedClubId] = useState("");
+  const [currentUserClub, setCurrentUserClub] = useState(null);
   const [availableTags, setAvailableTags] = useState([]);
   const [eventTypes, setEventTypes] = useState([]);
   const [showAddClubForm, setShowAddClubForm] = useState(false);
@@ -28,7 +29,7 @@ const CreateEventForm = () => {
     venue: "",
     tags: [],
     rsvp_limit: "",
-    poster_url: "", // Changed from 'poster: null' to 'poster_url: ""'
+    poster_url: "",
     event_type: "optional",
     target_batch_year: "",
     max_volunteers: "",
@@ -39,6 +40,100 @@ const CreateEventForm = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [addingClub, setAddingClub] = useState(false);
+
+  // Fetch or create club for the current user
+  const fetchOrCreateUserClub = useCallback(async () => {
+    if (!user || !isClub()) return;
+
+    try {
+      const metadata = user.user_metadata || {};
+      const clubName = metadata.club_name || "";
+      const clubEmail = metadata.email || user.email || "";
+
+      // First, try to find existing club by user ID or email
+      const response = await fetch(`http://localhost:3001/clubs`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const clubs = await response.json();
+
+      // Look for existing club by user ID first, then by email
+      let existingClub = clubs.find(
+        (club) =>
+          club.created_by === user.id || club.contact_email === clubEmail
+      );
+
+      if (existingClub) {
+        // Update existing club if needed
+        const updatedClubData = {
+          ...existingClub,
+          name: clubName || existingClub.name,
+          contact_email: clubEmail,
+          updated_at: new Date().toISOString(),
+          created_by: user.id, // Ensure user ID is set
+        };
+
+        const updateResponse = await fetch(
+          `http://localhost:3001/clubs/${existingClub.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedClubData),
+          }
+        );
+
+        if (updateResponse.ok) {
+          const updatedClub = await updateResponse.json();
+          setCurrentUserClub(updatedClub);
+          setSelectedClubId(updatedClub.id);
+          console.log("✅ Updated existing club:", updatedClub);
+        }
+      } else {
+        // Create new club if none exists
+        const newClubData = {
+          name: clubName || `Club ${user.id.slice(0, 8)}`,
+          description: metadata.description || "",
+          contact_email: clubEmail,
+          category: metadata.club_category || "General",
+          contact_phone: metadata.contact_phone || "",
+          website: metadata.website || "",
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          created_by: user.id,
+        };
+
+        const createResponse = await fetch("http://localhost:3001/clubs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newClubData),
+        });
+
+        if (createResponse.ok) {
+          const createdClub = await createResponse.json();
+          setCurrentUserClub(createdClub);
+          setSelectedClubId(createdClub.id);
+          console.log("✅ Created new club:", createdClub);
+
+          addToast({
+            type: "success",
+            message: "Club profile created successfully!",
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error handling user club:", error);
+      addToast({
+        type: "error",
+        message:
+          "Failed to setup club profile. You can still create one manually.",
+      });
+    }
+  }, [user, isClub, addToast]);
 
   // Fetch event types from JSON server
   const fetchEventTypes = useCallback(async () => {
@@ -113,6 +208,7 @@ const CreateEventForm = () => {
         fetchClubs(),
         fetchEventTypes(),
         fetchAvailableTags(),
+        fetchOrCreateUserClub(),
       ]);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -123,7 +219,13 @@ const CreateEventForm = () => {
     } finally {
       setLoading(false);
     }
-  }, [fetchClubs, fetchEventTypes, fetchAvailableTags, addToast]);
+  }, [
+    fetchClubs,
+    fetchEventTypes,
+    fetchAvailableTags,
+    fetchOrCreateUserClub,
+    addToast,
+  ]);
 
   // Add new club to JSON server
   const handleAddNewClub = async (e) => {
@@ -145,6 +247,7 @@ const CreateEventForm = () => {
         category: newClubData.category.trim() || "General",
         is_active: true,
         created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
         created_by: user?.id || "anonymous",
       };
 
@@ -276,7 +379,7 @@ const CreateEventForm = () => {
         needs_volunteers:
           formData.max_volunteers && parseInt(formData.max_volunteers) > 0,
         rsvp_limit: formData.rsvp_limit ? parseInt(formData.rsvp_limit) : null,
-        poster_url: formData.poster_url.trim() || null, // Save URL directly
+        poster_url: formData.poster_url.trim() || null,
         status: "upcoming",
         is_active: true,
         attendees_count: 0,
@@ -298,8 +401,6 @@ const CreateEventForm = () => {
 
       const insertedEvent = await response.json();
 
-      // Remove the poster upload logic - URL is already saved above
-
       addToast({ type: "success", message: "Event created successfully!" });
 
       // Reset form
@@ -311,13 +412,20 @@ const CreateEventForm = () => {
         venue: "",
         tags: [],
         rsvp_limit: "",
-        poster_url: "", // Changed from 'poster: null' to 'poster_url: ""'
+        poster_url: "",
         event_type: "optional",
         target_batch_year: "",
         max_volunteers: "",
       });
       setSelectedTags([]);
-      setSelectedClubId("");
+
+      // Keep the user's club selected for next event
+      if (currentUserClub) {
+        setSelectedClubId(currentUserClub.id);
+      } else {
+        setSelectedClubId("");
+      }
+
       document.getElementById("event-form").reset();
     } catch (error) {
       console.error("Event creation error:", error);
@@ -339,13 +447,20 @@ const CreateEventForm = () => {
       venue: "",
       tags: [],
       rsvp_limit: "",
-      poster_url: "", // Changed from 'poster: null' to 'poster_url: ""'
+      poster_url: "",
       event_type: "optional",
       target_batch_year: "",
       max_volunteers: "",
     });
     setSelectedTags([]);
-    setSelectedClubId("");
+
+    // Keep the user's club selected
+    if (currentUserClub) {
+      setSelectedClubId(currentUserClub.id);
+    } else {
+      setSelectedClubId("");
+    }
+
     setShowAddClubForm(false);
     setNewClubData({
       name: "",
@@ -405,6 +520,73 @@ const CreateEventForm = () => {
       <div className="form-wrapper">
         <h1 className="form-title">Create New Event</h1>
         <div className="form-content">
+          {/* Current User Club Display */}
+          {currentUserClub && (
+            <div
+              className="current-club-display"
+              style={{
+                marginBottom: "20px",
+                padding: "15px",
+                background: "linear-gradient(135deg, #e0f2fe, #ede9fe)", // soft blue to purple gradient
+                border: "1px solid #4f46e5", // solid indigo border
+                borderRadius: "8px",
+                color: "#1e3a8a", // deep blue text fallback
+              }}
+            >
+              <h3
+                style={{
+                  margin: "0 0 10px 0",
+                  color: "#3730a3", // rich indigo heading
+                  fontSize: "16px",
+                }}
+              >
+                Your Club Profile
+              </h3>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+              >
+                <div
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #3b82f6, #8b5cf6)", // blue-purple gradient badge
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "white",
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                    boxShadow: "0 4px 12px rgba(59, 130, 246, 0.4)",
+                  }}
+                >
+                  {currentUserClub.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()
+                    .slice(0, 2)}
+                </div>
+                <div>
+                  <p
+                    style={{
+                      margin: "0",
+                      fontWeight: "bold",
+                      color: "#3730a3", // indigo name
+                    }}
+                  >
+                    {currentUserClub.name}
+                  </p>
+                  <p
+                    style={{ margin: "0", fontSize: "12px", color: "#475569" }}
+                  >
+                    {currentUserClub.contact_email}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Club Selection with Add New Club Option */}
           <div className="form-group">
             <label htmlFor="club_id" className="form-label">
@@ -427,32 +609,35 @@ const CreateEventForm = () => {
                 </option>
                 {allClubs.map((club) => (
                   <option key={club.id} value={club.id}>
-                    {club.name}
+                    {club.name} {club.created_by === user?.id && "(Your Club)"}
                   </option>
                 ))}
               </select>
 
-              <button
-                type="button"
-                onClick={() => setShowAddClubForm(!showAddClubForm)}
-                className="add-club-btn"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  padding: "8px 12px",
-                  backgroundColor: "#f8f9fa",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  fontSize: "14px",
-                  color: "#374151",
-                  transition: "all 0.2s",
-                }}
-              >
-                <Plus size={16} />
-                Add New Club
-              </button>
+              {/* Only show Add New Club button if user is not a club or doesn't have a club */}
+              {(!isClub() || !currentUserClub) && ( // Ensure the user doesn't already have a club profile managed by the system
+                <button
+                  type="button"
+                  onClick={() => setShowAddClubForm(!showAddClubForm)}
+                  className="add-club-btn"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    color: "#374151",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  <Plus size={16} />
+                  Add New Club
+                </button>
+              )}
             </div>
 
             {/* Add New Club Form */}
@@ -569,6 +754,7 @@ const CreateEventForm = () => {
             )}
           </div>
 
+          {/* Rest of the form remains the same */}
           {/* Event Title */}
           <div className="form-group">
             <label htmlFor="title" className="form-label">

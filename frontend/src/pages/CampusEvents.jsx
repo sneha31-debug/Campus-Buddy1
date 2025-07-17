@@ -24,12 +24,9 @@ const CampusEvents = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showStatsModal, setShowStatsModal] = useState(false);
 
-  // Edit/Delete states
-  const [editingEvent, setEditingEvent] = useState(null);
-  const [showEditForm, setShowEditForm] = useState(false);
-
   // Get user role from auth context
   const userRole = getUserRole();
+
   // Function to calculate actual attendees count from database
   const calculateAttendeesCount = async (eventId) => {
     try {
@@ -267,6 +264,7 @@ const CampusEvents = () => {
       setRespondingToEvent(null);
     }
   };
+
   // Handle volunteer registration with JSON Server
   const handleVolunteerResponse = async (eventId) => {
     if (!user?.id) return;
@@ -296,60 +294,6 @@ const CampusEvents = () => {
   const handleShowStats = (event) => {
     setSelectedEvent(event);
     setShowStatsModal(true);
-  };
-
-  // Handle edit event
-  const handleEditEvent = (event) => {
-    setEditingEvent(event);
-    setShowEditForm(true);
-  };
-
-  // Handle delete event
-  const handleDeleteEvent = async (eventId) => {
-    if (!confirm("Are you sure you want to delete this event?")) return;
-
-    try {
-      await fetch(`http://localhost:3001/events/${eventId}`, {
-        method: "DELETE",
-      });
-
-      // Remove from local state
-      setEvents((prev) => prev.filter((event) => event.id !== eventId));
-    } catch (err) {
-      console.error("Error deleting event:", err);
-    }
-  };
-
-  // Handle update event
-  const handleUpdateEvent = async (updatedEvent) => {
-    try {
-      await fetch(`http://localhost:3001/events/${updatedEvent.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: updatedEvent.name,
-          description: updatedEvent.description,
-          event_date: updatedEvent.event_date,
-          event_time: updatedEvent.time,
-          venue: updatedEvent.venue,
-          event_type: updatedEvent.eventType,
-          needs_volunteers: updatedEvent.needsVolunteers,
-          max_volunteers: updatedEvent.maxVolunteers,
-          rsvp_limit: updatedEvent.rsvpLimit,
-          registration_fee: updatedEvent.registration_fee,
-          contact_email: updatedEvent.contact_email,
-          duration_hours: updatedEvent.duration_hours,
-          updated_at: new Date().toISOString(),
-        }),
-      });
-
-      // Refresh events
-      fetchEvents();
-      setShowEditForm(false);
-      setEditingEvent(null);
-    } catch (err) {
-      console.error("Error updating event:", err);
-    }
   };
 
   useEffect(() => {
@@ -439,151 +383,8 @@ const CampusEvents = () => {
     return events.filter((event) => event.status === "upcoming").length;
   };
 
-  // Quick Edit Form Component
-  const QuickEditForm = ({ event, onSave, onCancel }) => {
-    const [formData, setFormData] = useState({
-      name: event.name,
-      description: event.description,
-      venue: event.venue,
-      time: event.time,
-      needsVolunteers: event.needsVolunteers,
-      registration_fee: event.registration_fee || 0,
-      contact_email: event.contact_email || "",
-      duration_hours: event.duration_hours || 1,
-    });
-
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      onSave({ ...event, ...formData });
-    };
-
-    return (
-      <div className="modal-overlay">
-        <div className="modal-container">
-          <div className="modal-header">
-            <h2>Edit Event</h2>
-            <button onClick={onCancel} className="close-button">
-              ×
-            </button>
-          </div>
-          <form onSubmit={handleSubmit} className="edit-form">
-            <div className="form-group">
-              <label>Event Name</label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Description</label>
-              <textarea
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Venue</label>
-              <input
-                type="text"
-                value={formData.venue}
-                onChange={(e) =>
-                  setFormData({ ...formData, venue: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Time</label>
-              <input
-                type="time"
-                value={formData.time}
-                onChange={(e) =>
-                  setFormData({ ...formData, time: e.target.value })
-                }
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Registration Fee (₹)</label>
-              <input
-                type="number"
-                value={formData.registration_fee}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    registration_fee: parseInt(e.target.value),
-                  })
-                }
-                min="0"
-              />
-            </div>
-            <div className="form-group">
-              <label>Contact Email</label>
-              <input
-                type="email"
-                value={formData.contact_email}
-                onChange={(e) =>
-                  setFormData({ ...formData, contact_email: e.target.value })
-                }
-              />
-            </div>
-            <div className="form-group">
-              <label>Duration (hours)</label>
-              <input
-                type="number"
-                value={formData.duration_hours}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    duration_hours: parseInt(e.target.value),
-                  })
-                }
-                min="1"
-              />
-            </div>
-            <div className="form-group">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={formData.needsVolunteers}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      needsVolunteers: e.target.checked,
-                    })
-                  }
-                />
-                Needs Volunteers
-              </label>
-            </div>
-            <div className="form-actions">
-              <button
-                type="button"
-                onClick={onCancel}
-                className="btn-secondary"
-              >
-                Cancel
-              </button>
-              <button type="submit" className="btn-primary">
-                Save Changes
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  };
-
   const EventCard = ({ event }) => {
     const userResponse = userResponses[event.id];
-    const isEventOwner = isClub() && event.createdBy === user?.id;
     const isLoading = respondingToEvent === event.id;
 
     return (
@@ -687,24 +488,6 @@ const CampusEvents = () => {
                   ? "? Maybe"
                   : "Maybe"}
               </button>
-              {/* <button
-                className={`action-btn not-going ${
-                  userResponse === "not_going" ? "active" : ""
-                }`}
-                onClick={() => handleUserResponse(event.id, "not_going")}
-                disabled={userResponse === "not_going" || isLoading}
-                title={
-                  userResponse === "not_going"
-                    ? "You're not going to this event"
-                    : "Mark as not going"
-                }
-              >
-                {isLoading
-                  ? "⏳"
-                  : userResponse === "not_going"
-                  ? "✗ Not Going"
-                  : "Not Going"}
-              </button> */}
               {event.needsVolunteers && (
                 <button
                   className={`action-btn volunteer ${
@@ -740,22 +523,6 @@ const CampusEvents = () => {
               >
                 📊 Stats
               </button>
-              {isEventOwner && (
-                <>
-                  <button
-                    className="action-btn edit"
-                    onClick={() => handleEditEvent(event)}
-                  >
-                    ✏️ Edit
-                  </button>
-                  <button
-                    className="action-btn delete"
-                    onClick={() => handleDeleteEvent(event.id)}
-                  >
-                    🗑️ Delete
-                  </button>
-                </>
-              )}
             </div>
           )}
         </div>
@@ -965,18 +732,6 @@ const CampusEvents = () => {
           setSelectedEvent(null);
         }}
       />
-
-      {/* Edit Form Modal */}
-      {showEditForm && editingEvent && (
-        <QuickEditForm
-          event={editingEvent}
-          onSave={handleUpdateEvent}
-          onCancel={() => {
-            setShowEditForm(false);
-            setEditingEvent(null);
-          }}
-        />
-      )}
     </div>
   );
 };

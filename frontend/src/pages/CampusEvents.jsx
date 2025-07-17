@@ -1,121 +1,302 @@
-import React, { useState } from "react";
+// CampusEvents.jsx
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { TrendingUp, Calendar, Star, Heart } from "lucide-react";
+import { useAuth } from "../hook/useAuth";
+import EventStatisticsModal from "./EventStatistics";
 import "./CampusEvents.css";
 
 const CampusEvents = () => {
-  const [userRole, setUserRole] = useState("student"); // 'student' or 'club'
+  const navigate = useNavigate();
+  const { user, getUserRole, isStudent, isClub } = useAuth();
   const [activeTab, setActiveTab] = useState("all");
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedEventTypes, setSelectedEventTypes] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [userResponses, setUserResponses] = useState({});
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample event data with image placeholders
-  const events = [
-    {
-      id: 1,
-      name: "Inter-Department Basketball Tournament",
-      description:
-        "Annual basketball championship between all departments. Register your team now and compete for the golden trophy. Matches will be held throughout the week.",
-      date: "June 25, 2025",
-      time: "5:00 PM - 8:00 PM",
-      venue: "Sports Complex Court 1",
-      club: "Sports Club",
-      category: "Sports",
-      eventType: "Competitions",
-      attendees: 234,
-      status: "past",
-      needsVolunteers: false,
-      imagePlaceholder: "🏀",
-      hasImage: false,
-    },
-    {
-      id: 2,
-      name: "AI Club Hackathon",
-      description:
-        "Join us for a 24-hour coding marathon focused on AI and machine learning projects. Teams of 2-4 members will compete for exciting prizes while building innovative solutions.",
-      date: "June 18, 2025",
-      time: "10:00 AM - 6:00 PM",
-      venue: "Seminar Hall A2",
-      club: "Dev Club",
-      category: "Tech",
-      eventType: "Hackathons",
-      attendees: 127,
-      status: "past",
-      needsVolunteers: true,
-      imagePlaceholder: "💻",
-      hasImage: false,
-    },
-    {
-      id: 3,
-      name: "Drama Club Auditions",
-      description:
-        "Open auditions for our upcoming theatrical production. We welcome actors, directors, and behind-the-scenes crew members. No experience necessary!",
-      date: "June 20, 2025",
-      time: "4:00 PM - 7:00 PM",
-      venue: "Auditorium Main Hall",
-      club: "Drama Club",
-      category: "Arts (Drama)",
-      eventType: "Cultural Shows",
-      attendees: 89,
-      status: "past",
-      needsVolunteers: false,
-      imagePlaceholder: "🎭",
-      hasImage: false,
-    },
-    {
-      id: 4,
-      name: "Photography Workshop",
-      description:
-        "Learn the basics of digital photography and advanced techniques from professional photographers. Bring your cameras!",
-      date: "July 5, 2025",
-      time: "2:00 PM - 5:00 PM",
-      venue: "Creative Studio B",
-      club: "Photography Club",
-      category: "Photography",
-      eventType: "Workshops",
-      attendees: 45,
-      status: "upcoming",
-      needsVolunteers: true,
-      imagePlaceholder: "📸",
-      hasImage: false,
-    },
-    {
-      id: 5,
-      name: "Annual Cultural Festival",
-      description:
-        "Three-day celebration of music, dance, and cultural performances from students across all departments.",
-      date: "July 15, 2025",
-      time: "6:00 PM - 10:00 PM",
-      venue: "Main Campus Ground",
-      club: "Cultural Committee",
-      category: "Arts (Music)",
-      eventType: "Festivals",
-      attendees: 512,
-      status: "upcoming",
-      needsVolunteers: true,
-      imagePlaceholder: "🎪",
-      hasImage: false,
-    },
-    {
-      id: 6,
-      name: "Coding Competition",
-      description:
-        "Test your programming skills in this competitive coding challenge. Multiple programming languages supported.",
-      date: "July 20, 2025",
-      time: "10:00 AM - 4:00 PM",
-      venue: "Computer Lab 3",
-      club: "Dev Club",
-      category: "Dev Club",
-      eventType: "Competitions",
-      attendees: 78,
-      status: "upcoming",
-      needsVolunteers: false,
-      imagePlaceholder: "⚡",
-      hasImage: false,
-    },
-  ];
+  // Statistics modal state
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showStatsModal, setShowStatsModal] = useState(false);
+
+  // Edit/Delete states
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [showEditForm, setShowEditForm] = useState(false);
+
+  // Get user role from auth context
+  const userRole = getUserRole();
+
+  // Fetch events from JSON Server
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await fetch("http://localhost:3001/events");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const eventsData = await response.json();
+
+      // Fetch clubs for additional data
+      const clubsResponse = await fetch("http://localhost:3001/clubs");
+      const clubsData = await clubsResponse.json();
+
+      const clubsMap = {};
+      clubsData.forEach((club) => {
+        clubsMap[club.id] = club;
+      });
+
+      // Transform the data to match the expected format
+      const transformedEvents = eventsData.map((event) => {
+        const club = clubsMap[event.club_id] || {};
+
+        return {
+          id: event.id,
+          name: event.title,
+          description: event.description,
+          date: new Date(event.event_date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }),
+          time: event.event_time,
+          venue: event.venue,
+          club: club.name || "Unknown Club",
+          category: club.category || "General",
+          eventType: event.event_type,
+          attendees: event.attendees_count || 0,
+          status: event.status,
+          needsVolunteers: event.needs_volunteers,
+          imagePlaceholder: getCategoryEmoji(club.category),
+          hasImage: !!event.poster_url,
+          imageUrl: event.poster_url,
+          tags: event.tags || [],
+          maxVolunteers: event.max_volunteers,
+          rsvpLimit: event.rsvp_limit,
+          targetBatchYear: event.target_batch_year,
+          createdBy: event.created_by,
+          clubId: event.club_id,
+          posterUrl: event.poster_url,
+          duration_hours: event.duration_hours,
+          registration_fee: event.registration_fee,
+          contact_email: event.contact_email,
+        };
+      });
+
+      setEvents(transformedEvents);
+    } catch (err) {
+      console.error("Error fetching events:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Helper function to get emoji based on category
+  const getCategoryEmoji = (category) => {
+    const emojiMap = {
+      Sports: "🏀",
+      Tech: "💻",
+      "Arts (Drama)": "🎭",
+      "Arts (Music)": "🎵",
+      "Arts (Dance)": "💃",
+      Photography: "📸",
+      "E-Cell": "💼",
+      "Dev Club": "⚡",
+      "Content Creation": "📝",
+      "Debate Society": "🗣️",
+      "Cultural Committee": "🎪",
+    };
+    return emojiMap[category] || "📅";
+  };
+
+  // Fetch user's event attendance/responses from JSON Server
+  const fetchUserResponses = async () => {
+    if (!user?.id) return;
+
+    try {
+      // Fetch user's event responses
+      const response = await fetch(
+        `http://localhost:3001/event_attendance?user_id=${user.id}`
+      );
+      const data = await response.json();
+
+      const responses = {};
+      data.forEach((attendance) => {
+        responses[attendance.event_id] = attendance.status;
+      });
+
+      setUserResponses(responses);
+    } catch (err) {
+      console.error("Error fetching user responses:", err);
+    }
+  };
+
+  // Handle user response (RSVP) with JSON Server
+  const handleUserResponse = async (eventId, response) => {
+    if (!user?.id) return;
+
+    try {
+      const attendanceData = {
+        event_id: eventId,
+        user_id: user.id,
+        status: response,
+        updated_at: new Date().toISOString(),
+      };
+
+      // Check if user already has a response for this event
+      const existingResponse = await fetch(
+        `http://localhost:3001/event_attendance?event_id=${eventId}&user_id=${user.id}`
+      );
+      const existingData = await existingResponse.json();
+
+      if (existingData.length > 0) {
+        // Update existing record
+        await fetch(
+          `http://localhost:3001/event_attendance/${existingData[0].id}`,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(attendanceData),
+          }
+        );
+      } else {
+        // Create new record
+        await fetch("http://localhost:3001/event_attendance", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(attendanceData),
+        });
+      }
+
+      // Update local state
+      setUserResponses((prev) => ({
+        ...prev,
+        [eventId]: response,
+      }));
+
+      // Update attendees count if going
+      if (response === "going") {
+        const currentEvent = events.find((e) => e.id === eventId);
+        const updatedCount = currentEvent.attendees + 1;
+
+        await fetch(`http://localhost:3001/events/${eventId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ attendees_count: updatedCount }),
+        });
+
+        setEvents((prev) =>
+          prev.map((event) =>
+            event.id === eventId ? { ...event, attendees: updatedCount } : event
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Error handling user response:", err);
+    }
+  };
+
+  // Handle volunteer registration with JSON Server
+  const handleVolunteerResponse = async (eventId) => {
+    if (!user?.id) return;
+
+    try {
+      await fetch("http://localhost:3001/event_volunteers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event_id: eventId,
+          user_id: user.id,
+          status: "pending",
+          created_at: new Date().toISOString(),
+        }),
+      });
+
+      setUserResponses((prev) => ({
+        ...prev,
+        [eventId]: "volunteer",
+      }));
+    } catch (err) {
+      console.error("Error handling volunteer response:", err);
+    }
+  };
+
+  // Handle showing statistics modal
+  const handleShowStats = (event) => {
+    setSelectedEvent(event);
+    setShowStatsModal(true);
+  };
+
+  // Handle edit event
+  const handleEditEvent = (event) => {
+    setEditingEvent(event);
+    setShowEditForm(true);
+  };
+
+  // Handle delete event
+  const handleDeleteEvent = async (eventId) => {
+    if (!confirm("Are you sure you want to delete this event?")) return;
+
+    try {
+      await fetch(`http://localhost:3001/events/${eventId}`, {
+        method: "DELETE",
+      });
+
+      // Remove from local state
+      setEvents((prev) => prev.filter((event) => event.id !== eventId));
+    } catch (err) {
+      console.error("Error deleting event:", err);
+    }
+  };
+
+  // Handle update event
+  const handleUpdateEvent = async (updatedEvent) => {
+    try {
+      await fetch(`http://localhost:3001/events/${updatedEvent.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: updatedEvent.name,
+          description: updatedEvent.description,
+          event_date: updatedEvent.event_date,
+          event_time: updatedEvent.time,
+          venue: updatedEvent.venue,
+          event_type: updatedEvent.eventType,
+          needs_volunteers: updatedEvent.needsVolunteers,
+          max_volunteers: updatedEvent.maxVolunteers,
+          rsvp_limit: updatedEvent.rsvpLimit,
+          registration_fee: updatedEvent.registration_fee,
+          contact_email: updatedEvent.contact_email,
+          duration_hours: updatedEvent.duration_hours,
+          updated_at: new Date().toISOString(),
+        }),
+      });
+
+      // Refresh events
+      fetchEvents();
+      setShowEditForm(false);
+      setEditingEvent(null);
+    } catch (err) {
+      console.error("Error updating event:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchUserResponses();
+    }
+  }, [user?.id]);
 
   const categories = [
     "E-Cell",
@@ -128,13 +309,16 @@ const CampusEvents = () => {
     "Photography",
     "Debate Society",
   ];
+
   const eventTypes = [
-    "Hackathons",
-    "Workshops",
-    "Competitions",
-    "Seminars",
-    "Festivals",
-    "Cultural Shows",
+    "hackathon",
+    "workshop",
+    "competition",
+    "seminar",
+    "festival",
+    "cultural_show",
+    "mandatory",
+    "optional",
   ];
 
   const handleCategoryChange = (category) => {
@@ -151,13 +335,6 @@ const CampusEvents = () => {
         ? prev.filter((e) => e !== eventType)
         : [...prev, eventType]
     );
-  };
-
-  const handleUserResponse = (eventId, response) => {
-    setUserResponses((prev) => ({
-      ...prev,
-      [eventId]: response,
-    }));
   };
 
   const clearFilters = () => {
@@ -186,8 +363,163 @@ const CampusEvents = () => {
     return matchesTab && matchesCategory && matchesEventType && matchesSearch;
   });
 
+  // Get user's RSVPs count
+  const getUserRSVPCount = () => {
+    return Object.values(userResponses).filter(
+      (response) => response === "going"
+    ).length;
+  };
+
+  // Get upcoming events count
+  const getUpcomingEventsCount = () => {
+    return events.filter((event) => event.status === "upcoming").length;
+  };
+
+  // Quick Edit Form Component
+  const QuickEditForm = ({ event, onSave, onCancel }) => {
+    const [formData, setFormData] = useState({
+      name: event.name,
+      description: event.description,
+      venue: event.venue,
+      time: event.time,
+      needsVolunteers: event.needsVolunteers,
+      registration_fee: event.registration_fee || 0,
+      contact_email: event.contact_email || "",
+      duration_hours: event.duration_hours || 1,
+    });
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      onSave({ ...event, ...formData });
+    };
+
+    return (
+      <div className="modal-overlay">
+        <div className="modal-container">
+          <div className="modal-header">
+            <h2>Edit Event</h2>
+            <button onClick={onCancel} className="close-button">
+              ×
+            </button>
+          </div>
+          <form onSubmit={handleSubmit} className="edit-form">
+            <div className="form-group">
+              <label>Event Name</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Description</label>
+              <textarea
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Venue</label>
+              <input
+                type="text"
+                value={formData.venue}
+                onChange={(e) =>
+                  setFormData({ ...formData, venue: e.target.value })
+                }
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Time</label>
+              <input
+                type="time"
+                value={formData.time}
+                onChange={(e) =>
+                  setFormData({ ...formData, time: e.target.value })
+                }
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Registration Fee (₹)</label>
+              <input
+                type="number"
+                value={formData.registration_fee}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    registration_fee: parseInt(e.target.value),
+                  })
+                }
+                min="0"
+              />
+            </div>
+            <div className="form-group">
+              <label>Contact Email</label>
+              <input
+                type="email"
+                value={formData.contact_email}
+                onChange={(e) =>
+                  setFormData({ ...formData, contact_email: e.target.value })
+                }
+              />
+            </div>
+            <div className="form-group">
+              <label>Duration (hours)</label>
+              <input
+                type="number"
+                value={formData.duration_hours}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    duration_hours: parseInt(e.target.value),
+                  })
+                }
+                min="1"
+              />
+            </div>
+            <div className="form-group">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={formData.needsVolunteers}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      needsVolunteers: e.target.checked,
+                    })
+                  }
+                />
+                Needs Volunteers
+              </label>
+            </div>
+            <div className="form-actions">
+              <button
+                type="button"
+                onClick={onCancel}
+                className="btn-secondary"
+              >
+                Cancel
+              </button>
+              <button type="submit" className="btn-primary">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  };
+
   const EventCard = ({ event }) => {
     const userResponse = userResponses[event.id];
+    const isEventOwner = isClub() && event.createdBy === user?.id;
 
     return (
       <div className="event-card">
@@ -246,8 +578,14 @@ const CampusEvents = () => {
             <span className="tag">{event.club}</span>
           </div>
 
-          {userRole === "student" ? (
+          {isStudent() ? (
             <div className="student-actions">
+              <button
+                className="action-btn view-details"
+                onClick={() => navigate(`/events/${event.id}`)}
+              >
+                👁️ View Details
+              </button>
               <button
                 className={`action-btn going ${
                   userResponse === "going" ? "active" : ""
@@ -258,9 +596,9 @@ const CampusEvents = () => {
               </button>
               <button
                 className={`action-btn not-going ${
-                  userResponse === "not-going" ? "active" : ""
+                  userResponse === "not_going" ? "active" : ""
                 }`}
-                onClick={() => handleUserResponse(event.id, "not-going")}
+                onClick={() => handleUserResponse(event.id, "not_going")}
               >
                 ✗ Not Going
               </button>
@@ -277,7 +615,7 @@ const CampusEvents = () => {
                   className={`action-btn volunteer ${
                     userResponse === "volunteer" ? "active" : ""
                   }`}
-                  onClick={() => handleUserResponse(event.id, "volunteer")}
+                  onClick={() => handleVolunteerResponse(event.id)}
                 >
                   🙋‍♂️ Volunteer
                 </button>
@@ -285,15 +623,74 @@ const CampusEvents = () => {
             </div>
           ) : (
             <div className="club-actions">
-              <button className="action-btn stats">📊 Stats</button>
-              <button className="action-btn edit">✏️ Edit</button>
-              <button className="action-btn delete">🗑️ Delete</button>
+              <button
+                className="action-btn view-details"
+                onClick={() => navigate(`/events/${event.id}`)}
+              >
+                👁️ View Details
+              </button>
+              <button
+                className="action-btn stats"
+                onClick={() => handleShowStats(event)}
+              >
+                📊 Stats
+              </button>
+              {isEventOwner && (
+                <>
+                  <button
+                    className="action-btn edit"
+                    onClick={() => handleEditEvent(event)}
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button
+                    className="action-btn delete"
+                    onClick={() => handleDeleteEvent(event.id)}
+                  >
+                    🗑️ Delete
+                  </button>
+                </>
+              )}
             </div>
           )}
         </div>
       </div>
     );
   };
+
+  // Show loading if user data is not yet available
+  if (!user) {
+    return (
+      <div className="campus-events">
+        <div className="loading-container">
+          <p>Loading user data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading while fetching events
+  if (loading) {
+    return (
+      <div className="campus-events">
+        <div className="loading-container">
+          <p>Loading events...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error if there's an issue
+  if (error) {
+    return (
+      <div className="campus-events">
+        <div className="error-container">
+          <p>Error loading events: {error}</p>
+          <button onClick={fetchEvents}>Retry</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="campus-events">
@@ -309,15 +706,13 @@ const CampusEvents = () => {
           </div>
         </div>
         <div className="header-right">
-          <div className="user-role-selector">
-            <label>View as: </label>
-            <select
-              value={userRole}
-              onChange={(e) => setUserRole(e.target.value)}
-            >
-              <option value="student">Student</option>
-              <option value="club">Club</option>
-            </select>
+          <div className="user-role-display">
+            <span className="role-label">
+              {isStudent() ? "Student" : isClub() ? "Club" : "User"} View
+            </span>
+            <span className="role-badge">
+              {isStudent() ? "🎓" : isClub() ? "🏛️" : "👤"}
+            </span>
           </div>
           <button
             className="filter-toggle"
@@ -330,28 +725,33 @@ const CampusEvents = () => {
 
       {/* Floating Quick Stats */}
       <div className="floating-quick-stats">
-        <div className="stats-header">
-          <TrendingUp className="stats-icon" />
-          <span className="stats-title">Quick Stats</span>
+        <div className="floating-stats-header">
+          <TrendingUp className="floating-stats-icon" />
+          <span className="floating-stats-title">Quick Stats</span>
         </div>
-        <div className="stats-list">
-          <div className="stat-item">
-            <Calendar className="stat-icon" />
-            <span className="stat-label">Total Events</span>
-            <span className="stat-number">6</span>
+        <div className="floating-stats-list">
+          <div className="floating-stat-item">
+            <Calendar className="floating-stat-icon" />
+            <span className="floating-stat-label">Total Events</span>
+            <span className="floating-stat-number">{events.length}</span>
           </div>
-          <div className="stat-item">
-            <Star className="stat-icon" />
-            <span className="stat-label">My RSVPs</span>
-            <span className="stat-number">2</span>
-          </div>
-          <div className="stat-item">
-            <Heart className="stat-icon" />
-            <span className="stat-label">Upcoming</span>
-            <span className="stat-number">1</span>
+          {isStudent() && (
+            <div className="floating-stat-item">
+              <Star className="floating-stat-icon" />
+              <span className="floating-stat-label">My RSVPs</span>
+              <span className="floating-stat-number">{getUserRSVPCount()}</span>
+            </div>
+          )}
+          <div className="floating-stat-item">
+            <Heart className="floating-stat-icon" />
+            <span className="floating-stat-label">Upcoming</span>
+            <span className="floating-stat-number">
+              {getUpcomingEventsCount()}
+            </span>
           </div>
         </div>
       </div>
+
       <div className="main-content">
         {/* Filters Sidebar */}
         {showFilters && (
@@ -450,6 +850,28 @@ const CampusEvents = () => {
           )}
         </div>
       </div>
+
+      {/* Statistics Modal */}
+      <EventStatisticsModal
+        event={selectedEvent}
+        isOpen={showStatsModal}
+        onClose={() => {
+          setShowStatsModal(false);
+          setSelectedEvent(null);
+        }}
+      />
+
+      {/* Edit Form Modal */}
+      {showEditForm && editingEvent && (
+        <QuickEditForm
+          event={editingEvent}
+          onSave={handleUpdateEvent}
+          onCancel={() => {
+            setShowEditForm(false);
+            setEditingEvent(null);
+          }}
+        />
+      )}
     </div>
   );
 };

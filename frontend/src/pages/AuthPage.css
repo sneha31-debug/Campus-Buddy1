@@ -512,12 +512,13 @@ body {
 /* Better form validation styles */
 .auth-form input:invalid,
 .form-group input:invalid {
-  border-color: #dc2626;
+  border-color: #d1d5db !important;
 }
 
+/* Remove green border for valid fields */
 .auth-form input:valid,
 .form-group input:valid {
-  border-color: #10b981;
+  border-color: #d1d5db !important;
 }
 
 /* Improved select styling */

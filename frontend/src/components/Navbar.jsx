@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import {
   Home,
   Calendar,
@@ -8,20 +8,19 @@ import {
   BarChart3,
   User,
   LogIn,
-  Sun,
-  Moon,
   Users,
   Menu,
   X,
+  Building2,
 } from "lucide-react";
 import { useAuth } from "../hook/useAuth";
 import "./Navbar.css";
 
 const Navbar = ({ userType = "student" }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, getUserRole, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [currentUserRole, setCurrentUserRole] = useState(null);
 
   useEffect(() => {
@@ -36,42 +35,51 @@ const Navbar = ({ userType = "student" }) => {
   const commonLinks = [
     { to: "/home", label: "Home", icon: Home },
     { to: "/campusevents", label: "Events", icon: Calendar },
+    { to: "/clubpage", label: "Clubs", icon: Building2 },
   ];
 
   const studentLinks = [
     ...commonLinks,
-    { to: "/myevents", label: "My Events", icon: BookOpen },
   ];
 
   const clubLinks = [
     ...commonLinks,
     { to: "/createevent", label: "Create", icon: Plus },
-    { to: "/clubdashboard", label: "Dashboard", icon: BarChart3 },
   ];
 
   const links = effectiveUserType === "student" ? studentLinks : clubLinks;
 
-  const toggleTheme = () => setIsDarkMode(!isDarkMode);
+  const isActiveLink = (linkTo) => {
+    return location.pathname === linkTo;
+  };
+
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
   const handleProfileClick = () => {
     if (isAuthenticated && isAuthenticated()) {
-      navigate(effectiveUserType === "club" ? "/clubprofilecard" : "/profilecard");
+      navigate(
+        effectiveUserType === "club" ? "/clubprofilecard" : "/profilecard",
+        { state: { from: location.pathname } }
+      );
     } else {
       navigate("/login");
     }
   };
 
-  const handleLoginClick = () => {
-    navigate("/login");
+  const handleMyEventsClick = () => {
+    navigate("/myevents");
+  };
+
+  const handleDashboardClick = () => {
+    navigate("/clubdashboard");
   };
 
   return (
-    <nav className={`navbar ${isDarkMode ? "dark" : ""}`}>
+    <nav className="navbar">
       <div className="navbar-container">
         <div className="logo" onClick={() => navigate("/")}>
           <div className="logo-icon">
-            <Users size={24} />
+            <Calendar size={24} />
           </div>
           <span className="logo-text">Campus-Buddy</span>
         </div>
@@ -86,10 +94,13 @@ const Navbar = ({ userType = "student" }) => {
               const IconComponent = link.icon;
               return (
                 <li key={link.to}>
-                  <a href={link.to} className="nav-link">
+                  <Link 
+                    to={link.to} 
+                    className={`nav-link ${isActiveLink(link.to) ? 'active' : ''}`}
+                  >
                     <IconComponent size={18} />
                     <span>{link.label}</span>
-                  </a>
+                  </Link>
                 </li>
               );
             })}
@@ -97,36 +108,51 @@ const Navbar = ({ userType = "student" }) => {
         </div>
 
         <div className="nav-right">
-          <button className="theme-toggle" onClick={toggleTheme}>
-            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
+          {effectiveUserType === "student" ? (
+            <div className="nav-links">
+              <button 
+                className={`login-btn ${isActiveLink('/myevents') ? 'active' : ''}`} 
+                onClick={handleMyEventsClick}
+              >
+                <BookOpen size={18} />
+                <span>My Events</span>
+              </button>
+            </div>
+          ) : (
+            <div className="nav-links">
+              <button 
+                className={`login-btn ${isActiveLink('/clubdashboard') ? 'active' : ''}`} 
+                onClick={handleDashboardClick}
+              >
+                <BarChart3 size={18} />
+                <span>Dashboard</span>
+              </button>
+            </div>
+          )}
 
-          <button className="login-btn" onClick={handleLoginClick}>
-            <LogIn size={18} />
-            <span>Login</span>
-          </button>
-
-          <button className="profile-btn" onClick={handleProfileClick}>
-            <User size={18} />
-          </button>
+          <div className="nav-links">
+            <button className="profile-btn" onClick={handleProfileClick}>
+              <User size={18} />
+            </button>
+          </div>
         </div>
       </div>
 
       {mobileMenuOpen && (
-        <div className={`mobile-menu ${isDarkMode ? "dark" : ""}`}>
+        <div className="mobile-menu">
           <ul>
             {links.map((link) => {
               const Icon = link.icon;
               return (
                 <li key={link.to}>
-                  <a
-                    href={link.to}
-                    className="nav-link"
+                  <Link
+                    to={link.to}
+                    className={`nav-link ${isActiveLink(link.to) ? 'active' : ''}`}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <Icon size={18} />
                     <span>{link.label}</span>
-                  </a>
+                  </Link>
                 </li>
               );
             })}

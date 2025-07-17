@@ -21,11 +21,17 @@ import ClubDashboardPage from './pages/ClubDashboardPage';
 import EventStatistics from './pages/EventStatistics.jsx';
 import CampusEvents from "./pages/CampusEvents.jsx";
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 
 const App = () => {
   return (
     <AuthProvider>
-      <Router>
+      <Router
+        // Disable automatic scroll restoration to prevent unwanted scroll behavior
+        // This will prevent pages from opening scrolled down when navigating from a scrolled page
+        scrollRestoration="manual"
+      >
+        <ScrollToTop />
         <Navbar />
         <div>
           <Routes>
@@ -33,6 +39,8 @@ const App = () => {
             <Route path="/login" element={<AuthPage />} />
             <Route path="/auth" element={<Navigate to="/login" replace />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/campus-events" element={<CampusEvents />} />
+
             
             {/* Protected routes - accessible by any authenticated user */}
             <Route 

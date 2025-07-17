@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
 import "./ProfileCard.css";
 
 const ProfileCard = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { signOut, user, supabase } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
@@ -16,11 +17,9 @@ const ProfileCard = () => {
     phone: "",
   });
 
-  // Load user data immediately from auth metadata, try database in background
   useEffect(() => {
     if (!user) return;
 
-    // Use auth metadata immediately - no loading state
     const fallbackData = {
       id: user.id,
       full_name: user.user_metadata?.full_name || "",
@@ -39,8 +38,6 @@ const ProfileCard = () => {
       phone: fallbackData.phone || "",
     });
     setLoading(false);
-
-    // Try to fetch from database in background (don't wait for it)
     const fetchFromDatabase = async () => {
       try {
         const { data: dbUserData, error: dbError } = await supabase
@@ -50,7 +47,6 @@ const ProfileCard = () => {
           .single();
 
         if (dbUserData && !dbError) {
-          // Update with database data if successful
           setUserData(dbUserData);
           setEditData({
             full_name: dbUserData.full_name || "",
@@ -59,7 +55,6 @@ const ProfileCard = () => {
           });
         }
       } catch (error) {
-        // Silently fail - we already have auth data
         console.error("Background database fetch failed:", error);
       }
     };
@@ -68,7 +63,11 @@ const ProfileCard = () => {
   }, [user, supabase]);
 
   const handleClose = () => {
-    navigate("/home");
+    if (location.state && location.state.from) {
+      navigate(location.state.from, { replace: true });
+    } else {
+      navigate("/home", { replace: true });
+    }
   };
 
   const handleEdit = () => {
@@ -97,7 +96,6 @@ const ProfileCard = () => {
         return;
       }
 
-      // Update local state
       setUserData((prev) => ({
         ...prev,
         full_name: editData.full_name,
@@ -327,18 +325,18 @@ const ProfileCard = () => {
         )}
 
         <div className="quick-stats">
-          <div className="stat-item">
-            <div className="stat-icon">📚</div>
-            <div className="stat-content">
-              <span className="stat-number">-</span>
-              <span className="stat-label">Events Attended</span>
+          <div className="profile-stat-item">
+            <div className="profile-stat-icon">📚</div>
+            <div className="profile-stat-content">
+              <span className="profile-stat-number">-</span>
+              <span className="profile-stat-label">Events Attended</span>
             </div>
           </div>
-          <div className="stat-item">
-            <div className="stat-icon">🎯</div>
-            <div className="stat-content">
-              <span className="stat-number">-</span>
-              <span className="stat-label">Attendance Rate</span>
+          <div className="profile-stat-item">
+            <div className="profile-stat-icon">🎯</div>
+            <div className="profile-stat-content">
+              <span className="profile-stat-number">-</span>
+              <span className="profile-stat-label">Attendance Rate</span>
             </div>
           </div>
         </div>

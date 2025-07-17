@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
 import "./ClubProfileCard.css";
 
 const ClubProfileCard = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { signOut, user, supabase } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
@@ -19,7 +20,6 @@ const ClubProfileCard = () => {
     website: "",
   });
 
-  // Function to insert initial club data
   const insertInitialClubData = async () => {
     if (!user?.id || !supabase) return;
 
@@ -46,7 +46,6 @@ const ClubProfileCard = () => {
         return;
       }
 
-      // Map the inserted data back to component format
       const mappedData = {
         id: data.id,
         club_name: data.name,
@@ -82,7 +81,6 @@ const ClubProfileCard = () => {
     }
   };
 
-  // Load club data from auth metadata and database
   useEffect(() => {
     if (!user) {
       return;
@@ -90,7 +88,7 @@ const ClubProfileCard = () => {
 
     // Use auth metadata immediately - accessing metadata directly from user object
     const metadata = user.user_metadata || {};
-
+    
     const fallbackData = {
       id: user.id,
       club_name: metadata.club_name || "",
@@ -118,10 +116,8 @@ const ClubProfileCard = () => {
     });
     setLoading(false);
 
-    // Try to fetch from database in background
     const fetchFromDatabase = async () => {
       try {
-        // Check if supabase is available
         if (!supabase) {
           return;
         }
@@ -133,7 +129,6 @@ const ClubProfileCard = () => {
           .single();
 
         if (dbError) {
-          // If it's a "not found" error, create the record
           if (dbError.code === "PGRST116") {
             await insertInitialClubData();
           } else {
@@ -143,7 +138,6 @@ const ClubProfileCard = () => {
         }
 
         if (dbClubData) {
-          // Map database columns to expected format
           const mappedData = {
             id: dbClubData.id,
             club_name: dbClubData.name || "", // Map 'name' to 'club_name'
@@ -183,7 +177,11 @@ const ClubProfileCard = () => {
   }, [user, supabase]);
 
   const handleClose = () => {
-    navigate("/clubpage");
+    if (location.state && location.state.from) {
+      navigate(location.state.from, { replace: true });
+    } else {
+      navigate("/clubpage", { replace: true });
+    }
   };
 
   const handleEdit = () => {
@@ -200,8 +198,8 @@ const ClubProfileCard = () => {
       const { error } = await supabase
         .from("clubs")
         .update({
-          name: editData.club_name, // Map 'club_name' to 'name'
-          contact_email: editData.club_email, // Map 'club_email' to 'contact_email'
+          name: editData.club_name, 
+          contact_email: editData.club_email, 
           contact_phone: editData.contact_phone,
           description: editData.description,
           updated_at: new Date().toISOString(),
@@ -492,18 +490,18 @@ const ClubProfileCard = () => {
         )}
 
         <div className="quick-stats">
-          <div className="stat-item">
-            <div className="stat-icon">🎉</div>
-            <div className="stat-content">
-              <span className="stat-number">-</span>
-              <span className="stat-label">Events Hosted</span>
+          <div className="club-stat-item">
+            <div className="club-stat-icon">🎉</div>
+            <div className="club-stat-content">
+              <span className="club-stat-number">-</span>
+              <span className="club-stat-label">Events Hosted</span>
             </div>
           </div>
-          <div className="stat-item">
-            <div className="stat-icon">👥</div>
-            <div className="stat-content">
-              <span className="stat-number">-</span>
-              <span className="stat-label">Active Members</span>
+          <div className="club-stat-item">
+            <div className="club-stat-icon">👥</div>
+            <div className="club-stat-content">
+              <span className="club-stat-number">-</span>
+              <span className="club-stat-label">Active Members</span>
             </div>
           </div>
         </div>

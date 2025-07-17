@@ -594,14 +594,14 @@ const CampusEvents = () => {
               >
                 ✓ Going
               </button>
-              <button
+              {/* <button
                 className={`action-btn not-going ${
                   userResponse === "not_going" ? "active" : ""
                 }`}
                 onClick={() => handleUserResponse(event.id, "not_going")}
               >
                 ✗ Not Going
-              </button>
+              </button> */}
               <button
                 className={`action-btn maybe ${
                   userResponse === "maybe" ? "active" : ""

@@ -52,31 +52,31 @@ export default function CampusBuddyHomepage() {
   const topClubs = [
     {
       name: "Dev Club",
-      members: "120+",
+      members: "60+",
       category: "Technology",
       image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      description: "Master web development and build amazing applications",
-      tags: ["Web Dev", "JavaScript", "React"]
+      description: "Build amazing applications and contribute to Open-Source",
+      tags: ["Development", "Open-Source"]
     },
     {
       name: "Robotics Club",
-      members: "85+",
+      members: "30+",
       category: "Technology",
       image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
       description: "Design, build, and program robots for competitions and innovation",
       tags: ["Robotics", "Arduino", "AI", "Engineering"]
     },
     {
-      name: "Entrepreneurship Club",
-      members: "80+",
+      name: "SharksSphere - Ecell Club",
+      members: "40+",
       category: "Business",
       image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
       description: "Turn your ideas into successful ventures",
       tags: ["Startup", "Business", "Innovation"]
     },
     {
-      name: "Sports Club",
-      members: "20+",
+      name: "Trailblazers - Sports Club",
+      members: "80+",
       category: "Sports",
       image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
       description: "Stay active and competitive",
@@ -84,19 +84,19 @@ export default function CampusBuddyHomepage() {
     },
     {
       name: "Creators Corner",
-      members: "65+",
-      category: "Arts",
+      members: "20+",
+      category: "Creativity",
       image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      description: "Unleash your creativity through digital art, design, and multimedia",
-      tags: ["Digital Art", "Design", "Video", "Animation"]
+      description: "Unleash your creativity through Photography, design, videography and much more",
+      tags: ["Social Media", "Design", "Video", "Animation"]
     },
     {
-      name: "Mobile App Dev Society",
-      members: "95+",
-      category: "Technology",
-      image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      description: "Create innovative mobile applications for iOS and Android",
-      tags: ["Mobile Dev","React Native"]
+      name: "Ensemble - Performing Arts Club",
+      members: "50+",
+      category: "Arts",
+      image: "https://images.unsplash.com/photo-1583787035686-91b82ad5d811?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVyZm9ybWluZyUyMGFydHN8ZW58MHx8MHx8fDA%3D",
+      description: "Showcase your talent in dance, music, and drama.",
+      tags: ["Dance","Music","Drama","Arts"]
     },
   ];
 

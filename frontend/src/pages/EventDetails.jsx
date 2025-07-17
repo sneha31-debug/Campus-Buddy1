@@ -12,6 +12,28 @@ const EventDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userResponse, setUserResponse] = useState("");
+  const [respondingToEvent, setRespondingToEvent] = useState(false);
+
+  // Function to calculate actual attendees count from database
+  const calculateAttendeesCount = async (eventId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/event_attendance?event_id=${eventId}`
+      );
+      const attendanceData = await response.json();
+
+      // Count users who are "going" or "maybe"
+      const interestedCount = attendanceData.filter(
+        (attendance) =>
+          attendance.status === "going" || attendance.status === "maybe"
+      ).length;
+
+      return interestedCount;
+    } catch (err) {
+      console.error("Error calculating attendees count:", err);
+      return 0;
+    }
+  };
 
   // Fetch event details from JSON Server
   const fetchEventDetails = async () => {
@@ -32,6 +54,9 @@ const EventDetails = () => {
       );
       const clubData = await clubResponse.json();
 
+      // Calculate actual attendees count from database
+      const actualAttendeesCount = await calculateAttendeesCount(eventData.id);
+
       // Transform the data to match expected format
       const transformedEvent = {
         id: eventData.id,
@@ -49,7 +74,7 @@ const EventDetails = () => {
         club: clubData.name || "Unknown Club",
         category: clubData.category || "General",
         eventType: eventData.event_type,
-        attendees: eventData.attendees_count || 0,
+        attendees: actualAttendeesCount, // Use calculated count instead of stored count
         status: eventData.status,
         needsVolunteers: eventData.needs_volunteers,
         maxVolunteers: eventData.max_volunteers,
@@ -95,15 +120,31 @@ const EventDetails = () => {
     }
   };
 
-  // Handle user response (RSVP)
-  const updateStatus = async (status) => {
-    if (!user?.id) return;
+  // Refresh attendees count for the current event
+  const refreshAttendeesCount = async () => {
+    if (!event) return;
 
     try {
+      const updatedCount = await calculateAttendeesCount(event.id);
+      setEvent((prev) => ({ ...prev, attendees: updatedCount }));
+    } catch (err) {
+      console.error("Error refreshing attendees count:", err);
+    }
+  };
+
+  // Handle user response (RSVP)
+  const updateStatus = async (status) => {
+    if (!user?.id || respondingToEvent) return;
+
+    // Set loading state
+    setRespondingToEvent(true);
+
+    try {
+      const statusFormatted = status.toLowerCase().replace(" ", "_");
       const attendanceData = {
         event_id: parseInt(id),
         user_id: user.id,
-        status: status.toLowerCase().replace(" ", "_"),
+        status: statusFormatted,
         updated_at: new Date().toISOString(),
       };
 
@@ -112,6 +153,14 @@ const EventDetails = () => {
         `http://localhost:3001/event_attendance?event_id=${id}&user_id=${user.id}`
       );
       const existingData = await existingResponse.json();
+
+      const previousResponse =
+        existingData.length > 0 ? existingData[0].status : null;
+
+      // Don't make API call if user is selecting the same response
+      if (previousResponse === statusFormatted) {
+        return;
+      }
 
       if (existingData.length > 0) {
         // Update existing record
@@ -133,30 +182,37 @@ const EventDetails = () => {
       }
 
       // Update local state
-      setUserResponse(attendanceData.status);
+      setUserResponse(statusFormatted);
 
-      // Update attendees count if going
-      if (status === "Going") {
-        const updatedCount = event.attendees + 1;
-
-        await fetch(`http://localhost:3001/events/${id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ attendees_count: updatedCount }),
-        });
-
-        setEvent((prev) => ({ ...prev, attendees: updatedCount }));
-      }
+      // Refresh the attendees count from database
+      await refreshAttendeesCount();
     } catch (err) {
       console.error("Error updating status:", err);
+    } finally {
+      // Clear loading state
+      setRespondingToEvent(false);
     }
   };
 
   // Handle volunteer registration
   const handleVolunteerResponse = async () => {
-    if (!user?.id) return;
+    if (!user?.id || respondingToEvent) return;
+
+    // Set loading state
+    setRespondingToEvent(true);
 
     try {
+      // Check if user already volunteered
+      const existingVolunteer = await fetch(
+        `http://localhost:3001/event_volunteers?event_id=${id}&user_id=${user.id}`
+      );
+      const existingVolunteerData = await existingVolunteer.json();
+
+      // Don't make API call if user already volunteered
+      if (existingVolunteerData.length > 0) {
+        return;
+      }
+
       await fetch("http://localhost:3001/event_volunteers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -171,6 +227,9 @@ const EventDetails = () => {
       setUserResponse("volunteer");
     } catch (err) {
       console.error("Error handling volunteer response:", err);
+    } finally {
+      // Clear loading state
+      setRespondingToEvent(false);
     }
   };
 
@@ -342,24 +401,54 @@ const EventDetails = () => {
                 className={`event-details-rsvp-btn going ${
                   userResponse === "going" ? "selected" : ""
                 }`}
+                disabled={userResponse === "going" || respondingToEvent}
+                title={
+                  userResponse === "going"
+                    ? "You're already going to this event"
+                    : "Mark as going"
+                }
               >
-                ✔ Going
+                {respondingToEvent
+                  ? "⏳"
+                  : userResponse === "going"
+                  ? "✓ Going"
+                  : "✔ Going"}
               </button>
               <button
                 onClick={() => updateStatus("Not Going")}
                 className={`event-details-rsvp-btn not-going ${
                   userResponse === "not_going" ? "selected" : ""
                 }`}
+                disabled={userResponse === "not_going" || respondingToEvent}
+                title={
+                  userResponse === "not_going"
+                    ? "You're not going to this event"
+                    : "Mark as not going"
+                }
               >
-                ✖ Not Going
+                {respondingToEvent
+                  ? "⏳"
+                  : userResponse === "not_going"
+                  ? "✗ Not Going"
+                  : "✖ Not Going"}
               </button>
               <button
                 onClick={() => updateStatus("Maybe")}
                 className={`event-details-rsvp-btn maybe ${
                   userResponse === "maybe" ? "selected" : ""
                 }`}
+                disabled={userResponse === "maybe" || respondingToEvent}
+                title={
+                  userResponse === "maybe"
+                    ? "You're marked as maybe"
+                    : "Mark as maybe"
+                }
               >
-                🤔 Maybe
+                {respondingToEvent
+                  ? "⏳"
+                  : userResponse === "maybe"
+                  ? "? Maybe"
+                  : "🤔 Maybe"}
               </button>
               {event.needsVolunteers && (
                 <button
@@ -367,8 +456,18 @@ const EventDetails = () => {
                   className={`event-details-rsvp-btn volunteer ${
                     userResponse === "volunteer" ? "selected" : ""
                   }`}
+                  disabled={userResponse === "volunteer" || respondingToEvent}
+                  title={
+                    userResponse === "volunteer"
+                      ? "You've volunteered for this event"
+                      : "Volunteer for this event"
+                  }
                 >
-                  🙋‍♂️ Volunteer
+                  {respondingToEvent
+                    ? "⏳"
+                    : userResponse === "volunteer"
+                    ? "🙋‍♂️ Volunteered"
+                    : "🙋‍♂️ Volunteer"}
                 </button>
               )}
             </div>

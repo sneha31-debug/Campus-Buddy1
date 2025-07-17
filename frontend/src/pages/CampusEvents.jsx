@@ -18,6 +18,7 @@ const CampusEvents = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [respondingToEvent, setRespondingToEvent] = useState(null);
 
   // Statistics modal state
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -29,6 +30,26 @@ const CampusEvents = () => {
 
   // Get user role from auth context
   const userRole = getUserRole();
+  // Function to calculate actual attendees count from database
+  const calculateAttendeesCount = async (eventId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/event_attendance?event_id=${eventId}`
+      );
+      const attendanceData = await response.json();
+
+      // Count users who are "going" or "maybe"
+      const interestedCount = attendanceData.filter(
+        (attendance) =>
+          attendance.status === "going" || attendance.status === "maybe"
+      ).length;
+
+      return interestedCount;
+    } catch (err) {
+      console.error("Error calculating attendees count:", err);
+      return 0;
+    }
+  };
 
   // Fetch events from JSON Server
   const fetchEvents = async () => {
@@ -52,42 +73,47 @@ const CampusEvents = () => {
         clubsMap[club.id] = club;
       });
 
-      // Transform the data to match the expected format
-      const transformedEvents = eventsData.map((event) => {
-        const club = clubsMap[event.club_id] || {};
+      // Transform the data and calculate accurate attendees count
+      const transformedEvents = await Promise.all(
+        eventsData.map(async (event) => {
+          const club = clubsMap[event.club_id] || {};
 
-        return {
-          id: event.id,
-          name: event.title,
-          description: event.description,
-          date: new Date(event.event_date).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }),
-          time: event.event_time,
-          venue: event.venue,
-          club: club.name || "Unknown Club",
-          category: club.category || "General",
-          eventType: event.event_type,
-          attendees: event.attendees_count || 0,
-          status: event.status,
-          needsVolunteers: event.needs_volunteers,
-          imagePlaceholder: getCategoryEmoji(club.category),
-          hasImage: !!event.poster_url,
-          imageUrl: event.poster_url,
-          tags: event.tags || [],
-          maxVolunteers: event.max_volunteers,
-          rsvpLimit: event.rsvp_limit,
-          targetBatchYear: event.target_batch_year,
-          createdBy: event.created_by,
-          clubId: event.club_id,
-          posterUrl: event.poster_url,
-          duration_hours: event.duration_hours,
-          registration_fee: event.registration_fee,
-          contact_email: event.contact_email,
-        };
-      });
+          // Calculate actual attendees count from database
+          const actualAttendeesCount = await calculateAttendeesCount(event.id);
+
+          return {
+            id: event.id,
+            name: event.title,
+            description: event.description,
+            date: new Date(event.event_date).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }),
+            time: event.event_time,
+            venue: event.venue,
+            club: club.name || "Unknown Club",
+            category: club.category || "General",
+            eventType: event.event_type,
+            attendees: actualAttendeesCount, // Use calculated count instead of stored count
+            status: event.status,
+            needsVolunteers: event.needs_volunteers,
+            imagePlaceholder: getCategoryEmoji(club.category),
+            hasImage: !!event.poster_url,
+            imageUrl: event.poster_url,
+            tags: event.tags || [],
+            maxVolunteers: event.max_volunteers,
+            rsvpLimit: event.rsvp_limit,
+            targetBatchYear: event.target_batch_year,
+            createdBy: event.created_by,
+            clubId: event.club_id,
+            posterUrl: event.poster_url,
+            duration_hours: event.duration_hours,
+            registration_fee: event.registration_fee,
+            contact_email: event.contact_email,
+          };
+        })
+      );
 
       setEvents(transformedEvents);
     } catch (err) {
@@ -140,7 +166,10 @@ const CampusEvents = () => {
 
   // Handle user response (RSVP) with JSON Server
   const handleUserResponse = async (eventId, response) => {
-    if (!user?.id) return;
+    if (!user?.id || respondingToEvent === eventId) return;
+
+    // Set loading state
+    setRespondingToEvent(eventId);
 
     try {
       const attendanceData = {
@@ -155,6 +184,14 @@ const CampusEvents = () => {
         `http://localhost:3001/event_attendance?event_id=${eventId}&user_id=${user.id}`
       );
       const existingData = await existingResponse.json();
+
+      const previousResponse =
+        existingData.length > 0 ? existingData[0].status : null;
+
+      // Don't make API call if user is selecting the same response
+      if (previousResponse === response) {
+        return;
+      }
 
       if (existingData.length > 0) {
         // Update existing record
@@ -181,10 +218,35 @@ const CampusEvents = () => {
         [eventId]: response,
       }));
 
-      // Update attendees count if going
-      if (response === "going") {
-        const currentEvent = events.find((e) => e.id === eventId);
-        const updatedCount = currentEvent.attendees + 1;
+      // Update attendees count based on response changes
+      const currentEvent = events.find((e) => e.id === eventId);
+      let attendeesDelta = 0;
+
+      // Calculate the change in attendees count
+      if (previousResponse === null) {
+        // New response
+        if (response === "going" || response === "maybe") {
+          attendeesDelta = 1;
+        }
+      } else if (previousResponse !== response) {
+        // Changed response
+        const wasInterested =
+          previousResponse === "going" || previousResponse === "maybe";
+        const isInterested = response === "going" || response === "maybe";
+
+        if (wasInterested && !isInterested) {
+          attendeesDelta = -1;
+        } else if (!wasInterested && isInterested) {
+          attendeesDelta = 1;
+        }
+      }
+
+      // Update the event's attendees count if there's a change
+      if (attendeesDelta !== 0) {
+        const updatedCount = Math.max(
+          0,
+          currentEvent.attendees + attendeesDelta
+        );
 
         await fetch(`http://localhost:3001/events/${eventId}`, {
           method: "PATCH",
@@ -200,9 +262,11 @@ const CampusEvents = () => {
       }
     } catch (err) {
       console.error("Error handling user response:", err);
+    } finally {
+      // Clear loading state
+      setRespondingToEvent(null);
     }
   };
-
   // Handle volunteer registration with JSON Server
   const handleVolunteerResponse = async (eventId) => {
     if (!user?.id) return;
@@ -520,6 +584,7 @@ const CampusEvents = () => {
   const EventCard = ({ event }) => {
     const userResponse = userResponses[event.id];
     const isEventOwner = isClub() && event.createdBy === user?.id;
+    const isLoading = respondingToEvent === event.id;
 
     return (
       <div className="event-card">
@@ -591,33 +656,73 @@ const CampusEvents = () => {
                   userResponse === "going" ? "active" : ""
                 }`}
                 onClick={() => handleUserResponse(event.id, "going")}
+                disabled={userResponse === "going" || isLoading}
+                title={
+                  userResponse === "going"
+                    ? "You're already going to this event"
+                    : "Mark as going"
+                }
               >
-                ✓ Going
+                {isLoading
+                  ? "⏳"
+                  : userResponse === "going"
+                  ? "✓ Going"
+                  : "Going"}
+              </button>
+              <button
+                className={`action-btn maybe ${
+                  userResponse === "maybe" ? "active" : ""
+                }`}
+                onClick={() => handleUserResponse(event.id, "maybe")}
+                disabled={userResponse === "maybe" || isLoading}
+                title={
+                  userResponse === "maybe"
+                    ? "You're marked as maybe"
+                    : "Mark as maybe"
+                }
+              >
+                {isLoading
+                  ? "⏳"
+                  : userResponse === "maybe"
+                  ? "? Maybe"
+                  : "Maybe"}
               </button>
               {/* <button
                 className={`action-btn not-going ${
                   userResponse === "not_going" ? "active" : ""
                 }`}
                 onClick={() => handleUserResponse(event.id, "not_going")}
+                disabled={userResponse === "not_going" || isLoading}
+                title={
+                  userResponse === "not_going"
+                    ? "You're not going to this event"
+                    : "Mark as not going"
+                }
               >
-                ✗ Not Going
+                {isLoading
+                  ? "⏳"
+                  : userResponse === "not_going"
+                  ? "✗ Not Going"
+                  : "Not Going"}
               </button> */}
-              <button
-                className={`action-btn maybe ${
-                  userResponse === "maybe" ? "active" : ""
-                }`}
-                onClick={() => handleUserResponse(event.id, "maybe")}
-              >
-                ? Maybe
-              </button>
               {event.needsVolunteers && (
                 <button
                   className={`action-btn volunteer ${
                     userResponse === "volunteer" ? "active" : ""
                   }`}
                   onClick={() => handleVolunteerResponse(event.id)}
+                  disabled={userResponse === "volunteer" || isLoading}
+                  title={
+                    userResponse === "volunteer"
+                      ? "You've volunteered for this event"
+                      : "Volunteer for this event"
+                  }
                 >
-                  🙋‍♂️ Volunteer
+                  {isLoading
+                    ? "⏳"
+                    : userResponse === "volunteer"
+                    ? "🙋‍♂️ Volunteered"
+                    : "🙋‍♂️ Volunteer"}
                 </button>
               )}
             </div>

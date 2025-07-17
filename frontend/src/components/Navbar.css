@@ -33,7 +33,7 @@
 .logo-icon {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #4186f6, #3060ff);
+  background: linear-gradient(135deg, #2890ff, #5162ff);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -46,7 +46,7 @@
 .logo-text {
   font-weight: 700;
   font-size: 1.4rem;
-  background: linear-gradient(135deg, #4186f6, #3060ff);
+  background: linear-gradient(135deg, #2890ff, #5160ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -88,7 +88,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #3b82f6, #1e40af);
+  background: linear-gradient(135deg, #2890ff, #5d51ff);
   opacity: 0;
   transition: opacity 0.2s ease;
   z-index: -1;
@@ -106,7 +106,7 @@
 }
 
 .nav-link.active {
-  background: linear-gradient(135deg, #4186f6, #3060ff);
+  background: linear-gradient(135deg, #2890ff, #5d51ff);
   color: white;
   box-shadow: 0 4px 12px rgba(55, 55, 55, 0.266);
 }
@@ -136,7 +136,7 @@
   transition: all 0.3s ease;
   position: relative;
   height: 40px;
-  background: linear-gradient(135deg, #4186f6, #3060ff);
+  background: linear-gradient(135deg, #2890ff, #5d51ff);
   border: none;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(65, 134, 246, 0.4);
@@ -192,7 +192,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #3b82f6, #1e40af);
+  background: linear-gradient(135deg, #2890ff, #5d51ff);
   opacity: 0;
   transition: opacity 0.2s ease;
   z-index: -1;
@@ -210,7 +210,7 @@
 }
 
 .login-btn.active {
-  background: linear-gradient(135deg, #4186f6, #3060ff);
+  background: linear-gradient(135deg, #2890ff, #5d51ff);
   color: white;
   box-shadow: 0 4px 12px rgba(55, 55, 55, 0.266);
 }
@@ -262,7 +262,7 @@
   }
 
   .mobile-menu a:hover {
-    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    background: linear-gradient(135deg, #2890ff, #5d51ff);
     color: white;
   }
 

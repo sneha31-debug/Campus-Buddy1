@@ -1,6 +1,6 @@
 import { supabase } from "../supabase/supabaseClient"; // Your existing Supabase client
 
-const JSON_SERVER_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const JSON_SERVER_URL = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
 
 class ApiService {
   // Supabase methods (authentication, user management)

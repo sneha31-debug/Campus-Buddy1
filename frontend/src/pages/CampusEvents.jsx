@@ -1,7 +1,7 @@
 // CampusEvents.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { TrendingUp, Calendar, Star, Heart } from "lucide-react";
+import { TrendingUp, Calendar, Star, Heart, Search } from "lucide-react";
 import { useAuth } from "../hook/useAuth";
 import EventStatisticsModal from "./EventStatistics";
 import EventCardActions from "../components/EventCardActions"; // Import the EventCardActions component
@@ -24,6 +24,9 @@ const CampusEvents = () => {
   // Statistics modal state
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showStatsModal, setShowStatsModal] = useState(false);
+
+  // Add selectedCategory state
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   // Get user role from auth context
   const userRole = getUserRole();
@@ -341,6 +344,7 @@ const CampusEvents = () => {
     setSearchQuery("");
   };
 
+  // Replace selectedCategories with selectedCategory in filtering logic
   const filteredEvents = events.filter((event) => {
     const matchesTab =
       activeTab === "all" ||
@@ -348,17 +352,13 @@ const CampusEvents = () => {
       (activeTab === "past" && event.status === "past");
 
     const matchesCategory =
-      selectedCategories.length === 0 ||
-      selectedCategories.includes(event.category);
-    const matchesEventType =
-      selectedEventTypes.length === 0 ||
-      selectedEventTypes.includes(event.eventType);
+      selectedCategory === "All" || event.category === selectedCategory;
     const matchesSearch =
       searchQuery === "" ||
       event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       event.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesTab && matchesCategory && matchesEventType && matchesSearch;
+    return matchesTab && matchesCategory && matchesSearch;
   });
 
   // Get user's RSVPs count
@@ -371,6 +371,11 @@ const CampusEvents = () => {
   // Get upcoming events count
   const getUpcomingEventsCount = () => {
     return events.filter((event) => event.status === "upcoming").length;
+  };
+
+  // Get past events count
+  const getPastEventsCount = () => {
+    return events.filter((event) => event.status === "past").length;
   };
 
   const EventCard = ({ event }) => {
@@ -486,31 +491,40 @@ const CampusEvents = () => {
   return (
     <div className="campus-events">
       {/* Header */}
-      <div className="header">
-        <div className="header-left">
-          <div className="app-icon">📅</div>
-          <div>
-            <h1 className="app-title">Campus Events</h1>
-            <p className="app-subtitle">
-              ✨ Discover amazing events happening on campus
-            </p>
-          </div>
-        </div>
-        <div className="header-right">
-          <div className="user-role-display">
-            <span className="role-label">
-              {isStudent() ? "Student" : isClub() ? "Club" : "User"} View
-            </span>
-            <span className="role-badge">
-              {isStudent() ? "🎓" : isClub() ? "🏛️" : "👤"}
-            </span>
-          </div>
-          <button
-            className="filter-toggle"
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            {showFilters ? "Hide Filters" : "Show Filters"}
+      <div className="my-events-header">
+        <h1>
+          <span className="gradient-emoji">✨</span>
+          Campus <span className="gradient-title">Events</span>
+          <span className="gradient-emoji">✨</span>
+        </h1>
+        <p>Discover amazing events happening on campus</p>
+        <div className="my-events-search-bar">
+          <span className="search-icon">
+            <Search size={20} />
+          </span>
+          <input
+            type="text"
+            placeholder="Search campus events..."
+            className="search-input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button className="search-btn" onClick={() => {}} disabled>
+            Search
           </button>
+        </div>
+        <div className="my-events-categories">
+          {["All", ...categories].map((cat, index) => (
+            <button
+              key={index}
+              className={`category-btn ${
+                selectedCategory === cat ? "active" : ""
+              }`}
+              onClick={() => setSelectedCategory(cat)}
+            >
+              <span className="cat-label">{cat}</span>
+            </button>
+          ))}
         </div>
       </div>
 
@@ -544,63 +558,6 @@ const CampusEvents = () => {
       </div>
 
       <div className="main-content">
-        {/* Filters Sidebar */}
-        {showFilters && (
-          <div className="filters-sidebar">
-            <div className="filter-section">
-              <h3>Search Events</h3>
-              <input
-                type="text"
-                placeholder="Search events..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-input"
-              />
-            </div>
-
-            <div className="filter-section">
-              <h3>Date Range</h3>
-              <input
-                type="date"
-                className="date-input"
-                placeholder="Pick a date"
-              />
-            </div>
-
-            <div className="filter-section">
-              <h3>Club Categories</h3>
-              {categories.map((category) => (
-                <label key={category} className="filter-option">
-                  <input
-                    type="checkbox"
-                    checked={selectedCategories.includes(category)}
-                    onChange={() => handleCategoryChange(category)}
-                  />
-                  {category}
-                </label>
-              ))}
-            </div>
-
-            <div className="filter-section">
-              <h3>Event Types</h3>
-              {eventTypes.map((eventType) => (
-                <label key={eventType} className="filter-option">
-                  <input
-                    type="checkbox"
-                    checked={selectedEventTypes.includes(eventType)}
-                    onChange={() => handleEventTypeChange(eventType)}
-                  />
-                  {eventType}
-                </label>
-              ))}
-            </div>
-
-            <button className="clear-filters-btn" onClick={clearFilters}>
-              Clear All Filters
-            </button>
-          </div>
-        )}
-
         {/* Events Content */}
         <div className="events-content">
           {/* Tabs */}
@@ -610,6 +567,22 @@ const CampusEvents = () => {
               onClick={() => setActiveTab("all")}
             >
               All Events
+              <span
+                style={{
+                  background: "#e0e7ff",
+                  color: "#1d4ed8",
+                  borderRadius: "999px",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  padding: "2px 10px",
+                  marginLeft: 8,
+                  display: "inline-block",
+                  minWidth: 28,
+                  textAlign: "center",
+                }}
+              >
+                {events.length}
+              </span>
             </button>
             <button
               className={`content-tab ${
@@ -618,12 +591,14 @@ const CampusEvents = () => {
               onClick={() => setActiveTab("upcoming")}
             >
               Upcoming
+              <span className="tab-count">{getUpcomingEventsCount()}</span>
             </button>
             <button
               className={`content-tab ${activeTab === "past" ? "active" : ""}`}
               onClick={() => setActiveTab("past")}
             >
               Past
+              <span className="tab-count">{getPastEventsCount()}</span>
             </button>
           </div>
 

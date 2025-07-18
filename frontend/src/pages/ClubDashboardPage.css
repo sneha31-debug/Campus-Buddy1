@@ -142,6 +142,7 @@ body {
   transition: all 0.2s ease;
   font-size: 0.875rem;
   text-decoration: none;
+  margin: auto;
 }
 
 .club-dash-create-btn.primary {

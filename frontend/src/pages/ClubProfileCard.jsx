@@ -11,6 +11,7 @@ const ClubProfileCard = () => {
   const [clubData, setClubData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [eventsCount, setEventsCount] = useState(null);
   const [editData, setEditData] = useState({
     club_name: "",
     club_email: "",
@@ -88,7 +89,7 @@ const ClubProfileCard = () => {
 
     // Use auth metadata immediately - accessing metadata directly from user object
     const metadata = user.user_metadata || {};
-    
+
     const fallbackData = {
       id: user.id,
       club_name: metadata.club_name || "",
@@ -176,6 +177,37 @@ const ClubProfileCard = () => {
     fetchFromDatabase();
   }, [user, supabase]);
 
+  useEffect(() => {
+    const fetchEventsCount = async () => {
+      if (!clubData?.club_email) return;
+
+      try {
+        const response = await fetch("http://localhost:3001/clubs");
+        const data = await response.json();
+
+        console.log("Fetched clubs data:", data); // debug
+
+        // Match by contact_email instead of club_email
+        const matchingClub = data.find(
+          (club) => club.contact_email === clubData.club_email
+        );
+
+        console.log("Matching club found:", matchingClub);
+
+        if (matchingClub) {
+          setEventsCount(matchingClub.events_hosted || 0);
+        } else {
+          setEventsCount(0);
+        }
+      } catch (err) {
+        console.error("Error fetching events count:", err);
+        setEventsCount(0);
+      }
+    };
+
+    fetchEventsCount();
+  }, [clubData]);
+
   const handleClose = () => {
     if (location.state && location.state.from) {
       navigate(location.state.from, { replace: true });
@@ -184,9 +216,9 @@ const ClubProfileCard = () => {
     }
   };
 
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
+  // const handleEdit = () => {
+  //   setIsEditing(true);
+  // };
 
   const handleSave = async () => {
     if (!user?.id) return;
@@ -195,20 +227,37 @@ const ClubProfileCard = () => {
       setLoading(true);
       setError(null);
 
-      const { error } = await supabase
+      // Update clubs table
+      const { error: clubError } = await supabase
         .from("clubs")
         .update({
-          name: editData.club_name, 
-          contact_email: editData.club_email, 
+          name: editData.club_name,
+          contact_email: editData.club_email,
           contact_phone: editData.contact_phone,
           description: editData.description,
           updated_at: new Date().toISOString(),
         })
         .eq("id", user.id);
 
-      if (error) {
-        console.error("Error updating club:", error);
-        setError(`Failed to update profile: ${error.message}`);
+      if (clubError) {
+        console.error("Error updating club:", clubError);
+        setError(`Failed to update profile: ${clubError.message}`);
+        return;
+      }
+
+      // Update user metadata (for contact_person and website)
+      const { error: metaError } = await supabase.auth.updateUser({
+        data: {
+          contact_person: editData.contact_person,
+          website: editData.website,
+        },
+      });
+
+      if (metaError) {
+        console.error("Error updating metadata:", metaError);
+        setError(
+          `Failed to update contact person/website: ${metaError.message}`
+        );
         return;
       }
 
@@ -448,9 +497,9 @@ const ClubProfileCard = () => {
                   )}
                 </div>
                 <div className="button-group">
-                  <button className="edit-btn" onClick={handleEdit}>
+                  {/* <button className="edit-btn" onClick={handleEdit}>
                     Edit
-                  </button>
+                  </button> */}
                   <button
                     className="signout-btn"
                     onClick={handleSignOut}
@@ -493,7 +542,10 @@ const ClubProfileCard = () => {
           <div className="club-stat-item">
             <div className="club-stat-icon">🎉</div>
             <div className="club-stat-content">
-              <span className="club-stat-number">-</span>
+              <span className="club-stat-number">
+                {" "}
+                {eventsCount !== null ? eventsCount : "-"}
+              </span>
               <span className="club-stat-label">Events Hosted</span>
             </div>
           </div>

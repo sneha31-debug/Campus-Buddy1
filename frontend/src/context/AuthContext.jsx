@@ -278,35 +278,36 @@ export const AuthProvider = ({ children }) => {
 
   // Standard sign out
   const signOut = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+    setLoading(true);
+    setError(null);
+    console.log("🚪 Attempting to sign out user...");
 
-      console.log("🚪 Attempting to sign out user...");
+    const signOutPromise = supabase.auth.signOut({ scope: "global" });
 
-      // Method 1: Sign out with global scope
-      const { error } = await supabase.auth.signOut({ scope: "global" });
+    const timeoutPromise = new Promise((resolve) =>
+      setTimeout(() => resolve({ timeout: true }), 2000)
+    );
 
-      if (error) {
-        console.error("Supabase sign out error:", error);
-        throw error;
-      }
+    const result = await Promise.race([signOutPromise, timeoutPromise]);
 
+    if (result?.error) {
+      console.error("Supabase sign out error:", result.error);
+      setError(result.error.message);
+    } else if (result?.timeout) {
+      console.warn("⚠️ Sign out took too long, proceeding with local cleanup.");
+    } else {
       console.log("✅ Supabase sign out successful");
-
-      // Clear state immediately
-      setSession(null);
-      setUser(null);
-      setError(null);
-
-      return { success: true };
-    } catch (error) {
-      console.error("Sign out error:", error);
-      setError(error.message);
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
     }
+
+    // Clear everything regardless
+    localStorage.clear();
+    console.log("🧹 Local storage cleared");
+
+    setSession(null);
+    setUser(null);
+    setLoading(false);
+
+    return { success: !result?.error, timeout: !!result?.timeout };
   };
 
   // Forced sign out with manual cleanup

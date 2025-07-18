@@ -60,7 +60,7 @@ const ClubDashboardPage = () => {
   const fetchClubDashboardData = useCallback(async () => {
     setLoading(true);
     setError(null);
-    setClub(null);
+    setClub(null); // Reset club to null initially
     setEvents([]);
 
     if (!user) {
@@ -86,12 +86,7 @@ const ClubDashboardPage = () => {
       );
 
       if (!currentUserClub) {
-        setError("No club profile found for your account. Please create one.");
-        addToast({
-          type: "info",
-          message:
-            'No club profile found. You can create one via "Create Event" form.',
-        });
+        // Do NOT set error here, instead, let the !club condition handle it
         setLoading(false);
         return;
       }
@@ -425,20 +420,6 @@ const ClubDashboardPage = () => {
               />
             </div>
             <div className="form-group">
-              <label>Max Volunteers</label>
-              <input
-                type="number"
-                value={formData.maxVolunteers}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    maxVolunteers: parseInt(e.target.value),
-                  })
-                }
-                min="0"
-              />
-            </div>
-            <div className="form-group">
               <label>
                 <input
                   type="checkbox"
@@ -598,26 +579,30 @@ const ClubDashboardPage = () => {
     </div>
   );
 
-  // No Club Component
+  // No Club Component (NEW/ENHANCED)
   const NoClubState = () => (
     <div className="club-dash-no-club">
       <div className="club-dash-no-club-content">
         <div className="club-dash-no-club-icon">🏛️</div>
         <h2>No Club Profile Found</h2>
-        <p>
-          It looks like you don't have a registered club profile associated with
-          your account.
+        <p style={{ fontWeight: 500 }}>
+          You don&apos;t have a club profile yet.
+          <br />
+          <span style={{ color: "#ef4444" }}>
+            You can only create one club per account.
+          </span>
         </p>
-        <p>
-          To manage events, please create your club profile first when creating
-          a new event.
+        <p style={{ marginBottom: 16 }}>
+          Creating a new event automatically sets up your club profile!
+          <br />
+          Once created, all your future events will be managed under this club.
         </p>
         <button
           className="club-dash-create-btn primary"
           onClick={() => navigate("/createevent")}
         >
           <Plus size={20} />
-          Create Your Club & First Event
+          Create Club & Your First Event
         </button>
       </div>
     </div>
@@ -651,9 +636,10 @@ const ClubDashboardPage = () => {
     </div>
   );
 
+  // Conditional Renders
   if (loading) return <LoadingState />;
   if (error) return <ErrorState />;
-  if (!club) return <NoClubState />;
+  if (!club) return <NoClubState />; // This line will now render your new component
 
   const filteredEvents = getFilteredEvents();
 

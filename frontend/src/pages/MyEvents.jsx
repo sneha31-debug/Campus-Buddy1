@@ -31,23 +31,43 @@ import { useAuth } from "../hook/useAuth";
 import EventCardActions from "../components/EventCardActions"; // Import the EventCardActions component
 
 const categoryMap = {
-  "All": [],
-  "Tech": ["tech", "technology", "dev", "coding", "programming", "software", "it"],
-  "Dance": ["dance", "dancing", "performance"],
-  "Music": ["music", "band", "concert", "singing", "performance"],
-  "Drama": ["drama", "theatre", "acting", "play", "performance"],
-  "Robotics": ["robotics", "robot", "automation", "mechatronics"],
-  "Workshop": ["workshop", "training", "session", "bootcamp"],
-  "Hackathon": ["hackathon", "coding competition", "codefest"],
-  "Podcast": ["podcast", "audio", "talk", "discussion"],
-  "Fest": ["fest", "festival", "celebration", "cultural fest"],
-  "Entrepreneurship": ["entrepreneurship", "startup", "e-cell", "business", "venture"],
-  "Sports": ["sports", "fitness", "athletics", "games", "tournament"],
-  "Public Speaking": ["public speaking", "debate", "speech", "elocution", "discussion"],
-  "Photography": ["photography", "photo", "camera", "shoot"],
-  "Videography": ["videography", "video", "film", "shoot", "cinema"],
-  "Competition": ["competition", "contest", "challenge", "tournament", "quiz"],
-  "Innovation": ["innovation", "idea", "startup", "project", "invention"],
+  All: [],
+  Tech: [
+    "tech",
+    "technology",
+    "dev",
+    "coding",
+    "programming",
+    "software",
+    "it",
+  ],
+  Dance: ["dance", "dancing", "performance"],
+  Music: ["music", "band", "concert", "singing", "performance"],
+  Drama: ["drama", "theatre", "acting", "play", "performance"],
+  Robotics: ["robotics", "robot", "automation", "mechatronics"],
+  Workshop: ["workshop", "training", "session", "bootcamp"],
+  Hackathon: ["hackathon", "coding competition", "codefest"],
+  Podcast: ["podcast", "audio", "talk", "discussion"],
+  Fest: ["fest", "festival", "celebration", "cultural fest"],
+  Entrepreneurship: [
+    "entrepreneurship",
+    "startup",
+    "e-cell",
+    "business",
+    "venture",
+  ],
+  Sports: ["sports", "fitness", "athletics", "games", "tournament"],
+  "Public Speaking": [
+    "public speaking",
+    "debate",
+    "speech",
+    "elocution",
+    "discussion",
+  ],
+  Photography: ["photography", "photo", "camera", "shoot"],
+  Videography: ["videography", "video", "film", "shoot", "cinema"],
+  Competition: ["competition", "contest", "challenge", "tournament", "quiz"],
+  Innovation: ["innovation", "idea", "startup", "project", "invention"],
 };
 
 const MyEvents = () => {
@@ -305,7 +325,13 @@ const MyEvents = () => {
     const savedTab = sessionStorage.getItem("myEventsTab");
     const savedCategory = sessionStorage.getItem("myEventsCategory");
 
-    if (savedTab) setTab(savedTab);
+    // Set "All" as default if no saved tab exists
+    if (savedTab) {
+      setTab(savedTab);
+    } else {
+      setTab("All"); // Default to "All"
+    }
+
     if (savedCategory) setSelectedCategory(savedCategory);
 
     fetchEvents();
@@ -389,9 +415,22 @@ const MyEvents = () => {
 
     const matchesCategory = filterEventByCategory(event, selectedCategory);
 
-    if (tab === "Upcoming")
+    // Handle different tab filters
+    if (tab === "Upcoming") {
       return isUpcoming && matchesCategory && matchesSearch;
-    if (tab === "Past") return isPast && matchesCategory && matchesSearch;
+    }
+    if (tab === "Past") {
+      return isPast && matchesCategory && matchesSearch;
+    }
+    if (tab === "Favorites") {
+      // Show only events where user is "going" or "volunteer"
+      return (
+        (userResponse === "going" || userResponse === "volunteer") &&
+        matchesCategory &&
+        matchesSearch
+      );
+    }
+    // "All" tab - show all events with positive responses
     return matchesCategory && matchesSearch;
   });
 
@@ -414,23 +453,23 @@ const MyEvents = () => {
 
   function getCategoryIcon(name) {
     const iconMap = {
-      "All": <Star className="cat-icon" />,
-      "Tech": <Code2 className="cat-icon" />,
-      "Dance": <PartyPopper className="cat-icon" />,
-      "Music": <Music className="cat-icon" />,
-      "Drama": <Award className="cat-icon" />,
-      "Robotics": <Bot className="cat-icon" />,
-      "Workshop": <Wrench className="cat-icon" />,
-      "Hackathon": <Lightbulb className="cat-icon" />,
-      "Podcast": <Mic2 className="cat-icon" />,
-      "Fest": <PartyPopper className="cat-icon" />,
-      "Entrepreneurship": <Briefcase className="cat-icon" />,
-      "Sports": <Dumbbell className="cat-icon" />,
+      All: <Star className="cat-icon" />,
+      Tech: <Code2 className="cat-icon" />,
+      Dance: <PartyPopper className="cat-icon" />,
+      Music: <Music className="cat-icon" />,
+      Drama: <Award className="cat-icon" />,
+      Robotics: <Bot className="cat-icon" />,
+      Workshop: <Wrench className="cat-icon" />,
+      Hackathon: <Lightbulb className="cat-icon" />,
+      Podcast: <Mic2 className="cat-icon" />,
+      Fest: <PartyPopper className="cat-icon" />,
+      Entrepreneurship: <Briefcase className="cat-icon" />,
+      Sports: <Dumbbell className="cat-icon" />,
       "Public Speaking": <Megaphone className="cat-icon" />,
-      "Photography": <Camera className="cat-icon" />,
-      "Videography": <Video className="cat-icon" />,
-      "Competition": <Trophy className="cat-icon" />,
-      "Innovation": <Lightbulb className="cat-icon" />,
+      Photography: <Camera className="cat-icon" />,
+      Videography: <Video className="cat-icon" />,
+      Competition: <Trophy className="cat-icon" />,
+      Innovation: <Lightbulb className="cat-icon" />,
     };
     return iconMap[name] || <User className="cat-icon" />;
   }
@@ -521,7 +560,7 @@ const MyEvents = () => {
       <div className="my-events-header">
         <h1>
           <span className="gradient-emoji">✨</span>
-          My  <span className="gradient-title"> Events</span>
+          My <span className="gradient-title"> Events</span>
           <span className="gradient-emoji">✨</span>
         </h1>
         <p>Events you've responded to and your interests</p>
@@ -557,13 +596,26 @@ const MyEvents = () => {
       </div>
 
       <div className="my-events-tabs">
-        {["All", "Upcoming", "Past"].map((t) => (
+        {["All", "Upcoming", "Past", "Favorites"].map((t) => (
           <button
             key={t}
             className={tab === t ? "active" : ""}
             onClick={() => handleTabChange(t)}
           >
             {t}
+            {/* Optional: Add count badges for each tab */}
+            {t === "Favorites" && (
+              <span className="tab-count">
+                {
+                  events.filter((event) => {
+                    const userResponse = userResponses[event.id];
+                    return (
+                      userResponse === "going" || userResponse === "volunteer"
+                    );
+                  }).length
+                }
+              </span>
+            )}
           </button>
         ))}
       </div>

@@ -1,35 +1,6 @@
 {
   "events": [
     {
-      "id": "evt_001",
-      "title": "Drama Club Auditions - Romeo & Juliet",
-      "description": "Open auditions for our spring production of Shakespeare's Romeo & Juliet. No prior experience required. We're looking for passionate performers to join our cast and crew.",
-      "event_date": "2025-07-20",
-      "event_time": "16:00",
-      "venue": "Auditorium Main Stage",
-      "created_by": "prof_theater_001",
-      "club_id": "club_drama",
-      "event_type": "optional",
-      "tags": [
-        "cultural",
-        "competition",
-        "workshop"
-      ],
-      "max_volunteers": 5,
-      "target_batch_year": null,
-      "needs_volunteers": true,
-      "rsvp_limit": 100,
-      "poster_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
-      "status": "upcoming",
-      "is_active": true,
-      "attendees_count": 9,
-      "created_at": "2025-07-10T09:00:00.000Z",
-      "updated_at": "2025-07-17T12:00:00.000Z",
-      "duration_hours": 3,
-      "contact_email": "drama@college.edu",
-      "registration_fee": 0
-    },
-    {
       "id": "evt_002",
       "title": "Tech Talk: AI in Modern Development",
       "description": "Join us for an insightful discussion on artificial intelligence and its applications in modern software development. Industry experts will share their experiences and insights.",
@@ -167,7 +138,7 @@
       "poster_url": "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=800&q=80",
       "status": "upcoming",
       "is_active": true,
-      "attendees_count": 11,
+      "attendees_count": 3,
       "created_at": "2025-07-01T10:30:00.000Z",
       "updated_at": "2025-07-17T16:10:00.000Z",
       "duration_hours": 4,
@@ -196,7 +167,7 @@
       "poster_url": "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?auto=format&fit=crop&w=800&q=80",
       "status": "upcoming",
       "is_active": true,
-      "attendees_count": 38,
+      "attendees_count": 2,
       "created_at": "2025-07-03T09:45:00.000Z",
       "updated_at": "2025-07-16T13:25:00.000Z",
       "duration_hours": 5,
@@ -283,7 +254,7 @@
       "poster_url": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80",
       "status": "upcoming",
       "is_active": true,
-      "attendees_count": 90,
+      "attendees_count": 2,
       "created_at": "2025-07-07T08:30:00.000Z",
       "updated_at": "2025-07-17T17:45:00.000Z",
       "duration_hours": 48,
@@ -312,50 +283,27 @@
       "created_at": "2025-07-17T13:24:34.620Z"
     },
     {
-      "id": "6a95",
-      "title": "Workshop for Videography",
-      "description": "....",
-      "event_date": "2025-07-25",
-      "event_time": "09:37",
-      "venue": "Lab 2",
-      "created_by": "e74c9ea4-86d9-4fbd-b349-33d791352daa",
-      "club_id": "club_content",
-      "event_type": "workshop",
+      "id": "59ac",
+      "title": "Weebs union",
+      "description": "Cosplay competition",
+      "event_date": "2025-07-21",
+      "event_time": "03:05",
+      "venue": "Shibuya",
+      "created_by": "c8827a31-f87b-4638-8984-75f5f4473116",
+      "club_id": "e705",
+      "event_type": "festival",
       "tags": [
-        "workshop"
+        "social"
       ],
-      "max_volunteers": 0,
-      "target_batch_year": 2028,
-      "needs_volunteers": "",
-      "rsvp_limit": 1,
-      "poster_url": "https://www.uscreen.tv/wp-content/uploads/2019/03/Creator-meetup-DC-906x515.jpg",
+      "max_volunteers": 4,
+      "target_batch_year": 2024,
+      "needs_volunteers": true,
+      "rsvp_limit": 17,
+      "poster_url": "https://www.novalandtours.com/images/month_202007/202007271448094304.jpg",
       "status": "upcoming",
       "is_active": true,
-      "attendees_count": 0,
-      "created_at": "2025-07-18T04:07:02.158Z"
-    },
-    {
-      "id": "2d99",
-      "title": "TOXIC Intro",
-      "description": "Introduction of 1st year students",
-      "event_date": "2025-08-05",
-      "event_time": "19:00",
-      "venue": "Your Space",
-      "created_by": "e74c9ea4-86d9-4fbd-b349-33d791352daa",
-      "club_id": "e61f",
-      "event_type": "batch_compulsory",
-      "tags": [
-        "networking"
-      ],
-      "max_volunteers": 0,
-      "target_batch_year": 2029,
-      "needs_volunteers": "",
-      "rsvp_limit": null,
-      "poster_url": "https://ik.imagekit.io/wifire/blog/wp-content/uploads/2020/03/10165001/evento-scaled.jpg",
-      "status": "upcoming",
-      "is_active": true,
-      "attendees_count": 3,
-      "created_at": "2025-07-18T04:27:44.624Z"
+      "attendees_count": 4,
+      "created_at": "2025-07-17T21:37:48.903Z"
     }
   ],
   "clubs": [
@@ -486,56 +434,15 @@
       "created_by": "admin_001"
     },
     {
-      "id": "e61f",
-      "name": "The Toxic Club",
-      "description": "We are the Toxic Club",
-      "contact_email": "toxicplayz1210@gmail.com",
-      "category": "Cultural",
-      "contact_phone": "9726851618",
-      "website": "",
+      "id": "e705",
+      "name": "Occasional Hangouts",
+      "description": "Official club page for SpongeBob",
+      "contact_email": "sugarmellon2050@gmail.com",
+      "category": "General",
       "is_active": true,
-      "created_at": "2025-07-18T03:59:43.588Z",
-      "updated_at": "2025-07-18T05:32:51.455Z",
-      "created_by": "e74c9ea4-86d9-4fbd-b349-33d791352daa"
-    },
-    {
-      "id": "fbdd",
-      "name": "The Toxic Club",
-      "description": "We are the Toxic Club",
-      "contact_email": "toxicplayz1210@gmail.com",
-      "category": "Cultural",
-      "contact_phone": "9726851618",
-      "website": "",
-      "is_active": true,
-      "created_at": "2025-07-18T03:59:43.590Z",
-      "updated_at": "2025-07-18T03:59:43.590Z",
-      "created_by": "e74c9ea4-86d9-4fbd-b349-33d791352daa"
-    },
-    {
-      "id": "a06c",
-      "name": "Creators Corner Club",
-      "description": "",
-      "contact_email": "nstcreatorscornerclub@gmail.com",
-      "category": "Other",
-      "contact_phone": "9726851618",
-      "website": "",
-      "is_active": true,
-      "created_at": "2025-07-18T04:21:19.266Z",
-      "updated_at": "2025-07-18T04:21:26.285Z",
-      "created_by": "4fc31721-f40e-446a-970e-a3a64e957112"
-    },
-    {
-      "id": "311c",
-      "name": "Creators Corner Club",
-      "description": "",
-      "contact_email": "nstcreatorscornerclub@gmail.com",
-      "category": "Other",
-      "contact_phone": "9726851618",
-      "website": "",
-      "is_active": true,
-      "created_at": "2025-07-18T04:21:19.268Z",
-      "updated_at": "2025-07-18T04:21:19.268Z",
-      "created_by": "4fc31721-f40e-446a-970e-a3a64e957112"
+      "created_at": "2025-07-17T20:38:11.769Z",
+      "created_by": "c8827a31-f87b-4638-8984-75f5f4473116",
+      "updated_at": "2025-07-17T23:08:45.689Z"
     }
   ],
   "eventTypes": [
@@ -736,13 +643,6 @@
   ],
   "event_attendance": [
     {
-      "id": "att_001",
-      "event_id": "evt_001",
-      "user_id": "user_001",
-      "status": "going",
-      "updated_at": "2025-07-17T10:30:00.000Z"
-    },
-    {
       "id": "att_002",
       "event_id": "evt_001",
       "user_id": "user_002",
@@ -757,85 +657,14 @@
       "updated_at": "2025-07-17T09:45:00.000Z"
     },
     {
-      "id": "att_004",
-      "event_id": "evt_003",
-      "user_id": "user_003",
-      "status": "not_going",
-      "updated_at": "2025-07-17T14:20:00.000Z"
-    },
-    {
-      "id": "1bb1",
-      "event_id": null,
+      "id": "d655",
+      "event_id": "59ac",
       "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
       "status": "going",
-      "updated_at": "2025-07-17T17:11:55.384Z"
-    },
-    {
-      "id": "6b8a",
-      "event_id": null,
-      "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
-      "status": "not_going",
-      "updated_at": "2025-07-17T17:11:06.988Z"
-    },
-    {
-      "id": "06de",
-      "event_id": "evt_003",
-      "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
-      "status": "going",
-      "updated_at": "2025-07-17T16:51:05.767Z"
-    },
-    {
-      "id": "0895",
-      "event_id": "evt_004",
-      "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
-      "status": "going",
-      "updated_at": "2025-07-17T09:23:16.601Z"
-    },
-    {
-      "id": "28aa",
-      "event_id": null,
-      "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
-      "status": "going",
-      "updated_at": "2025-07-17T17:03:36.577Z"
-    },
-    {
-      "id": "1271",
-      "event_id": null,
-      "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
-      "status": "not_going",
-      "updated_at": "2025-07-17T16:52:55.271Z"
-    },
-    {
-      "id": "79f6",
-      "event_id": 6,
-      "user_id": "3dd65a45-359c-4d88-8940-4f222bc53815",
-      "status": "going",
-      "updated_at": "2025-07-18T04:14:33.313Z"
-    },
-    {
-      "id": "02c1",
-      "event_id": "2d99",
-      "user_id": "3dd65a45-359c-4d88-8940-4f222bc53815",
-      "status": "going",
-      "updated_at": "2025-07-18T04:32:07.782Z"
-    },
-    {
-      "id": "df26",
-      "event_id": "evt_002",
-      "user_id": "3dd65a45-359c-4d88-8940-4f222bc53815",
-      "status": "going",
-      "updated_at": "2025-07-18T06:34:13.866Z"
+      "updated_at": "2025-07-18T08:40:49.170Z"
     }
   ],
   "event_volunteers": [
-    {
-      "id": "vol_001",
-      "event_id": "evt_001",
-      "user_id": "user_004",
-      "status": "approved",
-      "created_at": "2025-07-15T12:00:00.000Z",
-      "updated_at": "2025-07-16T09:30:00.000Z"
-    },
     {
       "id": "vol_002",
       "event_id": "evt_002",
@@ -853,25 +682,9 @@
       "updated_at": "2025-07-17T10:00:00.000Z"
     },
     {
-      "id": "2320",
-      "event_id": "evt_001",
+      "id": "4d28",
       "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
-      "status": "pending",
-      "created_at": "2025-07-17T16:39:49.397Z"
-    },
-    {
-      "id": "ea47",
-      "event_id": "evt_001",
-      "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
-      "status": "pending",
-      "created_at": "2025-07-17T16:39:49.912Z"
-    },
-    {
-      "id": "f51c",
-      "event_id": "evt_001",
-      "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
-      "status": "pending",
-      "created_at": "2025-07-17T16:39:50.214Z"
+      "event_id": "59ac"
     }
   ],
   "users": [

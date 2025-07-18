@@ -12,7 +12,6 @@ const EventDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userResponse, setUserResponse] = useState("");
-  const [respondingToEvent, setRespondingToEvent] = useState(false);
 
   // Function to calculate actual attendees count from database
   const calculateAttendeesCount = async (eventId) => {
@@ -120,119 +119,6 @@ const EventDetails = () => {
     }
   };
 
-  // Refresh attendees count for the current event
-  const refreshAttendeesCount = async () => {
-    if (!event) return;
-
-    try {
-      const updatedCount = await calculateAttendeesCount(event.id);
-      setEvent((prev) => ({ ...prev, attendees: updatedCount }));
-    } catch (err) {
-      console.error("Error refreshing attendees count:", err);
-    }
-  };
-
-  // Handle user response (RSVP)
-  const updateStatus = async (status) => {
-    if (!user?.id || respondingToEvent) return;
-
-    // Set loading state
-    setRespondingToEvent(true);
-
-    try {
-      const statusFormatted = status.toLowerCase().replace(" ", "_");
-      const attendanceData = {
-        event_id: parseInt(id),
-        user_id: user.id,
-        status: statusFormatted,
-        updated_at: new Date().toISOString(),
-      };
-
-      // Check if user already has a response for this event
-      const existingResponse = await fetch(
-        `http://localhost:3001/event_attendance?event_id=${id}&user_id=${user.id}`
-      );
-      const existingData = await existingResponse.json();
-
-      const previousResponse =
-        existingData.length > 0 ? existingData[0].status : null;
-
-      // Don't make API call if user is selecting the same response
-      if (previousResponse === statusFormatted) {
-        return;
-      }
-
-      if (existingData.length > 0) {
-        // Update existing record
-        await fetch(
-          `http://localhost:3001/event_attendance/${existingData[0].id}`,
-          {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(attendanceData),
-          }
-        );
-      } else {
-        // Create new record
-        await fetch("http://localhost:3001/event_attendance", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(attendanceData),
-        });
-      }
-
-      // Update local state
-      setUserResponse(statusFormatted);
-
-      // Refresh the attendees count from database
-      await refreshAttendeesCount();
-    } catch (err) {
-      console.error("Error updating status:", err);
-    } finally {
-      // Clear loading state
-      setRespondingToEvent(false);
-    }
-  };
-
-  // Handle volunteer registration
-  const handleVolunteerResponse = async () => {
-    if (!user?.id || respondingToEvent) return;
-
-    // Set loading state
-    setRespondingToEvent(true);
-
-    try {
-      // Check if user already volunteered
-      const existingVolunteer = await fetch(
-        `http://localhost:3001/event_volunteers?event_id=${id}&user_id=${user.id}`
-      );
-      const existingVolunteerData = await existingVolunteer.json();
-
-      // Don't make API call if user already volunteered
-      if (existingVolunteerData.length > 0) {
-        return;
-      }
-
-      await fetch("http://localhost:3001/event_volunteers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          event_id: parseInt(id),
-          user_id: user.id,
-          status: "pending",
-          created_at: new Date().toISOString(),
-        }),
-      });
-
-      setUserResponse("volunteer");
-    } catch (err) {
-      console.error("Error handling volunteer response:", err);
-    } finally {
-      // Clear loading state
-      setRespondingToEvent(false);
-    }
-  };
-
   // Helper function to get category emoji
   const getCategoryEmoji = (category) => {
     const emojiMap = {
@@ -312,6 +198,22 @@ const EventDetails = () => {
           </span>
         </div>
 
+        {/* Current User Status Display */}
+        {isStudent() && userResponse && (
+          <div className="event-details-section">
+            <h3>Your Status</h3>
+            <div className="event-details-current-status">
+              <p>
+                Your current status:{" "}
+                <strong>{userResponse.replace("_", " ")}</strong>
+              </p>
+              <p className="status-note">
+                You can change your response from the My Events page.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Event Description */}
         <div className="event-details-section">
           <h3>Description</h3>
@@ -390,97 +292,6 @@ const EventDetails = () => {
             ))}
           </div>
         </div>
-
-        {/* RSVP Section - Only show for students */}
-        {isStudent() && (
-          <div className="event-details-section">
-            <h3>RSVP</h3>
-            <div className="event-details-rsvp-buttons">
-              <button
-                onClick={() => updateStatus("Going")}
-                className={`event-details-rsvp-btn going ${
-                  userResponse === "going" ? "selected" : ""
-                }`}
-                disabled={userResponse === "going" || respondingToEvent}
-                title={
-                  userResponse === "going"
-                    ? "You're already going to this event"
-                    : "Mark as going"
-                }
-              >
-                {respondingToEvent
-                  ? "⏳"
-                  : userResponse === "going"
-                  ? "✓ Going"
-                  : "✔ Going"}
-              </button>
-              <button
-                onClick={() => updateStatus("Not Going")}
-                className={`event-details-rsvp-btn not-going ${
-                  userResponse === "not_going" ? "selected" : ""
-                }`}
-                disabled={userResponse === "not_going" || respondingToEvent}
-                title={
-                  userResponse === "not_going"
-                    ? "You're not going to this event"
-                    : "Mark as not going"
-                }
-              >
-                {respondingToEvent
-                  ? "⏳"
-                  : userResponse === "not_going"
-                  ? "✗ Not Going"
-                  : "✖ Not Going"}
-              </button>
-              <button
-                onClick={() => updateStatus("Maybe")}
-                className={`event-details-rsvp-btn maybe ${
-                  userResponse === "maybe" ? "selected" : ""
-                }`}
-                disabled={userResponse === "maybe" || respondingToEvent}
-                title={
-                  userResponse === "maybe"
-                    ? "You're marked as maybe"
-                    : "Mark as maybe"
-                }
-              >
-                {respondingToEvent
-                  ? "⏳"
-                  : userResponse === "maybe"
-                  ? "? Maybe"
-                  : "🤔 Maybe"}
-              </button>
-              {event.needsVolunteers && (
-                <button
-                  onClick={handleVolunteerResponse}
-                  className={`event-details-rsvp-btn volunteer ${
-                    userResponse === "volunteer" ? "selected" : ""
-                  }`}
-                  disabled={userResponse === "volunteer" || respondingToEvent}
-                  title={
-                    userResponse === "volunteer"
-                      ? "You've volunteered for this event"
-                      : "Volunteer for this event"
-                  }
-                >
-                  {respondingToEvent
-                    ? "⏳"
-                    : userResponse === "volunteer"
-                    ? "🙋‍♂️ Volunteered"
-                    : "🙋‍♂️ Volunteer"}
-                </button>
-              )}
-            </div>
-            {userResponse && (
-              <div className="event-details-current-status">
-                <p>
-                  Your current status:{" "}
-                  <strong>{userResponse.replace("_", " ")}</strong>
-                </p>
-              </div>
-            )}
-          </div>
-        )}
 
         {/* Additional Information */}
         {event.needsVolunteers && (

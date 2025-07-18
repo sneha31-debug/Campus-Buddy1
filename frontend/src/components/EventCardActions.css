@@ -1,0 +1,293 @@
+/* EventCardActions.css */
+
+.event-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.action-btn {
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  min-height: 36px;
+}
+
+.action-btn:hover {
+  background: #f8f9fa;
+  border-color: #d0d0d0;
+  transform: translateY(-1px);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.action-btn:disabled:hover {
+  background: white;
+  border-color: #e0e0e0;
+  transform: none;
+}
+
+/* View Details Button */
+.action-btn.view-details {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.action-btn.view-details:hover {
+  background: #0056b3;
+  border-color: #0056b3;
+}
+
+/* Going Button */
+.action-btn.going {
+  background: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+.action-btn.going:hover {
+  background: #218838;
+  border-color: #218838;
+}
+
+.action-btn.going.active {
+  background: #155724;
+  border-color: #155724;
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.3);
+}
+
+/* Maybe Button */
+.action-btn.maybe {
+  background: #ffc107;
+  color: #212529;
+  border-color: #ffc107;
+}
+
+.action-btn.maybe:hover {
+  background: #e0a800;
+  border-color: #e0a800;
+}
+
+.action-btn.maybe.active {
+  background: #d39e00;
+  border-color: #d39e00;
+  box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.3);
+}
+
+/* Not Going Button */
+.action-btn.not-going {
+  background: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
+
+.action-btn.not-going:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+
+.action-btn.not-going.active {
+  background: #bd2130;
+  border-color: #bd2130;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.3);
+}
+
+/* Volunteer Button */
+.action-btn.volunteer {
+  background: #17a2b8;
+  color: white;
+  border-color: #17a2b8;
+}
+
+.action-btn.volunteer:hover {
+  background: #138496;
+  border-color: #138496;
+}
+
+.action-btn.volunteer.active {
+  background: #117a8b;
+  border-color: #117a8b;
+  box-shadow: 0 0 0 2px rgba(23, 162, 184, 0.3);
+}
+
+/* Stats Button */
+.action-btn.stats {
+  background: #6f42c1;
+  color: white;
+  border-color: #6f42c1;
+}
+
+.action-btn.stats:hover {
+  background: #5a32a3;
+  border-color: #5a32a3;
+}
+
+/* Edit Button */
+.action-btn.edit {
+  background: #fd7e14;
+  color: white;
+  border-color: #fd7e14;
+}
+
+.action-btn.edit:hover {
+  background: #e8650e;
+  border-color: #e8650e;
+}
+
+/* Manage Button */
+.action-btn.manage {
+  background: #6c757d;
+  color: white;
+  border-color: #6c757d;
+}
+
+.action-btn.manage:hover {
+  background: #5a6268;
+  border-color: #5a6268;
+}
+
+/* Student Actions Layout */
+.student-actions {
+  justify-content: flex-start;
+}
+
+.student-actions .action-btn {
+  flex: 0 0 auto;
+}
+
+/* Club Actions Layout */
+.club-actions {
+  justify-content: space-between;
+}
+
+.club-actions .action-btn {
+  flex: 1;
+  max-width: 120px;
+}
+
+/* Default Actions Layout */
+.default-actions {
+  justify-content: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .event-actions {
+    gap: 6px;
+  }
+  
+  .action-btn {
+    padding: 6px 8px;
+    font-size: 11px;
+    min-height: 32px;
+  }
+  
+  .club-actions .action-btn {
+    flex: 1;
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .event-actions {
+    gap: 4px;
+  }
+  
+  .action-btn {
+    padding: 4px 6px;
+    font-size: 10px;
+    min-height: 28px;
+  }
+  
+  .student-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .student-actions .action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Loading State */
+.action-btn:disabled {
+  position: relative;
+}
+
+/* .action-btn:disabled:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  opacity: 0;
+} */
+
+.action-btn:disabled:hover:after {
+  opacity: 1;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Focus States for Accessibility */
+.action-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.action-btn.going:focus {
+  box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.25);
+}
+
+.action-btn.maybe:focus {
+  box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.25);
+}
+
+.action-btn.not-going:focus {
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+.action-btn.volunteer:focus {
+  box-shadow: 0 0 0 2px rgba(23, 162, 184, 0.25);
+}
+
+.action-btn.stats:focus {
+  box-shadow: 0 0 0 2px rgba(111, 66, 193, 0.25);
+}
+
+.action-btn.edit:focus {
+  box-shadow: 0 0 0 2px rgba(253, 126, 20, 0.25);
+}
+
+.action-btn.manage:focus {
+  box-shadow: 0 0 0 2px rgba(108, 117, 125, 0.25);
+}

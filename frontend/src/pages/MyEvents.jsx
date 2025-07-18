@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
+import EventCardActions from "../components/EventCardActions"; // Import the EventCardActions component
 
 const categoryMap = {
   "All": [],
@@ -57,6 +58,7 @@ const MyEvents = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [actionLoading, setActionLoading] = useState({}); // Track loading state for actions
   const navigate = useNavigate();
   const { user } = useAuth();
   const today = new Date();
@@ -170,6 +172,135 @@ const MyEvents = () => {
     }
   };
 
+  // Handle user response (going, maybe, not_going)
+  const handleUserResponse = async (eventId, response) => {
+    if (!user?.id) return;
+
+    setActionLoading((prev) => ({ ...prev, [eventId]: true }));
+
+    try {
+      const existingResponse = await fetch(
+        `http://localhost:3001/event_attendance?user_id=${user.id}&event_id=${eventId}`
+      );
+      const existingData = await existingResponse.json();
+
+      if (response === "not_going") {
+        // If user clicks "Not Going", remove the event from their responses
+        if (existingData.length > 0) {
+          // Delete the attendance record
+          await fetch(
+            `http://localhost:3001/event_attendance/${existingData[0].id}`,
+            {
+              method: "DELETE",
+            }
+          );
+        }
+
+        // Also remove from volunteers if they were volunteering
+        const volunteerResponse = await fetch(
+          `http://localhost:3001/event_volunteers?user_id=${user.id}&event_id=${eventId}`
+        );
+        const volunteerData = await volunteerResponse.json();
+
+        if (volunteerData.length > 0) {
+          await fetch(
+            `http://localhost:3001/event_volunteers/${volunteerData[0].id}`,
+            {
+              method: "DELETE",
+            }
+          );
+        }
+
+        // Remove from local state (this will hide the event from the page)
+        setUserResponses((prev) => {
+          const newResponses = { ...prev };
+          delete newResponses[eventId];
+          return newResponses;
+        });
+      } else {
+        // For going, maybe responses
+        if (existingData.length > 0) {
+          // Update existing response
+          await fetch(
+            `http://localhost:3001/event_attendance/${existingData[0].id}`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                ...existingData[0],
+                status: response,
+              }),
+            }
+          );
+        } else {
+          // Create new response
+          await fetch("http://localhost:3001/event_attendance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              user_id: user.id,
+              event_id: eventId,
+              status: response,
+            }),
+          });
+        }
+
+        // Update local state
+        setUserResponses((prev) => ({
+          ...prev,
+          [eventId]: response,
+        }));
+      }
+    } catch (err) {
+      console.error("Error updating user response:", err);
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [eventId]: false }));
+    }
+  };
+
+  // Handle volunteer response
+  const handleVolunteerResponse = async (eventId) => {
+    if (!user?.id) return;
+
+    setActionLoading((prev) => ({ ...prev, [eventId]: true }));
+
+    try {
+      const existingVolunteer = await fetch(
+        `http://localhost:3001/event_volunteers?user_id=${user.id}&event_id=${eventId}`
+      );
+      const existingData = await existingVolunteer.json();
+
+      if (existingData.length === 0) {
+        // Add volunteer
+        await fetch("http://localhost:3001/event_volunteers", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: user.id,
+            event_id: eventId,
+          }),
+        });
+
+        // Update local state
+        setUserResponses((prev) => ({
+          ...prev,
+          [eventId]: "volunteer",
+        }));
+      }
+    } catch (err) {
+      console.error("Error volunteering for event:", err);
+    } finally {
+      setActionLoading((prev) => ({ ...prev, [eventId]: false }));
+    }
+  };
+
+  // Handle show stats (for club users)
+  const handleShowStats = (event) => {
+    // You can implement this based on your needs
+    console.log("Show stats for event:", event);
+    // navigate(`/events/${event.id}/stats`);
+  };
+
   useEffect(() => {
     const savedTab = sessionStorage.getItem("myEventsTab");
     const savedCategory = sessionStorage.getItem("myEventsCategory");
@@ -242,10 +373,11 @@ const MyEvents = () => {
     );
   };
 
-  // Filter events to show only those the user has responded to
+  // Filter events to show only those the user has responded to positively
   const filteredEvents = events.filter((event) => {
     const userResponse = userResponses[event.id];
-    if (!userResponse) return false; // Only show events user has responded to
+    // Only show events where user has going, maybe, or volunteer response
+    if (!userResponse || userResponse === "not_going") return false;
 
     const eventDate = new Date(event.date);
     const isUpcoming = eventDate >= today;
@@ -264,10 +396,14 @@ const MyEvents = () => {
   });
 
   const getCategoryCount = (category) => {
-    return events.filter(
-      (event) =>
-        userResponses[event.id] && filterEventByCategory(event, category)
-    ).length;
+    return events.filter((event) => {
+      const userResponse = userResponses[event.id];
+      return (
+        userResponse &&
+        userResponse !== "not_going" &&
+        filterEventByCategory(event, category)
+      );
+    }).length;
   };
 
   const categories = Object.keys(categoryMap).map((name) => ({
@@ -311,7 +447,10 @@ const MyEvents = () => {
     Object.values(userResponses).forEach((response) => {
       if (counts.hasOwnProperty(response)) {
         counts[response]++;
-        counts.total++;
+        // Only count positive responses in total (exclude not_going)
+        if (response !== "not_going") {
+          counts.total++;
+        }
       }
     });
 
@@ -435,6 +574,10 @@ const MyEvents = () => {
             <p>
               No events found. Visit the Campus Events page to RSVP to events!
             </p>
+            <p className="no-events-hint">
+              Events will appear here when you respond with "Going", "Maybe", or
+              "Volunteer"
+            </p>
             <button
               className="browse-events-btn"
               onClick={() => navigate("/campus-events")}
@@ -506,12 +649,18 @@ const MyEvents = () => {
                         >
                           <FaCalendarPlus /> Add to Calendar
                         </button>
-                        <button
-                          className="my-events-details-btn"
-                          onClick={() => navigate(`/events/${event.id}`)}
-                        >
-                          View Details <FaArrowRight />
-                        </button>
+
+                        {/* Use EventCardActions component */}
+                        <EventCardActions
+                          event={event}
+                          userResponse={userResponse}
+                          isLoading={actionLoading[event.id] || false}
+                          onUserResponse={handleUserResponse}
+                          onVolunteerResponse={handleVolunteerResponse}
+                          onShowStats={handleShowStats}
+                          hideViewDetails={false} // Show view details button
+                          hideNotGoing={false} // Show not going button
+                        />
                       </>
                     )}
                   </div>

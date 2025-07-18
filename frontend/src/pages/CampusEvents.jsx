@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { TrendingUp, Calendar, Star, Heart } from "lucide-react";
 import { useAuth } from "../hook/useAuth";
 import EventStatisticsModal from "./EventStatistics";
+import EventCardActions from "../components/EventCardActions"; // Import the EventCardActions component
 import "./CampusEvents.css";
 
 const CampusEvents = () => {
@@ -33,13 +34,24 @@ const CampusEvents = () => {
       const response = await fetch(
         `http://localhost:3001/event_attendance?event_id=${eventId}`
       );
+
+      if (!response.ok) {
+        console.error(`HTTP error! Status: ${response.status}`);
+        return 0;
+      }
+
       const attendanceData = await response.json();
 
+      // Ensure we have an array
+      if (!Array.isArray(attendanceData)) {
+        console.error("Expected array but got:", typeof attendanceData);
+        return 0;
+      }
+
       // Count users who are "going" or "maybe"
-      const interestedCount = attendanceData.filter(
-        (attendance) =>
-          attendance.status === "going" || attendance.status === "maybe"
-      ).length;
+      const interestedCount = attendanceData.filter((attendance) => {
+        return attendance.status === "going" || attendance.status === "maybe";
+      }).length;
 
       return interestedCount;
     } catch (err) {
@@ -75,7 +87,7 @@ const CampusEvents = () => {
         eventsData.map(async (event) => {
           const club = clubsMap[event.club_id] || {};
 
-          // Calculate actual attendees count from database
+          // Always fetch fresh attendees count from event_attendance table
           const actualAttendeesCount = await calculateAttendeesCount(event.id);
 
           return {
@@ -92,7 +104,7 @@ const CampusEvents = () => {
             club: club.name || "Unknown Club",
             category: club.category || "General",
             eventType: event.event_type,
-            attendees: actualAttendeesCount, // Use calculated count instead of stored count
+            attendees: actualAttendeesCount, // Use calculated count from event_attendance
             status: event.status,
             needsVolunteers: event.needs_volunteers,
             imagePlaceholder: getCategoryEmoji(club.category),
@@ -161,6 +173,24 @@ const CampusEvents = () => {
     }
   };
 
+  // Refresh attendees count for a specific event
+  const refreshEventAttendeesCount = async (eventId) => {
+    try {
+      const updatedCount = await calculateAttendeesCount(eventId);
+
+      setEvents((prev) =>
+        prev.map((event) =>
+          event.id === eventId ? { ...event, attendees: updatedCount } : event
+        )
+      );
+
+      return updatedCount;
+    } catch (err) {
+      console.error("Error refreshing attendees count:", err);
+      return 0;
+    }
+  };
+
   // Handle user response (RSVP) with JSON Server
   const handleUserResponse = async (eventId, response) => {
     if (!user?.id || respondingToEvent === eventId) return;
@@ -215,48 +245,8 @@ const CampusEvents = () => {
         [eventId]: response,
       }));
 
-      // Update attendees count based on response changes
-      const currentEvent = events.find((e) => e.id === eventId);
-      let attendeesDelta = 0;
-
-      // Calculate the change in attendees count
-      if (previousResponse === null) {
-        // New response
-        if (response === "going" || response === "maybe") {
-          attendeesDelta = 1;
-        }
-      } else if (previousResponse !== response) {
-        // Changed response
-        const wasInterested =
-          previousResponse === "going" || previousResponse === "maybe";
-        const isInterested = response === "going" || response === "maybe";
-
-        if (wasInterested && !isInterested) {
-          attendeesDelta = -1;
-        } else if (!wasInterested && isInterested) {
-          attendeesDelta = 1;
-        }
-      }
-
-      // Update the event's attendees count if there's a change
-      if (attendeesDelta !== 0) {
-        const updatedCount = Math.max(
-          0,
-          currentEvent.attendees + attendeesDelta
-        );
-
-        await fetch(`http://localhost:3001/events/${eventId}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ attendees_count: updatedCount }),
-        });
-
-        setEvents((prev) =>
-          prev.map((event) =>
-            event.id === eventId ? { ...event, attendees: updatedCount } : event
-          )
-        );
-      }
+      // Refresh the attendees count from the database
+      await refreshEventAttendeesCount(eventId);
     } catch (err) {
       console.error("Error handling user response:", err);
     } finally {
@@ -444,87 +434,16 @@ const CampusEvents = () => {
             <span className="tag">{event.club}</span>
           </div>
 
-          {isStudent() ? (
-            <div className="student-actions">
-              <button
-                className="action-btn view-details"
-                onClick={() => navigate(`/events/${event.id}`)}
-              >
-                👁️ View Details
-              </button>
-              <button
-                className={`action-btn going ${
-                  userResponse === "going" ? "active" : ""
-                }`}
-                onClick={() => handleUserResponse(event.id, "going")}
-                disabled={userResponse === "going" || isLoading}
-                title={
-                  userResponse === "going"
-                    ? "You're already going to this event"
-                    : "Mark as going"
-                }
-              >
-                {isLoading
-                  ? "⏳"
-                  : userResponse === "going"
-                  ? "✓ Going"
-                  : "Going"}
-              </button>
-              <button
-                className={`action-btn maybe ${
-                  userResponse === "maybe" ? "active" : ""
-                }`}
-                onClick={() => handleUserResponse(event.id, "maybe")}
-                disabled={userResponse === "maybe" || isLoading}
-                title={
-                  userResponse === "maybe"
-                    ? "You're marked as maybe"
-                    : "Mark as maybe"
-                }
-              >
-                {isLoading
-                  ? "⏳"
-                  : userResponse === "maybe"
-                  ? "? Maybe"
-                  : "Maybe"}
-              </button>
-              {event.needsVolunteers && (
-                <button
-                  className={`action-btn volunteer ${
-                    userResponse === "volunteer" ? "active" : ""
-                  }`}
-                  onClick={() => handleVolunteerResponse(event.id)}
-                  disabled={userResponse === "volunteer" || isLoading}
-                  title={
-                    userResponse === "volunteer"
-                      ? "You've volunteered for this event"
-                      : "Volunteer for this event"
-                  }
-                >
-                  {isLoading
-                    ? "⏳"
-                    : userResponse === "volunteer"
-                    ? "🙋‍♂️ Volunteered"
-                    : "🙋‍♂️ Volunteer"}
-                </button>
-              )}
-            </div>
-          ) : (
-            <div className="club-actions">
-              <button
-                className="action-btn view-details"
-                onClick={() => navigate(`/events/${event.id}`)}
-              >
-                👁️ View Details
-              </button>
-              <button
-                className="action-btn stats"
-                onClick={() => handleShowStats(event)}
-              >
-                📊 Stats
-              </button>
-            </div>
-          )}
+          {/* Replace the inline buttons with EventCardActions component */}
+          <EventCardActions
+            event={event}
+            userResponse={userResponse}
+            isLoading={isLoading}
+            onUserResponse={handleUserResponse}
+            onVolunteerResponse={handleVolunteerResponse}
+            onShowStats={handleShowStats}
+            hideNotGoing={true}
+          />
         </div>
       </div>
     );

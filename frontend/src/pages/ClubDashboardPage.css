@@ -450,37 +450,33 @@ body {
 }
 
 .club-dash-action-btn.view {
-  background: var(--white);
-  color: var(--gray-600);
+  background: rgb(237, 237, 237);
+  color: rgb(25, 25, 25);
 }
 
 .club-dash-action-btn.view:hover {
-  background: var(--gray-50);
-  color: var(--gray-700);
+  background: rgb(0, 16, 36);
+  color: white;
 }
 
 .club-dash-action-btn.edit {
-  background: var(--primary);
-  color: var(--white);
-  border-color: var(--primary);
+  background: rgb(33, 118, 255);
+  color: rgb(255, 255, 255);
 }
 
 .club-dash-action-btn.edit:hover {
-  background: var(--primary-dark);
-  border-color: var(--primary-dark);
-  transform: translateY(-1px);
+  background: rgb(0, 16, 36);
+  color: white;
 }
 
 .club-dash-action-btn.delete {
-  background: var(--error);
-  color: var(--white);
-  border-color: var(--error);
+  background: rgb(246, 0, 0);
+  color: rgb(255, 255, 255);
 }
 
 .club-dash-action-btn.delete:hover {
-  background: #dc2626;
-  border-color: #dc2626;
-  transform: translateY(-1px);
+  background: rgb(36, 0, 0);
+  color: white;
 }
 
 /* Loading State */

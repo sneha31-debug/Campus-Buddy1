@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Footer.css';
 import {
-    FaFacebookF,
-    FaTwitter,
+    FaGithub,
+    FaYoutube,
     FaInstagram,
     FaLinkedinIn,
     FaEnvelope,
@@ -31,10 +31,10 @@ const Footer = () => {
                     <h2 className="gradient-heading">Campus-Buddy</h2>
                     <p>Connecting students with campus events and creating memorable experiences.</p>
                     <div className="social-icons">
-                        <a href="#" aria-label="Facebook"><FaFacebookF /></a>
-                        <a href="#" aria-label="Twitter"><FaTwitter /></a>
-                        <a href="#" aria-label="Instagram"><FaInstagram /></a>
-                        <a href="#" aria-label="LinkedIn"><FaLinkedinIn /></a>
+                        <a href="https://github.com/nst-sdc/campus-buddy" aria-label="GitHub" target="_blank" rel="noopener noreferrer"><FaGithub /></a>
+                        <a href="https://www.youtube.com/@NewtonSchoolOfTechnology-ADYPU" aria-label="YouTube" target="_blank" rel="noopener noreferrer"><FaYoutube /></a>
+                        <a href="https://www.instagram.com/newtonschooloftechnology_adypu/" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><FaInstagram /></a>
+                        <a href="https://www.linkedin.com/school/newton-school-of-technology/posts/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer"><FaLinkedinIn /></a>
                     </div>
                 </div>
 
@@ -42,9 +42,9 @@ const Footer = () => {
                     <h3>Quick Links</h3>
                     <ul className="no-bullets">
                         <li><Link to="/home">Home</Link></li>
-                        <li><Link to="/campusevents">Campus Events</Link></li>
-                        <li><Link to="/clubpage">Clubs Directory</Link></li>
-                        <li><a href="/home#howItWorksSection">About</a></li>
+                        <li><a href="/home#howItWorksSection">About Us</a></li>
+                        <li><Link to="/campusevents">Events</Link></li>
+                        <li><Link to="/clubpage">Clubs</Link></li>
                     </ul>
                 </div>
 

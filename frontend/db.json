@@ -310,6 +310,52 @@
       "is_active": true,
       "attendees_count": 0,
       "created_at": "2025-07-17T13:24:34.620Z"
+    },
+    {
+      "id": "6a95",
+      "title": "Workshop for Videography",
+      "description": "....",
+      "event_date": "2025-07-25",
+      "event_time": "09:37",
+      "venue": "Lab 2",
+      "created_by": "e74c9ea4-86d9-4fbd-b349-33d791352daa",
+      "club_id": "club_content",
+      "event_type": "workshop",
+      "tags": [
+        "workshop"
+      ],
+      "max_volunteers": 0,
+      "target_batch_year": 2028,
+      "needs_volunteers": "",
+      "rsvp_limit": 1,
+      "poster_url": "https://www.uscreen.tv/wp-content/uploads/2019/03/Creator-meetup-DC-906x515.jpg",
+      "status": "upcoming",
+      "is_active": true,
+      "attendees_count": 0,
+      "created_at": "2025-07-18T04:07:02.158Z"
+    },
+    {
+      "id": "2d99",
+      "title": "TOXIC Intro",
+      "description": "Introduction of 1st year students",
+      "event_date": "2025-08-05",
+      "event_time": "19:00",
+      "venue": "Your Space",
+      "created_by": "e74c9ea4-86d9-4fbd-b349-33d791352daa",
+      "club_id": "e61f",
+      "event_type": "batch_compulsory",
+      "tags": [
+        "networking"
+      ],
+      "max_volunteers": 0,
+      "target_batch_year": 2029,
+      "needs_volunteers": "",
+      "rsvp_limit": null,
+      "poster_url": "https://ik.imagekit.io/wifire/blog/wp-content/uploads/2020/03/10165001/evento-scaled.jpg",
+      "status": "upcoming",
+      "is_active": true,
+      "attendees_count": 3,
+      "created_at": "2025-07-18T04:27:44.624Z"
     }
   ],
   "clubs": [
@@ -438,6 +484,58 @@
       "is_active": true,
       "created_at": "2025-01-15T10:00:00.000Z",
       "created_by": "admin_001"
+    },
+    {
+      "id": "e61f",
+      "name": "The Toxic Club",
+      "description": "We are the Toxic Club",
+      "contact_email": "toxicplayz1210@gmail.com",
+      "category": "Cultural",
+      "contact_phone": "9726851618",
+      "website": "",
+      "is_active": true,
+      "created_at": "2025-07-18T03:59:43.588Z",
+      "updated_at": "2025-07-18T05:32:51.455Z",
+      "created_by": "e74c9ea4-86d9-4fbd-b349-33d791352daa"
+    },
+    {
+      "id": "fbdd",
+      "name": "The Toxic Club",
+      "description": "We are the Toxic Club",
+      "contact_email": "toxicplayz1210@gmail.com",
+      "category": "Cultural",
+      "contact_phone": "9726851618",
+      "website": "",
+      "is_active": true,
+      "created_at": "2025-07-18T03:59:43.590Z",
+      "updated_at": "2025-07-18T03:59:43.590Z",
+      "created_by": "e74c9ea4-86d9-4fbd-b349-33d791352daa"
+    },
+    {
+      "id": "a06c",
+      "name": "Creators Corner Club",
+      "description": "",
+      "contact_email": "nstcreatorscornerclub@gmail.com",
+      "category": "Other",
+      "contact_phone": "9726851618",
+      "website": "",
+      "is_active": true,
+      "created_at": "2025-07-18T04:21:19.266Z",
+      "updated_at": "2025-07-18T04:21:26.285Z",
+      "created_by": "4fc31721-f40e-446a-970e-a3a64e957112"
+    },
+    {
+      "id": "311c",
+      "name": "Creators Corner Club",
+      "description": "",
+      "contact_email": "nstcreatorscornerclub@gmail.com",
+      "category": "Other",
+      "contact_phone": "9726851618",
+      "website": "",
+      "is_active": true,
+      "created_at": "2025-07-18T04:21:19.268Z",
+      "updated_at": "2025-07-18T04:21:19.268Z",
+      "created_by": "4fc31721-f40e-446a-970e-a3a64e957112"
     }
   ],
   "eventTypes": [
@@ -706,6 +804,20 @@
       "user_id": "3bd48815-f7f4-42ac-b263-f05a9115dbbc",
       "status": "not_going",
       "updated_at": "2025-07-17T16:52:55.271Z"
+    },
+    {
+      "id": "79f6",
+      "event_id": 6,
+      "user_id": "3dd65a45-359c-4d88-8940-4f222bc53815",
+      "status": "going",
+      "updated_at": "2025-07-18T04:14:33.313Z"
+    },
+    {
+      "id": "02c1",
+      "event_id": "2d99",
+      "user_id": "3dd65a45-359c-4d88-8940-4f222bc53815",
+      "status": "going",
+      "updated_at": "2025-07-18T04:32:07.782Z"
     }
   ],
   "event_volunteers": [
@@ -792,6 +904,21 @@
       "department": "Computer Science",
       "phone": null,
       "created_at": "2025-07-17T10:46:42.025Z"
+    },
+    {
+      "id": "user_1752812429602_9n0t6l5j1",
+      "name": "Krish Patil",
+      "email": "nstcreatorscornerclub@gmail.com",
+      "role": "club",
+      "club_name": "Creators Corner Club",
+      "club_category": "Other",
+      "established_year": 2024,
+      "description": null,
+      "club_email": "nstcreatorscornerclub@gmail.com",
+      "website": null,
+      "contact_person": "Krish Patil",
+      "contact_phone": "9726851618",
+      "created_at": "2025-07-18T04:20:29.602Z"
     }
   ],
   "metadata": {

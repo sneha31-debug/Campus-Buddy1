@@ -443,7 +443,11 @@ body {
   box-shadow: 0 8px 32px rgba(85, 93, 106, 0.1);
   transition: all 0.3s ease;
   display: flex;
-  flex-direction: column; /* Ensure vertical stacking */
+  flex-direction: column;
+  min-height: 420px;
+  height: 100%;
+  max-width: 600px;
+  width: 100%;
 }
 
 .event-card:hover {
@@ -455,20 +459,26 @@ body {
 .event-image {
   width: 100%;
   height: 200px;
+  max-width: 600px;
+  min-width: 100%;
   background: linear-gradient(135deg, #3c82f6 0%, #2149b9 50%, #38578c 100%);
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  flex-shrink: 0; /* Prevent image from shrinking */
+  flex-shrink: 0;
 }
 
 .event-image img {
   width: 100%;
   height: 100%;
+  min-width: 100%;
+  min-height: 200px;
+  max-width: 600px;
+  max-height: 200px;
   object-fit: cover;
-  display: block; /* Remove any inline spacing */
+  display: block;
 }
 
 .event-placeholder {
@@ -518,9 +528,11 @@ body {
 
 .event-content {
   padding: 24px;
-  flex: 1; /* Take up remaining space */
+  flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 220px;
+  box-sizing: border-box;
 }
 
 .event-header {
@@ -534,10 +546,11 @@ body {
 .event-title {
   font-size: 20px;
   font-weight: 600;
-  background: linear-gradient(135deg, #38578c 0%, #2149b9 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #1a1a1a; /* Blackish color */
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
   line-height: 1.3;
   flex: 1;
 }
@@ -607,6 +620,12 @@ body {
   font-size: 14px;
   line-height: 1.6;
   margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 4.8em; /* 3 lines * 1.6 line-height * font-size */
 }
 
 .event-details {
@@ -655,583 +674,146 @@ body {
   justify-content: flex-start;
 }
 
-.action-btn {
-  padding: 10px 16px;
+.campus-action-btn {
+  padding: 10px 18px;
   border-radius: 8px;
-  border: 2px solid transparent;
+  border: none;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  background: linear-gradient(135deg, #f6f6f7 0%, #ccdaf6 100%);
-  color: #555d6a;
-  min-width: 85px;
-  height: 38px;
-  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
+  gap: 6px;
   white-space: nowrap;
-  flex-shrink: 0;
+  min-width: 100px;
+  height: 40px;
   box-sizing: border-box;
-}
-
-.action-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(85, 93, 106, 0.2);
-}
-/* Club specific button styling */
-.club-actions .action-btn {
-  min-width: 85px;
-  height: 38px;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.club-actions .action-btn.view-details {
-  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
-  color: #3730a3;
-}
-
-.club-actions .action-btn.stats {
-  background: linear-gradient(135deg, #ccdaf6 0%, #a5b4fc 100%);
-  color: #2149b9;
-}
-
-.club-actions .action-btn.edit {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  color: #92400e;
-}
-
-.club-actions .action-btn.delete {
-  background: linear-gradient(135deg, #fee2e2 0%, #fca5a5 100%);
-  color: #991b1b;
-}
-/* Student button consistency */
-.student-actions .action-btn {
-  min-width: 85px;
-  height: 38px;
-}
-
-.student-actions .action-btn.view-details {
-  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
-  color: #3730a3;
-}
-
-/* Student Action Button Variants */
-.action-btn.going {
-  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-  color: #166534;
-}
-
-.action-btn.going.active {
-  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(22, 101, 52, 0.3);
-}
-
-.action-btn.not-going {
-  background: linear-gradient(135deg, #fee2e2 0%, #fca5a5 100%);
-  color: #991b1b;
-}
-
-.action-btn.not-going.active {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
-}
-
-.action-btn.maybe {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  color: #92400e;
-}
-
-.action-btn.maybe.active {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
-}
-
-.action-btn.volunteer {
-  background: linear-gradient(135deg, #ccdaf6 0%, #3c82f6 100%);
-  color: #2149b9;
-}
-
-.action-btn.volunteer.active {
-  background: linear-gradient(135deg, #2e64d6 0%, #2149b9 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(46, 100, 214, 0.4);
-}
-
-/* Club Action Button Variants */
-.action-btn.stats {
-  background: linear-gradient(135deg, #ccdaf6 0%, #3c82f6 100%); /* moon-raker to dodger-blue */
-  color: #2149b9; /* persian-blue */
-}
-
-.action-btn.edit {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.action-btn.delete {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-/* No Events Message */
-.no-events {
-  text-align: center;
-  padding: 60px 20px;
-  color: #95969b; /* manatee */
-}
-
-.no-events p {
-  font-size: 18px;
-}
-/* Edit Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease-out;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .main-content {
-    flex-direction: column;
-    align-items: center;
-  }
-  .events-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-  .main-content {
-    flex-direction: column;
-    align-items: center;
-  }
-  .events-content {
-    max-width: 100%;
-    padding: 0 8px;
-  }
-  .events-grid {
-    grid-template-columns: 1fr;
-    padding: 0;
-  }
-}
-
-@media (max-width: 480px) {
-  .app-title {
-    font-size: 24px;
-  }
-  
-  .app-subtitle {
-    font-size: 14px;
-  }
-  
-  .tabs {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .tab {
-    flex: 1;
-    text-align: center;
-  }
-}
-@media (max-width: 768px) {
-  .event-image {
-    height: 160px; /* Slightly smaller on mobile */
-  }
-  
-  .event-content {
-    padding: 20px;
-  }
-  
-  .event-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  
-  .category-badge {
-    align-self: flex-start;
-  }
-  
-  .student-actions,
-  .club-actions {
-    justify-content: flex-start;
-  }
-}
-
-@media (max-width: 480px) {
-  .event-image {
-    height: 140px;
-  }
-  
-  .event-content {
-    padding: 16px;
-  }
-  
-  .event-title {
-    font-size: 18px;
-  }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.modal-container {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(226, 232, 240, 0.6);
-  border-radius: 20px;
-  padding: 0;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow: hidden;
-  animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-  from { 
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-  to { 
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.modal-header {
-  background: linear-gradient(135deg, #3c82f6 0%, #2e64d6 100%);
-  color: white;
-  padding: 24px 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.modal-header h2 {
-  font-size: 24px;
-  font-weight: 600;
-  margin: 0;
-}
-
-.close-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 28px;
-  cursor: pointer;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.close-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.1);
-}
-
-.edit-form {
-  padding: 30px;
-  max-height: 60vh;
-  overflow-y: auto;
-}
-
-.form-group {
-  margin-bottom: 24px;
-}
-
-.form-group label {
-  display: block;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 8px;
-  font-size: 14px;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #e5e7eb;
-  border-radius: 10px;
-  font-size: 14px;
-  background: white;
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(60, 130, 246, 0.08);
   outline: none;
-  border-color: #3c82f6;
-  box-shadow: 0 0 0 3px rgba(60, 130, 246, 0.1);
 }
 
-.form-group textarea {
-  resize: vertical;
-  min-height: 80px;
+.campus-action-btn.view-details {
+  background: linear-gradient(135deg, #4388ff 0%, #7350ff 100%);
+  color: #fff;
 }
-
-.form-group input[type="checkbox"] {
-  width: auto;
-  margin-right: 8px;
-  transform: scale(1.2);
-  accent-color: #3c82f6;
-}
-
-.form-group label:has(input[type="checkbox"]) {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.form-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  padding-top: 24px;
-  border-top: 1px solid #e5e7eb;
-  margin-top: 24px;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #3c82f6 0%, #2e64d6 100%);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
-  min-width: 120px;
-}
-
-.btn-primary:hover {
+.campus-action-btn.view-details:hover {
   background: linear-gradient(135deg, #2e64d6 0%, #2149b9 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(60, 130, 246, 0.4);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 24px rgba(67, 136, 255, 0.18);
 }
 
-.btn-secondary {
-  background: #f3f4f6;
-  color: #374151;
-  border: 2px solid #e5e7eb;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
-  min-width: 120px;
+.campus-action-btn.going {
+  background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+  color: #fff;
+}
+.campus-action-btn.going:hover {
+  background: linear-gradient(135deg, #059669 0%, #065f46 100%);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 24px rgba(52, 211, 153, 0.18);
 }
 
-.btn-secondary:hover {
-  background: #e5e7eb;
-  border-color: #d1d5db;
-  transform: translateY(-1px);
+.campus-action-btn.maybe {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e42 100%);
+  color: #fff;
+}
+.campus-action-btn.maybe:hover {
+  background: linear-gradient(135deg, #f59e42 0%, #b45309 100%);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 24px rgba(251, 191, 36, 0.18);
 }
 
-/* User role display styling */
-.user-role-display {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%);
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: 1px solid rgba(226, 232, 240, 0.6);
-  backdrop-filter: blur(10px);
+.campus-action-btn.not-going {
+  background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+  color: #fff;
+}
+.campus-action-btn.not-going:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 24px rgba(248, 113, 113, 0.18);
 }
 
-.role-label {
-  font-size: 14px;
-  font-weight: 500;
-  color: #374151;
+.campus-action-btn.volunteer {
+  background: linear-gradient(135deg, #a78bfa 0%, #6366f1 100%);
+  color: #fff;
+}
+.campus-action-btn.volunteer:hover {
+  background: linear-gradient(135deg, #6366f1 0%, #3730a3 100%);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.18);
 }
 
-.role-badge {
-  font-size: 16px;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #3c82f6 0%, #2e64d6 100%);
-  border-radius: 50%;
-  color: white;
-  font-size: 12px;
+.campus-action-btn.stats {
+  background: linear-gradient(135deg, #c084fc 0%, #7c3aed 100%);
+  color: #fff;
+}
+.campus-action-btn.stats:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 24px rgba(192, 132, 252, 0.18);
 }
 
-/* Responsive improvements */
-@media (max-width: 768px) {
-  .modal-container {
-    width: 95%;
-    max-height: 95vh;
-  }
-  
-  .modal-header {
-    padding: 20px 24px;
-  }
-  
-  .modal-header h2 {
-    font-size: 20px;
-  }
-  
-  .edit-form {
-    padding: 24px;
-  }
-  
-  .form-actions {
-    flex-direction: column;
-  }
-  
-  .btn-primary,
-  .btn-secondary {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .student-actions,
-  .club-actions {
-    gap: 6px;
-  }
-  
-  .action-btn {
-    min-width: 70px;
-    padding: 8px 12px;
-    font-size: 13px;
-  }
-  
-  .club-actions .action-btn {
-    min-width: 75px;
-    height: 36px;
-  }
+.campus-action-btn:focus {
+  outline: 2px solid #4388ff;
+  outline-offset: 2px;
 }
 
-@media (max-width: 480px) {
-  .student-actions,
-  .club-actions {
-    justify-content: center;
-    gap: 4px;
-  }
-  
-  .action-btn {
-    min-width: 60px;
-    padding: 6px 10px;
-    font-size: 12px;
-  }
-  
-  .club-actions .action-btn {
-    min-width: 65px;
-    height: 34px;
-  }
-}
-/* Enhanced hover effects for club buttons */
-.club-actions .action-btn.stats:hover {
-  background: linear-gradient(135deg, #a5b4fc 0%, #8b5cf6 100%);
-  color: #1e1b4b;
-  transform: translateY(-2px);
-}
-
-.club-actions .action-btn.edit:hover {
-  background: linear-gradient(135deg, #fde68a 0%, #f59e0b 100%);
-  color: #78350f;
-  transform: translateY(-2px);
-}
-
-.club-actions .action-btn.delete:hover {
-  background: linear-gradient(135deg, #fca5a5 0%, #ef4444 100%);
-  color: #7f1d1d;
-  transform: translateY(-2px);
-}
-
-/* Fix for floating stats positioning */
-@media (max-width: 1024px) {
-  .campus-events {
-    margin-right: 0;
-  }
-}
-/* Add these styles to your CampusEvents.css */
-
-.action-btn:disabled {
+.campus-action-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
-.action-btn:disabled:hover {
+.campus-action-btn:disabled:hover {
   transform: none;
   box-shadow: none;
   opacity: 0.6;
 }
 
-.action-btn.active {
+.campus-action-btn.active {
   background-color: #4CAF50;
   color: white;
   border: 2px solid #4CAF50;
 }
 
-.action-btn.going.active {
+.campus-action-btn.going.active {
   background-color: #4CAF50;
   border-color: #4CAF50;
 }
 
-.action-btn.maybe.active {
+.campus-action-btn.maybe.active {
   background-color: #FF9800;
   border-color: #FF9800;
 }
 
-.action-btn.not-going.active {
+.campus-action-btn.not-going.active {
   background-color: #f44336;
   border-color: #f44336;
 }
 
-.action-btn.volunteer.active {
+.campus-action-btn.volunteer.active {
   background-color: #2196F3;
   border-color: #2196F3;
 }
 
 /* Optional: Add a subtle animation for state changes */
-.action-btn {
+.campus-action-btn {
   transition: all 0.2s ease-in-out;
 }
 
 /* Optional: Add a tooltip-like effect for disabled buttons */
-.action-btn:disabled {
+.campus-action-btn:disabled {
   position: relative;
 }
 
-.action-btn:disabled::after {
+.campus-action-btn:disabled::after {
   content: attr(title);
   position: absolute;
   bottom: 100%;
@@ -1249,7 +831,7 @@ body {
   z-index: 1000;
 }
 
-.action-btn:disabled:hover::after {
+.campus-action-btn:disabled:hover::after {
   opacity: 1;
 }
 

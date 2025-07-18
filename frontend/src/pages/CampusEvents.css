@@ -114,16 +114,15 @@ body {
 }
 /* Floating Quick Stats */
 .floating-quick-stats {
-  position: fixed;
+  position: absolute;
   top: 100px;
   right: 20px;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px); /* Fixed typo: was "backdop-filter" */
   border: 1px solid rgba(226, 232, 240, 0.6);
   border-radius: 16px;
-  padding: 20px;
+  padding: 15px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
   min-width: 280px;
   max-width: 300px;
 }
@@ -131,8 +130,8 @@ body {
 .floating-stats-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 6px;
+  margin-bottom: 12px;
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(226, 232, 240, 0.6);
 }
@@ -152,13 +151,13 @@ body {
 .floating-stats-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .floating-stat-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 12px 16px;
   background: rgba(248, 250, 252, 0.8);
   border: 1px solid rgba(226, 232, 240, 0.4);
@@ -248,66 +247,62 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 8px;
+  list-style: none;
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 16px;
   margin: 0 auto 24px auto;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(204, 218, 246, 0.2) 100%); /* white to moon-raker with opacity */
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(204, 218, 246, 0.3);
-  padding: 3px;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(166, 181, 220, 0.825); /* shuttle-gray shadow */
   width: fit-content;
 }
 
-/* Tab Button Base Styles */
 .content-tab {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 18px;
-  border: none;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 14px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  color: #374151;
+  text-decoration: none;
   font-weight: 500;
-  color: #6366f1;
-  outline: none;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
   position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
+
 .content-tab::before {
-  content: '';
+  content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(99, 101, 241, 0.177), rgba(92, 115, 246, 0.05));
+  inset: 0;
+  background: linear-gradient(135deg, #2890ff, #5d51ff);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.2s ease;
   z-index: -1;
+  border-radius: 12px;
+}
+
+.content-tab:hover::before {
+  opacity: 0.3;
 }
 
 .content-tab:hover {
-  background: rgba(255, 255, 255, 0.9);
+  color: #1e40af;
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
-  color: #4338ca;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
-.content-tab:hover::before {
-  opacity: 1;
-}
+
 .content-tab.active {
-  background: linear-gradient(135deg, #5694f0 0%, #4b64f1 100%);
+  background: linear-gradient(135deg, #2890ff, #5d51ff);
   color: white;
-  transform: translateY(-2px); 
-  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 12px rgba(55, 55, 55, 0.266);
 }
-.content-tab.active::before {
-  opacity: 0;
+
+.content-tab.active:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(60, 60, 60, 0.251);
 }
 
 /* Count Badge Styles */
@@ -322,10 +317,9 @@ body {
   min-width: 28px;
   text-align: center;
   line-height: 1.2;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   border: 1px solid rgba(99, 102, 241, 0.2);
 }
-
 
 /* Count styles for active tab */
 .content-tab.active .tab-count {
@@ -335,29 +329,14 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Alternative: If you want the count to blend with active tab */
-.content-tab.active .tab-count-blend {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-}
-
-/* Container for tabs */
-.tab-container {
-  display: flex;
-  gap: 12px;
-  margin: 16px 0;
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .content-tabs {
-    margin: 0 auto 24px auto;
     padding: 4px;
-    border-radius: 12px;
   }
   
   .content-tab {
-    padding: 10px 14px;
+    padding: 8px 12px;
     font-size: 13px;
     gap: 6px;
   }
@@ -374,11 +353,12 @@ body {
   outline: 2px solid rgba(99, 102, 241, 0.5);
   outline-offset: 2px;
 }
+
 .content-tab:focus:not(:focus-visible) {
   outline: none;
 }
 
-/* Disabled state (if needed) */
+/* Disabled state */
 .content-tab:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -386,42 +366,9 @@ body {
 }
 
 .content-tab:disabled:hover {
-  background: rgba(255, 255, 255, 0.7);
+  background: transparent;
   transform: none;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
-}
-/* Animation for smooth count updates */
-.tab-count {
-  animation: countPulse 0.3s ease-out;
-}
-
-@keyframes countPulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-/* Smooth transitions for theme changes */
-.content-tabs,
-.content-tab,
-.tab-count {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Additional hover effects for better UX */
-.content-tab:hover .tab-count {
-  transform: scale(1.05);
-}
-
-.content-tab.active:hover .tab-count {
-  transform: scale(1.02);
+  box-shadow: none;
 }
 
 /* Events Grid */
@@ -668,7 +615,7 @@ body {
 .club-actions {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   margin-top: auto;
   align-items: center;
   justify-content: flex-start;
@@ -1064,84 +1011,4 @@ body {
 .cat-label {
   font-weight: 500;
   font-size: 14px;
-}
-.floating-quick-stats {
-  position: fixed;
-  top: 100px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px); /* Fixed typo: was "backdop-filter" */
-  border: 1px solid rgba(226, 232, 240, 0.6);
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  min-width: 280px;
-  max-width: 300px;
-}
-
-.floating-stats-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
-}
-
-.floating-stats-icon {
-  width: 18px;
-  height: 18px;
-  color: #3b82f6;
-}
-
-.floating-stats-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.floating-stats-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.floating-stat-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background: rgba(248, 250, 252, 0.8);
-  border: 1px solid rgba(226, 232, 240, 0.4);
-  border-radius: 10px;
-  transition: all 0.2s ease;
-}
-
-.floating-stat-item:hover {
-  background: rgba(243, 244, 246, 0.9);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.floating-stat-item .stat-icon {
-  width: 16px;
-  height: 16px;
-  color: #3b82f6;
-  flex-shrink: 0;
-}
-
-.floating-stat-label {
-  font-size: 14px;
-  color: #6b7280;
-  flex: 1;
-  font-weight: 500;
-}
-
-.floating-stat-number {
-  font-size: 18px;
-  font-weight: 700;
-  color: #3b82f6;
-  min-width: 24px;
-  text-align: right;
 }

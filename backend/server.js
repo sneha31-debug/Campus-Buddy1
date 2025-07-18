@@ -22,10 +22,15 @@ const middlewares = jsonServer.defaults({
   static: "./dist", // Vite builds to 'dist' folder
 });
 
-// Enable CORS with specific options
+// Enable CORS with specific options - Updated for production
 server.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:5173"], // Common React/Vite ports
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:5173",
+      /^https:\/\/.*\.render\.com$/, // Allow all Render domains
+      /^https:\/\/.*\.onrender\.com$/, // Allow all onrender domains
+    ],
     credentials: true,
   })
 );
@@ -39,14 +44,28 @@ server.use((req, res, next) => {
 // Use default middlewares (logger, static, cors and no-cache)
 server.use(middlewares);
 
+// Helper function to get the correct base URL
+function getBaseURL(req) {
+  // Check if we're on Render (production)
+  if (
+    req.get("host").includes(".render.com") ||
+    req.get("host").includes(".onrender.com")
+  ) {
+    return `https://${req.get("host")}`;
+  }
+  // For localhost development
+  return `${req.protocol}://${req.get("host")}`;
+}
+
 // Custom routes before JSON Server router
 // Root endpoint showing API routes
 server.get("/", (req, res) => {
-  const baseURL = req.protocol + "://" + req.get("host");
+  const baseURL = getBaseURL(req);
   res.json({
     message: "Campus Buddy API",
     version: "1.0.0",
     timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || "development",
     routes: {
       "GET /api/events": baseURL + "/api/events",
       "GET /api/clubs": baseURL + "/api/clubs",
@@ -72,12 +91,15 @@ server.get("/health", (req, res) => {
     status: "healthy",
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
+    environment: process.env.NODE_ENV || "development",
+    host: req.get("host"),
+    url: getBaseURL(req),
   });
 });
 
-// API documentation endpoint at /api
+// API documentation endpoint at /api - Updated for production
 server.get("/api", (req, res) => {
-  const baseURL = req.protocol + "://" + req.get("host");
+  const baseURL = getBaseURL(req);
 
   // Get all available routes from the router
   const db = router.db.getState();
@@ -165,6 +187,15 @@ server.get("/api", (req, res) => {
             .header p {
                 font-size: 1.2em;
                 opacity: 0.9;
+            }
+            
+            .environment-badge {
+                display: inline-block;
+                background: rgba(255,255,255,0.2);
+                padding: 5px 15px;
+                border-radius: 20px;
+                font-size: 0.9em;
+                margin-top: 10px;
             }
             
             .stats {
@@ -326,6 +357,22 @@ server.get("/api", (req, res) => {
                 color: #64748b;
             }
             
+            .copy-btn {
+                background: #4f46e5;
+                color: white;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.8em;
+                margin-left: 10px;
+                transition: background 0.2s;
+            }
+            
+            .copy-btn:hover {
+                background: #3730a3;
+            }
+            
             @media (max-width: 768px) {
                 .stats {
                     flex-direction: column;
@@ -349,6 +396,9 @@ server.get("/api", (req, res) => {
             <div class="header">
                 <h1>🎓 Campus Buddy API</h1>
                 <p>RESTful API for campus event management</p>
+                <div class="environment-badge">🌐 ${
+                  baseURL.includes("render") ? "Production" : "Development"
+                }</div>
             </div>
             
             <div class="stats">
@@ -419,8 +469,29 @@ server.get("/api", (req, res) => {
             
             <div class="footer">
                 <p>📚 Campus Buddy API • Built with JSON Server • <a href="${baseURL}/" style="color: #4f46e5;">API Documentation</a></p>
+                <p style="margin-top: 10px; font-size: 0.8em;">Server running on: ${baseURL}</p>
             </div>
         </div>
+        
+        <script>
+            // Add copy functionality for URLs
+            document.querySelectorAll('.endpoint-url').forEach(url => {
+                url.style.cursor = 'pointer';
+                url.addEventListener('click', () => {
+                    navigator.clipboard.writeText(url.textContent);
+                    
+                    // Show feedback
+                    const originalText = url.textContent;
+                    url.textContent = '📋 Copied!';
+                    url.style.color = '#22c55e';
+                    
+                    setTimeout(() => {
+                        url.textContent = originalText;
+                        url.style.color = '#4f46e5';
+                    }, 2000);
+                });
+            });
+        </script>
     </body>
     </html>
   `);
@@ -460,6 +531,17 @@ server.listen(port, () => {
   console.log(`📚 API Documentation: http://localhost:${port}/`);
   console.log(`🔗 API Endpoints: http://localhost:${port}/api`);
   console.log(`❤️  Health Check: http://localhost:${port}/health`);
+
+  // Show production URLs if deployed
+  if (process.env.RENDER_EXTERNAL_URL) {
+    console.log(`\n🌐 Production URLs:`);
+    console.log(`   📚 API Documentation: ${process.env.RENDER_EXTERNAL_URL}/`);
+    console.log(`   🔗 API Endpoints: ${process.env.RENDER_EXTERNAL_URL}/api`);
+    console.log(
+      `   ❤️  Health Check: ${process.env.RENDER_EXTERNAL_URL}/health`
+    );
+  }
+
   console.log(`\n📋 Available Routes:`);
   console.log(`   • GET /api/events - List all events`);
   console.log(`   • GET /api/clubs - List all clubs`);

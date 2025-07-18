@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
 import "./EventDetails.css";
 import { FaArrowLeft } from "react-icons/fa";
+import ApiService from "../services/api";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -16,17 +17,12 @@ const EventDetails = () => {
   // Function to calculate actual attendees count from database
   const calculateAttendeesCount = async (eventId) => {
     try {
-      const response = await fetch(
-        `http://localhost:3001/event_attendance?event_id=${eventId}`
-      );
-      const attendanceData = await response.json();
-
+      const attendanceData = await ApiService.getEventAttendanceByEvent(eventId);
       // Count users who are "going" or "maybe"
       const interestedCount = attendanceData.filter(
         (attendance) =>
           attendance.status === "going" || attendance.status === "maybe"
       ).length;
-
       return interestedCount;
     } catch (err) {
       console.error("Error calculating attendees count:", err);
@@ -39,23 +35,12 @@ const EventDetails = () => {
     try {
       setLoading(true);
       setError(null);
-
       // Fetch event data
-      const eventResponse = await fetch(`http://localhost:3001/events/${id}`);
-      if (!eventResponse.ok) {
-        throw new Error(`Event not found`);
-      }
-      const eventData = await eventResponse.json();
-
+      const eventData = await ApiService.getEventById(id);
       // Fetch club data for additional information
-      const clubResponse = await fetch(
-        `http://localhost:3001/clubs/${eventData.club_id}`
-      );
-      const clubData = await clubResponse.json();
-
+      const clubData = await ApiService.getClubById(eventData.club_id);
       // Calculate actual attendees count from database
       const actualAttendeesCount = await calculateAttendeesCount(eventData.id);
-
       // Transform the data to match expected format
       const transformedEvent = {
         id: eventData.id,
@@ -91,7 +76,6 @@ const EventDetails = () => {
         clubId: eventData.club_id,
         targetBatchYear: eventData.target_batch_year,
       };
-
       setEvent(transformedEvent);
     } catch (err) {
       console.error("Error fetching event details:", err);
@@ -104,15 +88,11 @@ const EventDetails = () => {
   // Fetch user's response to this event
   const fetchUserResponse = async () => {
     if (!user?.id) return;
-
     try {
-      const response = await fetch(
-        `http://localhost:3001/event_attendance?event_id=${id}&user_id=${user.id}`
-      );
-      const data = await response.json();
-
-      if (data.length > 0) {
-        setUserResponse(data[0].status);
+      const data = await ApiService.getEventAttendanceByEvent(id);
+      const userData = data.filter((a) => a.user_id === user.id);
+      if (userData.length > 0) {
+        setUserResponse(userData[0].status);
       }
     } catch (err) {
       console.error("Error fetching user response:", err);

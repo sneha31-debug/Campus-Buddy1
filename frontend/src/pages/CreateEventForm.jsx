@@ -3,6 +3,7 @@ import { Calendar, Clock, Upload, X, Plus } from "lucide-react";
 import { useAuth } from "../hook/useAuth";
 import { useToast } from "../components/ToastContext.jsx";
 import "./CreateEventForm.css";
+import ApiService from "../services/api";
 
 const CreateEventForm = () => {
   const { addToast } = useToast();
@@ -44,25 +45,17 @@ const CreateEventForm = () => {
   // Fetch or create club for the current user
   const fetchOrCreateUserClub = useCallback(async () => {
     if (!user || !isClub()) return;
-
     try {
       const metadata = user.user_metadata || {};
       const clubName = metadata.club_name || "";
       const clubEmail = metadata.email || user.email || "";
-
       // First, try to find existing club by user ID or email
-      const response = await fetch(`http://localhost:3001/clubs`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const clubs = await response.json();
-
+      const clubs = await ApiService.getClubs();
       // Look for existing club by user ID first, then by email
       let existingClub = clubs.find(
         (club) =>
           club.created_by === user.id || club.contact_email === clubEmail
       );
-
       if (existingClub) {
         // Update existing club if needed
         const updatedClubData = {
@@ -72,24 +65,10 @@ const CreateEventForm = () => {
           updated_at: new Date().toISOString(),
           created_by: user.id, // Ensure user ID is set
         };
-
-        const updateResponse = await fetch(
-          `http://localhost:3001/clubs/${existingClub.id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedClubData),
-          }
-        );
-
-        if (updateResponse.ok) {
-          const updatedClub = await updateResponse.json();
-          setCurrentUserClub(updatedClub);
-          setSelectedClubId(updatedClub.id);
-          console.log("✅ Updated existing club:", updatedClub);
-        }
+        const updatedClub = await ApiService.updateClub(existingClub.id, updatedClubData);
+        setCurrentUserClub(updatedClub);
+        setSelectedClubId(updatedClub.id);
+        console.log("✅ Updated existing club:", updatedClub);
       } else {
         // Create new club if none exists
         const newClubData = {
@@ -104,26 +83,14 @@ const CreateEventForm = () => {
           updated_at: new Date().toISOString(),
           created_by: user.id,
         };
-
-        const createResponse = await fetch("http://localhost:3001/clubs", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newClubData),
+        const createdClub = await ApiService.createClub(newClubData);
+        setCurrentUserClub(createdClub);
+        setSelectedClubId(createdClub.id);
+        console.log("✅ Created new club:", createdClub);
+        addToast({
+          type: "success",
+          message: "Club profile created successfully!",
         });
-
-        if (createResponse.ok) {
-          const createdClub = await createResponse.json();
-          setCurrentUserClub(createdClub);
-          setSelectedClubId(createdClub.id);
-          console.log("✅ Created new club:", createdClub);
-
-          addToast({
-            type: "success",
-            message: "Club profile created successfully!",
-          });
-        }
       }
     } catch (error) {
       console.error("Error handling user club:", error);
@@ -138,11 +105,7 @@ const CreateEventForm = () => {
   // Fetch event types from JSON server
   const fetchEventTypes = useCallback(async () => {
     try {
-      const response = await fetch("http://localhost:3001/eventTypes");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
+      const data = await ApiService.getEventTypes();
       setEventTypes(data);
     } catch (error) {
       console.error("Error fetching event types:", error);
@@ -157,11 +120,7 @@ const CreateEventForm = () => {
   // Fetch available tags from JSON server
   const fetchAvailableTags = useCallback(async () => {
     try {
-      const response = await fetch("http://localhost:3001/tags");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
+      const data = await ApiService.getTags();
       const tagNames = data.map((tag) => tag.name);
       setAvailableTags(tagNames || []);
     } catch (error) {
@@ -184,11 +143,7 @@ const CreateEventForm = () => {
   // Fetch clubs from JSON server
   const fetchClubs = useCallback(async () => {
     try {
-      const response = await fetch("http://localhost:3001/clubs");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
+      const data = await ApiService.getClubs();
       setAllClubs(data || []);
     } catch (error) {
       console.error("Error fetching clubs:", error);
@@ -237,7 +192,6 @@ const CreateEventForm = () => {
       });
       return;
     }
-
     setAddingClub(true);
     try {
       const clubData = {
@@ -250,26 +204,9 @@ const CreateEventForm = () => {
         updated_at: new Date().toISOString(),
         created_by: user?.id || "anonymous",
       };
-
-      const response = await fetch("http://localhost:3001/clubs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(clubData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const newClub = await response.json();
-
-      // Update clubs list and select the new club
+      const newClub = await ApiService.createClub(clubData);
       setAllClubs((prev) => [...prev, newClub]);
       setSelectedClubId(newClub.id);
-
-      // Reset form and hide it
       setNewClubData({
         name: "",
         description: "",
@@ -277,7 +214,6 @@ const CreateEventForm = () => {
         category: "",
       });
       setShowAddClubForm(false);
-
       addToast({
         type: "success",
         message: "Club added successfully!",
@@ -337,20 +273,16 @@ const CreateEventForm = () => {
       });
       return;
     }
-
     if (!selectedClubId) {
       addToast({ type: "error", message: "Please select a club." });
       return;
     }
-
     setSubmitting(true);
-
     try {
       // Validate event date is not in the past
       const eventDate = new Date(formData.event_date);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-
       if (eventDate < today) {
         addToast({
           type: "error",
@@ -359,7 +291,6 @@ const CreateEventForm = () => {
         setSubmitting(false);
         return;
       }
-
       const eventData = {
         title: formData.title.trim(),
         description: formData.description.trim(),
@@ -385,48 +316,22 @@ const CreateEventForm = () => {
         attendees_count: 0,
         created_at: new Date().toISOString(),
       };
-
       // Submit event to JSON Server
-      const response = await fetch("http://localhost:3001/events", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(eventData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const insertedEvent = await response.json();
-
+      const insertedEvent = await ApiService.createEvent(eventData);
       addToast({ type: "success", message: "Event created successfully!" });
       // Increment events_hosted count
       try {
-        const clubResponse = await fetch(
-          `http://localhost:3001/clubs/${selectedClubId}`
-        );
-        if (!clubResponse.ok)
-          throw new Error("Failed to fetch club for update");
-
-        const clubData = await clubResponse.json();
+        const clubData = await ApiService.getClubById(selectedClubId);
         const updatedClub = {
           ...clubData,
           events_hosted: (clubData.events_hosted || 0) + 1,
           updated_at: new Date().toISOString(),
         };
-
-        await fetch(`http://localhost:3001/clubs/${selectedClubId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedClub),
-        });
+        await ApiService.updateClub(selectedClubId, updatedClub);
         console.log("✅ Club event count updated!");
       } catch (err) {
         console.error("Failed to increment club events hosted:", err);
       }
-
       // Reset form
       setFormData({
         title: "",
@@ -442,14 +347,12 @@ const CreateEventForm = () => {
         max_volunteers: "",
       });
       setSelectedTags([]);
-
       // Keep the user's club selected for next event
       if (currentUserClub) {
         setSelectedClubId(currentUserClub.id);
       } else {
         setSelectedClubId("");
       }
-
       document.getElementById("event-form").reset();
     } catch (error) {
       console.error("Event creation error:", error);

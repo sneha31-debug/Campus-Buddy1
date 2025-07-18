@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
 import "./ClubProfileCard.css";
+import ApiService from "../services/api";
 
 const ClubProfileCard = () => {
   const location = useLocation();
@@ -180,20 +181,14 @@ const ClubProfileCard = () => {
   useEffect(() => {
     const fetchEventsCount = async () => {
       if (!clubData?.club_email) return;
-
       try {
-        const response = await fetch("http://localhost:3001/clubs");
-        const data = await response.json();
-
+        const data = await ApiService.getClubs();
         console.log("Fetched clubs data:", data); // debug
-
         // Match by contact_email instead of club_email
         const matchingClub = data.find(
           (club) => club.contact_email === clubData.club_email
         );
-
         console.log("Matching club found:", matchingClub);
-
         if (matchingClub) {
           setEventsCount(matchingClub.events_hosted || 0);
         } else {
@@ -204,7 +199,6 @@ const ClubProfileCard = () => {
         setEventsCount(0);
       }
     };
-
     fetchEventsCount();
   }, [clubData]);
 

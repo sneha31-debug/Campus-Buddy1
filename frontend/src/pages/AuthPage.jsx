@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
 import { useToast } from "../components/ToastContext";
+import ApiService from "../services/api";
 import "./AuthPage.css";
 
 const AuthPage = () => {
@@ -257,13 +258,7 @@ const AuthPage = () => {
       }
 
       // Send POST request to your JSON endpoint
-      const response = await fetch("http://localhost:3001/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(jsonData),
-      });
+      const response = await ApiService.createUser(jsonData);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

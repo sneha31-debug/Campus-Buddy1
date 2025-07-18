@@ -6,6 +6,7 @@ import { useAuth } from "../hook/useAuth";
 import EventStatisticsModal from "./EventStatistics";
 import EventCardActions from "../components/EventCardActions"; // Import the EventCardActions component
 import "./CampusEvents.css";
+import ApiService from "../services/api";
 
 const CampusEvents = () => {
   const navigate = useNavigate();
@@ -34,28 +35,16 @@ const CampusEvents = () => {
   // Function to calculate actual attendees count from database
   const calculateAttendeesCount = async (eventId) => {
     try {
-      const response = await fetch(
-        `http://localhost:3001/event_attendance?event_id=${eventId}`
-      );
-
-      if (!response.ok) {
-        console.error(`HTTP error! Status: ${response.status}`);
-        return 0;
-      }
-
-      const attendanceData = await response.json();
-
+      const attendanceData = await ApiService.getEventAttendanceByEvent(eventId);
       // Ensure we have an array
       if (!Array.isArray(attendanceData)) {
         console.error("Expected array but got:", typeof attendanceData);
         return 0;
       }
-
       // Count users who are "going" or "maybe"
       const interestedCount = attendanceData.filter((attendance) => {
         return attendance.status === "going" || attendance.status === "maybe";
       }).length;
-
       return interestedCount;
     } catch (err) {
       console.error("Error calculating attendees count:", err);
@@ -68,31 +57,19 @@ const CampusEvents = () => {
     try {
       setLoading(true);
       setError(null);
-
-      const response = await fetch("http://localhost:3001/events");
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const eventsData = await response.json();
-
+      const eventsData = await ApiService.getEvents();
       // Fetch clubs for additional data
-      const clubsResponse = await fetch("http://localhost:3001/clubs");
-      const clubsData = await clubsResponse.json();
-
+      const clubsData = await ApiService.getClubs();
       const clubsMap = {};
       clubsData.forEach((club) => {
         clubsMap[club.id] = club;
       });
-
       // Transform the data and calculate accurate attendees count
       const transformedEvents = await Promise.all(
         eventsData.map(async (event) => {
           const club = clubsMap[event.club_id] || {};
-
           // Always fetch fresh attendees count from event_attendance table
           const actualAttendeesCount = await calculateAttendeesCount(event.id);
-
           // Provide default values for all fields used in the card
           const name = event.title || "Untitled Event";
           const description = event.description || "No description provided.";
@@ -119,11 +96,9 @@ const CampusEvents = () => {
           const duration_hours = event.duration_hours || null;
           const registration_fee = event.registration_fee || 0;
           const contact_email = event.contact_email || "";
-
           // Fallback for image
           const imageUrl = event.poster_url || "https://via.placeholder.com/400x200?text=Event";
           const hasImage = !!event.poster_url;
-
           return {
             id: event.id,
             name,
@@ -153,7 +128,6 @@ const CampusEvents = () => {
           };
         })
       );
-
       setEvents(transformedEvents);
     } catch (err) {
       console.error("Error fetching events:", err);
@@ -184,19 +158,13 @@ const CampusEvents = () => {
   // Fetch user's event attendance/responses from JSON Server
   const fetchUserResponses = async () => {
     if (!user?.id) return;
-
     try {
       // Fetch user's event responses
-      const response = await fetch(
-        `http://localhost:3001/event_attendance?user_id=${user.id}`
-      );
-      const data = await response.json();
-
+      const data = await ApiService.getEventAttendance();
       const responses = {};
-      data.forEach((attendance) => {
+      data.filter((attendance) => attendance.user_id === user.id).forEach((attendance) => {
         responses[attendance.event_id] = attendance.status;
       });
-
       setUserResponses(responses);
     } catch (err) {
       console.error("Error fetching user responses:", err);
@@ -237,11 +205,9 @@ const CampusEvents = () => {
       };
 
       // Check if user already has a response for this event
-      const existingResponse = await fetch(
-        `http://localhost:3001/event_attendance?event_id=${eventId}&user_id=${user.id}`
+      const existingData = (await ApiService.getEventAttendance()).filter(
+        (a) => a.event_id === eventId && a.user_id === user.id
       );
-      const existingData = await existingResponse.json();
-
       const previousResponse =
         existingData.length > 0 ? existingData[0].status : null;
 
@@ -252,21 +218,10 @@ const CampusEvents = () => {
 
       if (existingData.length > 0) {
         // Update existing record
-        await fetch(
-          `http://localhost:3001/event_attendance/${existingData[0].id}`,
-          {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(attendanceData),
-          }
-        );
+        await ApiService.updateEventAttendance(existingData[0].id, attendanceData);
       } else {
         // Create new record
-        await fetch("http://localhost:3001/event_attendance", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(attendanceData),
-        });
+        await ApiService.createEventAttendance(attendanceData);
       }
 
       // Update local state
@@ -290,15 +245,11 @@ const CampusEvents = () => {
     if (!user?.id) return;
 
     try {
-      await fetch("http://localhost:3001/event_volunteers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          event_id: eventId,
-          user_id: user.id,
-          status: "pending",
-          created_at: new Date().toISOString(),
-        }),
+      await ApiService.createEventVolunteer({
+        event_id: eventId,
+        user_id: user.id,
+        status: "pending",
+        created_at: new Date().toISOString(),
       });
 
       setUserResponses((prev) => ({

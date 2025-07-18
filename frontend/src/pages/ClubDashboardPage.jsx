@@ -21,6 +21,7 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
 import { useToast } from "../components/ToastContext.jsx";
+import ApiService from "../services/api";
 
 const ClubDashboardPage = () => {
   const { clubId: paramClubId } = useParams();
@@ -74,11 +75,7 @@ const ClubDashboardPage = () => {
       const userId = user.id;
 
       // 1. Fetch all clubs
-      const clubsResponse = await fetch("http://localhost:3001/clubs");
-      if (!clubsResponse.ok) {
-        throw new Error(`Failed to fetch clubs: ${clubsResponse.statusText}`);
-      }
-      const allClubs = await clubsResponse.json();
+      const allClubs = await ApiService.getClubs();
 
       // Find the club associated with the current user's email or created_by ID
       let currentUserClub = allClubs.find(
@@ -94,11 +91,7 @@ const ClubDashboardPage = () => {
       setClub(currentUserClub);
 
       // 2. Fetch all events
-      const eventsResponse = await fetch("http://localhost:3001/events");
-      if (!eventsResponse.ok) {
-        throw new Error(`Failed to fetch events: ${eventsResponse.statusText}`);
-      }
-      const allEvents = await eventsResponse.json();
+      const allEvents = await ApiService.getEvents();
 
       // Filter events by the current user's club ID
       const clubEvents = allEvents.filter(
@@ -136,9 +129,7 @@ const ClubDashboardPage = () => {
     if (!confirm("Are you sure you want to delete this event?")) return;
 
     try {
-      await fetch(`http://localhost:3001/events/${eventId}`, {
-        method: "DELETE",
-      });
+      await ApiService.deleteEvent(eventId);
 
       // Remove from local state
       setEvents((prev) => prev.filter((event) => event.id !== eventId));
@@ -173,24 +164,20 @@ const ClubDashboardPage = () => {
   // Enhanced update function (same as CampusEvents)
   const handleUpdateEvent = async (updatedEvent) => {
     try {
-      await fetch(`http://localhost:3001/events/${updatedEvent.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: updatedEvent.name,
-          description: updatedEvent.description,
-          event_date: updatedEvent.event_date,
-          event_time: updatedEvent.time,
-          venue: updatedEvent.venue,
-          event_type: updatedEvent.eventType,
-          needs_volunteers: updatedEvent.needsVolunteers,
-          max_volunteers: updatedEvent.maxVolunteers,
-          rsvp_limit: updatedEvent.rsvpLimit,
-          registration_fee: updatedEvent.registration_fee,
-          contact_email: updatedEvent.contact_email,
-          duration_hours: updatedEvent.duration_hours,
-          updated_at: new Date().toISOString(),
-        }),
+      await ApiService.updateEvent(updatedEvent.id, {
+        title: updatedEvent.name,
+        description: updatedEvent.description,
+        event_date: updatedEvent.event_date,
+        event_time: updatedEvent.time,
+        venue: updatedEvent.venue,
+        event_type: updatedEvent.eventType,
+        needs_volunteers: updatedEvent.needsVolunteers,
+        max_volunteers: updatedEvent.maxVolunteers,
+        rsvp_limit: updatedEvent.rsvpLimit,
+        registration_fee: updatedEvent.registration_fee,
+        contact_email: updatedEvent.contact_email,
+        duration_hours: updatedEvent.duration_hours,
+        updated_at: new Date().toISOString(),
       });
 
       // Refresh events

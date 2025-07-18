@@ -29,6 +29,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
 import EventCardActions from "../components/EventCardActions"; // Import the EventCardActions component
+import ApiService from "../services/api";
 
 const categoryMap = {
   All: [],
@@ -88,28 +89,17 @@ const MyEvents = () => {
     try {
       setLoading(true);
       setError(null);
-
-      const response = await fetch("http://localhost:3001/events");
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const eventsData = await response.json();
-
+      const eventsData = await ApiService.getEvents();
       // Fetch clubs for additional data
-      const clubsResponse = await fetch("http://localhost:3001/clubs");
-      const clubsData = await clubsResponse.json();
-
+      const clubsData = await ApiService.getClubs();
       const clubsMap = {};
       clubsData.forEach((club) => {
         clubsMap[club.id] = club;
       });
-
       // Transform the data to match the expected format
       const transformedEvents = eventsData.map((event) => {
         const club = clubsMap[event.club_id] || {};
         const eventDate = new Date(event.event_date);
-
         return {
           id: event.id,
           title: event.title,
@@ -136,7 +126,6 @@ const MyEvents = () => {
           durationHours: event.duration_hours,
         };
       });
-
       setEvents(transformedEvents);
     } catch (err) {
       console.error("Error fetching events:", err);
@@ -149,18 +138,12 @@ const MyEvents = () => {
   // Fetch user's event responses from JSON Server
   const fetchUserResponses = async () => {
     if (!user?.id) return;
-
     try {
-      const response = await fetch(
-        `http://localhost:3001/event_attendance?user_id=${user.id}`
-      );
-      const data = await response.json();
-
+      const data = await ApiService.getEventAttendance();
       const responses = {};
-      data.forEach((attendance) => {
+      data.filter((attendance) => attendance.user_id === user.id).forEach((attendance) => {
         responses[attendance.event_id] = attendance.status;
       });
-
       setUserResponses(responses);
     } catch (err) {
       console.error("Error fetching user responses:", err);
@@ -170,18 +153,12 @@ const MyEvents = () => {
   // Fetch volunteer responses
   const fetchVolunteerResponses = async () => {
     if (!user?.id) return;
-
     try {
-      const response = await fetch(
-        `http://localhost:3001/event_volunteers?user_id=${user.id}`
-      );
-      const data = await response.json();
-
+      const data = await ApiService.getEventVolunteers();
       const volunteerResponses = {};
-      data.forEach((volunteer) => {
+      data.filter((volunteer) => volunteer.user_id === user.id).forEach((volunteer) => {
         volunteerResponses[volunteer.event_id] = "volunteer";
       });
-
       // Merge with existing responses
       setUserResponses((prev) => ({
         ...prev,
@@ -195,42 +172,24 @@ const MyEvents = () => {
   // Handle user response (going, maybe, not_going)
   const handleUserResponse = async (eventId, response) => {
     if (!user?.id) return;
-
     setActionLoading((prev) => ({ ...prev, [eventId]: true }));
-
     try {
-      const existingResponse = await fetch(
-        `http://localhost:3001/event_attendance?user_id=${user.id}&event_id=${eventId}`
+      const existingData = (await ApiService.getEventAttendance()).filter(
+        (a) => a.user_id === user.id && a.event_id === eventId
       );
-      const existingData = await existingResponse.json();
-
       if (response === "not_going") {
         // If user clicks "Not Going", remove the event from their responses
         if (existingData.length > 0) {
           // Delete the attendance record
-          await fetch(
-            `http://localhost:3001/event_attendance/${existingData[0].id}`,
-            {
-              method: "DELETE",
-            }
-          );
+          await ApiService.deleteEventAttendance(existingData[0].id);
         }
-
         // Also remove from volunteers if they were volunteering
-        const volunteerResponse = await fetch(
-          `http://localhost:3001/event_volunteers?user_id=${user.id}&event_id=${eventId}`
+        const volunteerData = (await ApiService.getEventVolunteers()).filter(
+          (v) => v.user_id === user.id && v.event_id === eventId
         );
-        const volunteerData = await volunteerResponse.json();
-
         if (volunteerData.length > 0) {
-          await fetch(
-            `http://localhost:3001/event_volunteers/${volunteerData[0].id}`,
-            {
-              method: "DELETE",
-            }
-          );
+          await ApiService.deleteEventVolunteer(volunteerData[0].id);
         }
-
         // Remove from local state (this will hide the event from the page)
         setUserResponses((prev) => {
           const newResponses = { ...prev };
@@ -241,30 +200,18 @@ const MyEvents = () => {
         // For going, maybe responses
         if (existingData.length > 0) {
           // Update existing response
-          await fetch(
-            `http://localhost:3001/event_attendance/${existingData[0].id}`,
-            {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                ...existingData[0],
-                status: response,
-              }),
-            }
-          );
+          await ApiService.updateEventAttendance(existingData[0].id, {
+            ...existingData[0],
+            status: response,
+          });
         } else {
           // Create new response
-          await fetch("http://localhost:3001/event_attendance", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              user_id: user.id,
-              event_id: eventId,
-              status: response,
-            }),
+          await ApiService.createEventAttendance({
+            user_id: user.id,
+            event_id: eventId,
+            status: response,
           });
         }
-
         // Update local state
         setUserResponses((prev) => ({
           ...prev,
@@ -281,26 +228,17 @@ const MyEvents = () => {
   // Handle volunteer response
   const handleVolunteerResponse = async (eventId) => {
     if (!user?.id) return;
-
     setActionLoading((prev) => ({ ...prev, [eventId]: true }));
-
     try {
-      const existingVolunteer = await fetch(
-        `http://localhost:3001/event_volunteers?user_id=${user.id}&event_id=${eventId}`
+      const existingData = (await ApiService.getEventVolunteers()).filter(
+        (v) => v.user_id === user.id && v.event_id === eventId
       );
-      const existingData = await existingVolunteer.json();
-
       if (existingData.length === 0) {
         // Add volunteer
-        await fetch("http://localhost:3001/event_volunteers", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            user_id: user.id,
-            event_id: eventId,
-          }),
+        await ApiService.createEventVolunteer({
+          user_id: user.id,
+          event_id: eventId,
         });
-
         // Update local state
         setUserResponses((prev) => ({
           ...prev,

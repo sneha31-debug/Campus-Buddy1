@@ -402,6 +402,30 @@ const CreateEventForm = () => {
       const insertedEvent = await response.json();
 
       addToast({ type: "success", message: "Event created successfully!" });
+      // Increment events_hosted count
+      try {
+        const clubResponse = await fetch(
+          `http://localhost:3001/clubs/${selectedClubId}`
+        );
+        if (!clubResponse.ok)
+          throw new Error("Failed to fetch club for update");
+
+        const clubData = await clubResponse.json();
+        const updatedClub = {
+          ...clubData,
+          events_hosted: (clubData.events_hosted || 0) + 1,
+          updated_at: new Date().toISOString(),
+        };
+
+        await fetch(`http://localhost:3001/clubs/${selectedClubId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedClub),
+        });
+        console.log("✅ Club event count updated!");
+      } catch (err) {
+        console.error("Failed to increment club events hosted:", err);
+      }
 
       // Reset form
       setFormData({

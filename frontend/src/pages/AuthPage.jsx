@@ -251,6 +251,7 @@ const AuthPage = () => {
           website: userData.website || null,
           contact_person: userData.contact_person,
           contact_phone: userData.contact_phone,
+          events_hosted: 0,
           created_at: new Date().toISOString(),
         };
       }

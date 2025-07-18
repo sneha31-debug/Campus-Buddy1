@@ -93,36 +93,63 @@ const CampusEvents = () => {
           // Always fetch fresh attendees count from event_attendance table
           const actualAttendeesCount = await calculateAttendeesCount(event.id);
 
+          // Provide default values for all fields used in the card
+          const name = event.title || "Untitled Event";
+          const description = event.description || "No description provided.";
+          const date = event.event_date
+            ? new Date(event.event_date).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })
+            : "Date not set";
+          const time = event.event_time || "Time not set";
+          const venue = event.venue || "Venue not set";
+          const category = club.category || "General";
+          const eventType = event.event_type || "General";
+          const clubName = club.name || "Unknown Club";
+          const status = event.status || "upcoming";
+          const needsVolunteers = event.needs_volunteers || false;
+          const tags = event.tags || [category, eventType, clubName];
+          const maxVolunteers = event.max_volunteers || 0;
+          const rsvpLimit = event.rsvp_limit || 0;
+          const targetBatchYear = event.target_batch_year || null;
+          const createdBy = event.created_by || null;
+          const clubId = event.club_id || null;
+          const duration_hours = event.duration_hours || null;
+          const registration_fee = event.registration_fee || 0;
+          const contact_email = event.contact_email || "";
+
+          // Fallback for image
+          const imageUrl = event.poster_url || "https://via.placeholder.com/400x200?text=Event";
+          const hasImage = !!event.poster_url;
+
           return {
             id: event.id,
-            name: event.title,
-            description: event.description,
-            date: new Date(event.event_date).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }),
-            time: event.event_time,
-            venue: event.venue,
-            club: club.name || "Unknown Club",
-            category: club.category || "General",
-            eventType: event.event_type,
+            name,
+            description,
+            date,
+            time,
+            venue,
+            club: clubName,
+            category,
+            eventType,
             attendees: actualAttendeesCount, // Use calculated count from event_attendance
-            status: event.status,
-            needsVolunteers: event.needs_volunteers,
-            imagePlaceholder: getCategoryEmoji(club.category),
-            hasImage: !!event.poster_url,
-            imageUrl: event.poster_url,
-            tags: event.tags || [],
-            maxVolunteers: event.max_volunteers,
-            rsvpLimit: event.rsvp_limit,
-            targetBatchYear: event.target_batch_year,
-            createdBy: event.created_by,
-            clubId: event.club_id,
+            status,
+            needsVolunteers,
+            imagePlaceholder: getCategoryEmoji(category),
+            hasImage,
+            imageUrl,
+            tags,
+            maxVolunteers,
+            rsvpLimit,
+            targetBatchYear,
+            createdBy,
+            clubId,
             posterUrl: event.poster_url,
-            duration_hours: event.duration_hours,
-            registration_fee: event.registration_fee,
-            contact_email: event.contact_email,
+            duration_hours,
+            registration_fee,
+            contact_email,
           };
         })
       );

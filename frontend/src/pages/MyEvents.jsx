@@ -7,22 +7,46 @@ import {
   HelpCircle,
   Users,
   BarChart3,
+  Code2,
+  Music,
+  Drama,
+  Bot,
+  Wrench,
+  Trophy,
+  Mic2,
+  PartyPopper,
+  Briefcase,
+  Dumbbell,
+  Megaphone,
+  Camera,
+  Video,
+  Award,
+  Lightbulb,
+  User,
+  Star,
+  Sparkles,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
 
 const categoryMap = {
-  "All Categories": [],
-  "E-Cell": ["e-cell", "entrepreneurship", "startup"],
-  "Arts (Dance)": ["arts", "dance", "cultural"],
-  "Arts (Drama)": ["arts", "drama", "cultural"],
-  "Arts (Music)": ["arts", "music", "cultural"],
-  Sports: ["sports", "fitness"],
-  "Content Creation": ["content", "creation", "writing"],
-  "Dev Club": ["dev", "coding", "tech", "programming"],
-  Photography: ["photography", "photo"],
-  "Debate Society": ["debate", "society", "discussion"],
-  "Cultural Committee": ["cultural", "committee"],
+  "All": [],
+  "Tech": ["tech", "technology", "dev", "coding", "programming", "software", "it"],
+  "Dance": ["dance", "dancing", "performance"],
+  "Music": ["music", "band", "concert", "singing", "performance"],
+  "Drama": ["drama", "theatre", "acting", "play", "performance"],
+  "Robotics": ["robotics", "robot", "automation", "mechatronics"],
+  "Workshop": ["workshop", "training", "session", "bootcamp"],
+  "Hackathon": ["hackathon", "coding competition", "codefest"],
+  "Podcast": ["podcast", "audio", "talk", "discussion"],
+  "Fest": ["fest", "festival", "celebration", "cultural fest"],
+  "Entrepreneurship": ["entrepreneurship", "startup", "e-cell", "business", "venture"],
+  "Sports": ["sports", "fitness", "athletics", "games", "tournament"],
+  "Public Speaking": ["public speaking", "debate", "speech", "elocution", "discussion"],
+  "Photography": ["photography", "photo", "camera", "shoot"],
+  "Videography": ["videography", "video", "film", "shoot", "cinema"],
+  "Competition": ["competition", "contest", "challenge", "tournament", "quiz"],
+  "Innovation": ["innovation", "idea", "startup", "project", "invention"],
 };
 
 const MyEvents = () => {
@@ -194,7 +218,7 @@ const MyEvents = () => {
   };
 
   const filterEventByCategory = (event, category) => {
-    if (category === "All Categories") return true;
+    if (category === "All") return true;
 
     const keywords = categoryMap[category] || [];
     const keywordsLower = keywords.map((k) => k.toLowerCase());
@@ -254,19 +278,25 @@ const MyEvents = () => {
 
   function getCategoryIcon(name) {
     const iconMap = {
-      "All Categories": "✨",
-      "E-Cell": "💼",
-      "Arts (Dance)": "💃",
-      "Arts (Drama)": "🎭",
-      "Arts (Music)": "🎵",
-      Sports: "🏆",
-      "Content Creation": "📝",
-      "Dev Club": "💻",
-      Photography: "📸",
-      "Debate Society": "🗣️",
-      "Cultural Committee": "🎪",
+      "All": <Star className="cat-icon" />,
+      "Tech": <Code2 className="cat-icon" />,
+      "Dance": <PartyPopper className="cat-icon" />,
+      "Music": <Music className="cat-icon" />,
+      "Drama": <Award className="cat-icon" />,
+      "Robotics": <Bot className="cat-icon" />,
+      "Workshop": <Wrench className="cat-icon" />,
+      "Hackathon": <Lightbulb className="cat-icon" />,
+      "Podcast": <Mic2 className="cat-icon" />,
+      "Fest": <PartyPopper className="cat-icon" />,
+      "Entrepreneurship": <Briefcase className="cat-icon" />,
+      "Sports": <Dumbbell className="cat-icon" />,
+      "Public Speaking": <Megaphone className="cat-icon" />,
+      "Photography": <Camera className="cat-icon" />,
+      "Videography": <Video className="cat-icon" />,
+      "Competition": <Trophy className="cat-icon" />,
+      "Innovation": <Lightbulb className="cat-icon" />,
     };
-    return iconMap[name] || "📁";
+    return iconMap[name] || <User className="cat-icon" />;
   }
 
   const getResponseCounts = () => {
@@ -350,7 +380,11 @@ const MyEvents = () => {
         </div>
       </div>
       <div className="my-events-header">
-        <h1>✨ My Events ✨</h1>
+        <h1>
+          <span className="gradient-emoji">✨</span>
+          My  <span className="gradient-title"> Events</span>
+          <span className="gradient-emoji">✨</span>
+        </h1>
         <p>Events you've responded to and your interests</p>
         <div className="my-events-search-bar">
           <span className="search-icon">🔍</span>
@@ -365,20 +399,22 @@ const MyEvents = () => {
         </div>
       </div>
 
-      <div className="my-events-categories">
-        {categories.map((cat, index) => (
-          <button
-            key={index}
-            className={`category-btn ${
-              selectedCategory === cat.name ? "active" : ""
-            }`}
-            onClick={() => handleCategoryChange(cat.name)}
-          >
-            <span className="cat-icon">{cat.icon}</span>
-            <span className="cat-label">{cat.name}</span>
-            <span className="cat-count">{cat.count}</span>
-          </button>
-        ))}
+      <div className="my-events-filters-container">
+        <div className="my-events-categories">
+          {categories.map((cat, index) => (
+            <button
+              key={index}
+              className={`category-btn ${
+                selectedCategory === cat.name ? "active" : ""
+              }`}
+              onClick={() => handleCategoryChange(cat.name)}
+            >
+              <span className="cat-icon">{cat.icon}</span>
+              <span className="cat-label">{cat.name}</span>
+              <span className="cat-count">{cat.count}</span>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="my-events-tabs">

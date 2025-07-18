@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
+import { useToast } from "../components/ToastContext";
 import "./AuthPage.css";
 
 const AuthPage = () => {
   const [userType, setUserType] = useState("student");
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState({
     full_name: "",
@@ -28,6 +28,7 @@ const AuthPage = () => {
   });
 
   const navigate = useNavigate();
+  const { addToast } = useToast();
 
   const {
     user,
@@ -122,7 +123,6 @@ const AuthPage = () => {
       contact_phone: "",
     });
     setError(null);
-    setSuccessMessage(null);
   };
 
   const validateUserData = () => {
@@ -388,9 +388,13 @@ const AuthPage = () => {
       }
 
       // Simple success message - just show "check your email"
-      setSuccessMessage(
-        "Account created successfully! Please check your email for a confirmation link."
-      );
+      addToast({
+        type: "success",
+        message:
+          "Account created successfully! Please check your email for a confirmation link.",
+        duration: 6000, // 6 seconds to give user time to read
+      });
+
       setError(null);
       resetForm();
       setIsLogin(true); // Switch to login form
@@ -896,9 +900,6 @@ const AuthPage = () => {
         )}
 
         {error && <div className="error-message">{error}</div>}
-        {successMessage && (
-          <div className="success-message">{successMessage}</div>
-        )}
 
         <div className="auth-footer">
           {isLogin ? (
@@ -908,7 +909,6 @@ const AuthPage = () => {
                 onClick={() => {
                   setIsLogin(false);
                   setError(null);
-                  setSuccessMessage(null);
                   resetForm();
                 }}
               >
@@ -922,7 +922,6 @@ const AuthPage = () => {
                 onClick={() => {
                   setIsLogin(true);
                   setError(null);
-                  setSuccessMessage(null);
                   resetForm();
                 }}
               >

@@ -92,7 +92,7 @@ const AuthPage = () => {
       if (userRole === "student") {
         navigate("/home", { replace: true });
       } else if (userRole === "club") {
-        navigate("/clubpage", { replace: true });
+        navigate("/home", { replace: true });
       } else {
         navigate("/home", { replace: true });
       }

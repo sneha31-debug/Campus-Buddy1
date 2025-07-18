@@ -2,6 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hook/useAuth";
+import { Eye, CheckCircle, HelpCircle, XCircle, Hand, BarChart3, Pencil, Settings } from "lucide-react";
 import "./EventCardActions.css";
 
 const EventCardActions = ({
@@ -55,16 +56,16 @@ const EventCardActions = ({
       <div className="event-actions student-actions">
         {!hideViewDetails && (
           <button
-            className="action-btn view-details"
+            className="campus-action-btn view-details"
             onClick={handleViewDetails}
             title="View event details"
           >
-            👁️ View Details
+            <Eye size={16} style={{ marginRight: 4 }} /> View Details
           </button>
         )}
 
         <button
-          className={`action-btn going ${
+          className={`campus-action-btn going ${
             userResponse === "going" ? "active" : ""
           }`}
           onClick={handleGoingClick}
@@ -75,15 +76,16 @@ const EventCardActions = ({
               : "Mark as going"
           }
         >
+          <CheckCircle size={16} style={{ marginRight: 4 }} />
           {isLoading && userResponse !== "going"
-            ? "⏳"
+            ? "..."
             : userResponse === "going"
-            ? "✓ Going"
+            ? "Going"
             : "Going"}
         </button>
 
         <button
-          className={`action-btn maybe ${
+          className={`campus-action-btn maybe ${
             userResponse === "maybe" ? "active" : ""
           }`}
           onClick={handleMaybeClick}
@@ -94,16 +96,17 @@ const EventCardActions = ({
               : "Mark as maybe"
           }
         >
+          <HelpCircle size={16} style={{ marginRight: 4 }} />
           {isLoading && userResponse !== "maybe"
-            ? "⏳"
+            ? "..."
             : userResponse === "maybe"
-            ? "? Maybe"
+            ? "Maybe"
             : "Maybe"}
         </button>
 
         {!hideNotGoing && (
           <button
-            className={`action-btn not-going ${
+            className={`campus-action-btn not-going ${
               userResponse === "not_going" ? "active" : ""
             }`}
             onClick={handleNotGoingClick}
@@ -114,17 +117,18 @@ const EventCardActions = ({
                 : "Mark as not going"
             }
           >
+            <XCircle size={16} style={{ marginRight: 4 }} />
             {isLoading && userResponse !== "not_going"
-              ? "⏳"
+              ? "..."
               : userResponse === "not_going"
-              ? "✗ Not Going"
+              ? "Not Going"
               : "Not Going"}
           </button>
         )}
 
         {event.needsVolunteers && (
           <button
-            className={`action-btn volunteer ${
+            className={`campus-action-btn volunteer ${
               userResponse === "volunteer" ? "active" : ""
             }`}
             onClick={handleVolunteerClick}
@@ -135,11 +139,12 @@ const EventCardActions = ({
                 : "Volunteer for this event"
             }
           >
+            <Hand size={16} style={{ marginRight: 4 }} />
             {isLoading && userResponse !== "volunteer"
-              ? "⏳"
+              ? "..."
               : userResponse === "volunteer"
-              ? "🙋‍♂️ Volunteered"
-              : "🙋‍♂️ Volunteer"}
+              ? "Volunteered"
+              : "Volunteer"}
           </button>
         )}
       </div>
@@ -152,20 +157,20 @@ const EventCardActions = ({
       <div className="event-actions club-actions">
         {!hideViewDetails && (
           <button
-            className="action-btn view-details"
+            className="campus-action-btn view-details"
             onClick={handleViewDetails}
             title="View event details"
           >
-            👁️ View Details
+            <Eye size={16} style={{ marginRight: 4 }} /> View Details
           </button>
         )}
 
         <button
-          className="action-btn stats"
+          className="campus-action-btn stats"
           onClick={handleStatsClick}
           title="View event statistics"
         >
-          📊 Stats
+          <BarChart3 size={16} style={{ marginRight: 4 }} /> Stats
         </button>
 
         {/* <button
@@ -173,7 +178,7 @@ const EventCardActions = ({
           onClick={() => navigate(`/events/${event.id}/edit`)}
           title="Edit event"
         >
-          ✏️ Edit
+          <Pencil size={16} style={{ marginRight: 4 }} /> Edit
         </button>
 
         <button
@@ -181,7 +186,7 @@ const EventCardActions = ({
           onClick={() => navigate(`/events/${event.id}/manage`)}
           title="Manage event"
         >
-          ⚙️ Manage
+          <Settings size={16} style={{ marginRight: 4 }} /> Manage
         </button> */}
       </div>
     );
@@ -192,7 +197,7 @@ const EventCardActions = ({
     <div className="event-actions default-actions">
       {!hideViewDetails && (
         <button
-          className="action-btn view-details"
+          className="campus-action-btn view-details"
           onClick={handleViewDetails}
           title="View event details"
         >

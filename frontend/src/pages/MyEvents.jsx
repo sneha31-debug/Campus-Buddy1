@@ -74,7 +74,7 @@ const MyEvents = () => {
   const [events, setEvents] = useState([]);
   const [userResponses, setUserResponses] = useState({});
   const [tab, setTab] = useState("All");
-  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [selectedCategory, setSelectedCategory] = useState("All"); // Default to "All"
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -332,7 +332,12 @@ const MyEvents = () => {
       setTab("All"); // Default to "All"
     }
 
-    if (savedCategory) setSelectedCategory(savedCategory);
+    // Set "All" as default if no saved category exists
+    if (savedCategory) {
+      setSelectedCategory(savedCategory);
+    } else {
+      setSelectedCategory("All"); // Default to "All"
+    }
 
     fetchEvents();
   }, []);

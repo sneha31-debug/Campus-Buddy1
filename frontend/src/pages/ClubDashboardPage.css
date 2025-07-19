@@ -146,13 +146,13 @@ body {
 }
 
 .club-dash-create-btn.primary {
-  background: var(--primary);
+  background: rgb(56, 106, 255);
   color: var(--white);
 }
 
 .club-dash-create-btn.primary:hover {
-  background: var(--primary-dark);
-  transform: translateY(-1px);
+  background: rgb(61, 80, 255);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 

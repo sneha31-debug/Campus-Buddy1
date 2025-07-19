@@ -34,7 +34,7 @@ const AuthCallback = () => {
         // Redirect based on role
         const role = currentRole || "student";
         if (role === "club") {
-          navigate("/clubpage", { replace: true });
+          navigate("/home", { replace: true });
         } else {
           navigate("/home", { replace: true });
         }

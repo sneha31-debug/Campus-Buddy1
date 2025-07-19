@@ -467,7 +467,7 @@ const AuthPage = () => {
                   if (userRole === "student") {
                     navigate("/home");
                   } else if (userRole === "club") {
-                    navigate("/clubpage");
+                    navigate("/home");
                   } else {
                     navigate("/home");
                   }

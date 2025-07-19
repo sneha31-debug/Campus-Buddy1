@@ -57,7 +57,29 @@ const ClubDashboardPage = () => {
     return emojiMap[category] || "📅";
   };
 
+  const calculateAttendeesCount = async (eventId) => {
+    try {
+      const attendanceData = await ApiService.getEventAttendanceByEvent(
+        eventId
+      );
+      // Ensure we have an array
+      if (!Array.isArray(attendanceData)) {
+        console.error("Expected array but got:", typeof attendanceData);
+        return 0;
+      }
+      // Count users who are "going" or "maybe"
+      const interestedCount = attendanceData.filter((attendance) => {
+        return attendance.status === "going" || attendance.status === "maybe";
+      }).length;
+      return interestedCount;
+    } catch (err) {
+      console.error("Error calculating attendees count:", err);
+      return 0;
+    }
+  };
+
   // Function to fetch and set the current user's club and its events from JSON server
+
   const fetchClubDashboardData = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -98,8 +120,21 @@ const ClubDashboardPage = () => {
         (event) => event.club_id === currentUserClub.id
       );
 
-      // Sort events by date and time
-      const sortedEvents = clubEvents.sort((a, b) => {
+      // Calculate actual attendees count for each event and transform data
+      const eventsWithAttendeesCount = await Promise.all(
+        clubEvents.map(async (event) => {
+          // Always fetch fresh attendees count from event_attendance table
+          const actualAttendeesCount = await calculateAttendeesCount(event.id);
+
+          return {
+            ...event,
+            attendees_count: actualAttendeesCount, // Update the attendees count
+          };
+        })
+      );
+
+      // Sort events by date and time - FIXED: Use eventsWithAttendeesCount instead of clubEvents
+      const sortedEvents = eventsWithAttendeesCount.sort((a, b) => {
         const dateA = new Date(`${a.event_date}T${a.event_time}`);
         const dateB = new Date(`${b.event_date}T${b.event_time}`);
         return dateA - dateB;
@@ -163,7 +198,11 @@ const ClubDashboardPage = () => {
 
   // Enhanced update function (same as CampusEvents)
   const handleUpdateEvent = async (updatedEvent) => {
+    setLoading(true);
     try {
+      // Get the original event to preserve all data
+      const originalEvent = events.find((e) => e.id === updatedEvent.id);
+
       await ApiService.updateEvent(updatedEvent.id, {
         title: updatedEvent.name,
         description: updatedEvent.description,
@@ -177,11 +216,17 @@ const ClubDashboardPage = () => {
         registration_fee: updatedEvent.registration_fee,
         contact_email: updatedEvent.contact_email,
         duration_hours: updatedEvent.duration_hours,
+        // CRITICAL: Preserve these fields
+        club_id: originalEvent.club_id, // Maintain club association
+        poster_url: updatedEvent.poster_url || originalEvent.poster_url, // Preserve image
+        category: originalEvent.category,
+        tags: originalEvent.tags,
+        attendees_count: originalEvent.attendees_count,
+        created_at: originalEvent.created_at,
         updated_at: new Date().toISOString(),
       });
 
-      // Refresh events
-      fetchClubDashboardData();
+      await fetchClubDashboardData();
       setShowEditForm(false);
       setEditingEvent(null);
       addToast({ type: "success", message: "Event updated successfully!" });
@@ -189,8 +234,13 @@ const ClubDashboardPage = () => {
       console.error("Error updating event:", err);
       addToast({
         type: "error",
-        message: "Failed to update event: " + err.message,
+        message:
+          err?.response?.data?.message ||
+          err?.message ||
+          "Failed to update event. Please try again.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -504,7 +554,7 @@ const ClubDashboardPage = () => {
             </div>
             <div className="club-dash-event-detail">
               <Users size={16} />
-              <span>{event.attendees_count || 0} interested</span>
+              <span>{event.attendees_count} interested</span>
             </div>
           </div>
 

@@ -163,7 +163,11 @@ const ClubDashboardPage = () => {
 
   // Enhanced update function (same as CampusEvents)
   const handleUpdateEvent = async (updatedEvent) => {
+    setLoading(true);
     try {
+      // Get the original event to preserve all data
+      const originalEvent = events.find((e) => e.id === updatedEvent.id);
+
       await ApiService.updateEvent(updatedEvent.id, {
         title: updatedEvent.name,
         description: updatedEvent.description,
@@ -177,11 +181,17 @@ const ClubDashboardPage = () => {
         registration_fee: updatedEvent.registration_fee,
         contact_email: updatedEvent.contact_email,
         duration_hours: updatedEvent.duration_hours,
+        // CRITICAL: Preserve these fields
+        club_id: originalEvent.club_id, // Maintain club association
+        poster_url: updatedEvent.poster_url || originalEvent.poster_url, // Preserve image
+        category: originalEvent.category,
+        tags: originalEvent.tags,
+        attendees_count: originalEvent.attendees_count,
+        created_at: originalEvent.created_at,
         updated_at: new Date().toISOString(),
       });
 
-      // Refresh events
-      fetchClubDashboardData();
+      await fetchClubDashboardData();
       setShowEditForm(false);
       setEditingEvent(null);
       addToast({ type: "success", message: "Event updated successfully!" });
@@ -189,8 +199,13 @@ const ClubDashboardPage = () => {
       console.error("Error updating event:", err);
       addToast({
         type: "error",
-        message: "Failed to update event: " + err.message,
+        message:
+          err?.response?.data?.message ||
+          err?.message ||
+          "Failed to update event. Please try again.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 

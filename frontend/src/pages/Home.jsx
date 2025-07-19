@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, Users, Heart, Zap, Star, TrendingUp, Menu, X,Shield, Clock, Globe,Github, Linkedin, ChevronDown, ChevronUp, UserPlus, Search, Bell } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Calendar, Users, Heart, Zap, Star, TrendingUp, Menu, X, Shield, Clock, Globe, Github, Linkedin, ChevronDown, ChevronUp, UserPlus, Search, Bell } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import './Home.css';
 
@@ -8,22 +8,115 @@ export default function CampusBuddyHomepage() {
   const [hoveredClub, setHoveredClub] = useState(null);
   const [hoveredDeveloper, setHoveredDeveloper] = useState(null);
   const [openFAQ, setOpenFAQ] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [componentsLoaded, setComponentsLoaded] = useState(false);
+  const componentRef = useRef(null);
 
+  // Force component re-render and ensure proper initialization
   useEffect(() => {
-    const initAOS = () => {
-      const elements = document.querySelectorAll('[data-aos]');
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('aos-animate');
+    const initializeComponent = async () => {
+      try {
+        // Wait for DOM to be ready
+        await new Promise(resolve => {
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', resolve);
+          } else {
+            resolve();
           }
         });
-      });
-      
-      elements.forEach(el => observer.observe(el));
+
+        // Wait for CSS to load
+        await new Promise(resolve => {
+          const checkStyles = () => {
+            const testElement = document.createElement('div');
+            testElement.className = 'campusContainer';
+            document.body.appendChild(testElement);
+            
+            const styles = window.getComputedStyle(testElement);
+            document.body.removeChild(testElement);
+            
+            // Check if our CSS classes are loaded
+            if (styles.position !== 'static' || styles.display !== 'inline') {
+              resolve();
+            } else {
+              setTimeout(checkStyles, 50);
+            }
+          };
+          checkStyles();
+        });
+
+        // Small delay to ensure Aceternity UI is ready
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        setComponentsLoaded(true);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Component initialization error:', error);
+        setIsLoading(false);
+      }
+    };
+
+    initializeComponent();
+  }, []);
+
+  // Enhanced AOS initialization with retry mechanism
+  useEffect(() => {
+    if (!componentsLoaded) return;
+
+    const initAOS = () => {
+      try {
+        const elements = document.querySelectorAll('[data-aos]');
+        
+        if (elements.length === 0) {
+          // Retry if elements not found
+          setTimeout(initAOS, 100);
+          return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('aos-animate');
+              // Trigger reflow to ensure animation plays
+              entry.target.offsetHeight;
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '10px'
+        });
+        
+        elements.forEach(el => {
+          observer.observe(el);
+          // Ensure initial state
+          el.classList.remove('aos-animate');
+        });
+
+        return () => observer.disconnect();
+      } catch (error) {
+        console.error('AOS initialization error:', error);
+      }
     };
     
-    initAOS();
+    const cleanup = initAOS();
+    return cleanup;
+  }, [componentsLoaded]);
+
+  // Force re-render when component mounts
+  useEffect(() => {
+    const forceUpdate = () => {
+      if (componentRef.current) {
+        componentRef.current.style.opacity = '0';
+        requestAnimationFrame(() => {
+          if (componentRef.current) {
+            componentRef.current.style.opacity = '1';
+          }
+        });
+      }
+    };
+
+    const timer = setTimeout(forceUpdate, 50);
+    return () => clearTimeout(timer);
   }, []);
 
   const campusStats = [
@@ -49,34 +142,35 @@ export default function CampusBuddyHomepage() {
       description: "Growing community of active students"
     }
   ];
+
   const topClubs = [
     {
       name: "Dev Club",
-      members: "60+",
+      members: "120+",
       category: "Technology",
       image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      description: "Build amazing applications and contribute to Open-Source",
-      tags: ["Development", "Open-Source"]
+      description: "Master web development and build amazing applications",
+      tags: ["Web Dev", "JavaScript", "React"]
     },
     {
       name: "Robotics Club",
-      members: "30+",
+      members: "85+",
       category: "Technology",
       image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
       description: "Design, build, and program robots for competitions and innovation",
       tags: ["Robotics", "Arduino", "AI", "Engineering"]
     },
     {
-      name: "SharksSphere - Ecell Club",
-      members: "40+",
+      name: "Entrepreneurship Club",
+      members: "80+",
       category: "Business",
       image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
       description: "Turn your ideas into successful ventures",
       tags: ["Startup", "Business", "Innovation"]
     },
     {
-      name: "Trailblazers - Sports Club",
-      members: "80+",
+      name: "Sports Club",
+      members: "20+",
       category: "Sports",
       image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
       description: "Stay active and competitive",
@@ -84,19 +178,19 @@ export default function CampusBuddyHomepage() {
     },
     {
       name: "Creators Corner",
-      members: "20+",
-      category: "Creativity",
+      members: "65+",
+      category: "Arts",
       image: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-      description: "Unleash your creativity through Photography, design, videography and much more",
-      tags: ["Social Media", "Design", "Video", "Animation"]
+      description: "Unleash your creativity through digital art, design, and multimedia",
+      tags: ["Digital Art", "Design", "Video", "Animation"]
     },
     {
-      name: "Ensemble - Performing Arts Club",
-      members: "50+",
-      category: "Arts",
-      image: "https://images.unsplash.com/photo-1583787035686-91b82ad5d811?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVyZm9ybWluZyUyMGFydHN8ZW58MHx8MHx8fDA%3D",
-      description: "Showcase your talent in dance, music, and drama.",
-      tags: ["Dance","Music","Drama","Arts"]
+      name: "Mobile App Dev Society",
+      members: "95+",
+      category: "Technology",
+      image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+      description: "Create innovative mobile applications for iOS and Android",
+      tags: ["Mobile Dev","React Native"]
     },
   ];
 
@@ -164,7 +258,6 @@ export default function CampusBuddyHomepage() {
       title: "Discover",
       description: "Browse through events, clubs, and activities that match your interests"
     },
-
     {
       step: "3",
       icon: <Bell className="stepIcon" />,
@@ -194,7 +287,7 @@ export default function CampusBuddyHomepage() {
   const faqs = [
     {
       question: " How can I RSVP to events?",
-      answer: "After logging in, browse events and use the “Going”, “Not Going”, or “Maybe” options on each event card."
+      answer: "After logging in, browse events and use the \"Going\", \"Not Going\", or \"Maybe\" options on each event card."
     },
     {
       question: "Where can I see my RSVP'd events?",
@@ -217,12 +310,42 @@ export default function CampusBuddyHomepage() {
   const toggleFAQ = (index) => {
     setOpenFAQ(openFAQ === index ? null : index);
   };
+
   const handleSocialClick = (url) => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  // Show loading state while components initialize
+  if (isLoading) {
+    return (
+      <div className="campusContainer" style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      }}>
+        <div style={{ textAlign: 'center', color: 'white' }}>
+          <div style={{
+            width: '50px',
+            height: '50px',
+            border: '3px solid rgba(255,255,255,0.3)',
+            borderRadius: '50%',
+            borderTopColor: 'white',
+            animation: 'spin 1s ease-in-out infinite',
+            margin: '0 auto 20px'
+          }} />
+          <p>Loading Campus Buddy...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="campusContainer">
+    <div className="campusContainer" ref={componentRef} style={{ 
+      opacity: componentsLoaded ? 1 : 0,
+      transition: 'opacity 0.3s ease-in-out'
+    }}>
       <section className="heroSection">
         <div className="backgroundBeams">
           <div className="beam beam1"></div>
@@ -265,6 +388,7 @@ export default function CampusBuddyHomepage() {
           </Link>
         </div>
       </section>
+
       <section className="statsSection">
         <div className="statsContainer">
           <div className="statsHeader" data-aos="fade-up">
@@ -306,6 +430,7 @@ export default function CampusBuddyHomepage() {
           </div>
         </div>
       </section>
+
       <section className="topClubsSection">
         <div className="topClubsContainer">
           <div className="sectionHeader" data-aos="fade-up">
@@ -350,7 +475,8 @@ export default function CampusBuddyHomepage() {
           </div>
         </div>
       </section>
-      <section className="howItWorksSection" id="howItWorksSection">
+
+      <section className="howItWorksSection">
         <div className="howItWorksContainer">
           <div className="sectionHeader" data-aos="fade-up">
             <h2 className="sectionTitle">How Campus Buddy Works</h2>
@@ -376,6 +502,7 @@ export default function CampusBuddyHomepage() {
           </div>
         </div>
       </section>
+
       <section className="whyChooseSection">
         <div className="whyChooseContainer">
           <div className="sectionHeader" data-aos="fade-up">
@@ -401,60 +528,60 @@ export default function CampusBuddyHomepage() {
           </div>
         </div>
       </section>
+
       <section className="developersSection">
-      <div className="developersContainer">
-        <div className="sectionHeader" data-aos="fade-up">
-          <h2 className="sectionTitle">Meet the Developers</h2>
-          <p className="sectionSubtitle">The passionate team behind CampusBuddy</p>
-        </div>
+        <div className="developersContainer">
+          <div className="sectionHeader" data-aos="fade-up">
+            <h2 className="sectionTitle">Meet the Developers</h2>
+            <p className="sectionSubtitle">The passionate team behind CampusBuddy</p>
+          </div>
 
-        <div className="developersGrid">
-          {developers.map((developer, index) => (
-            <div 
-              key={index}
-              className={`developerCard ${hoveredDeveloper === index ? 'developerCardHovered' : ''}`}
-              onMouseEnter={() => setHoveredDeveloper(index)}
-              onMouseLeave={() => setHoveredDeveloper(null)}
-              data-aos="fade-up"
-              data-aos-delay={index * 100}
-            >
-              {/* Social Links Overlay */}
-              <div className={`developerOverlay ${hoveredDeveloper === index ? 'developerOverlayVisible' : ''}`}>
-                <div className="developerSocial">
-                  <button
-                    className="socialLink"
-                    onClick={() => handleSocialClick(developer.github)}
-                    aria-label={`Visit ${developer.name}'s GitHub`}
-                  >
-                    <Github className="socialIcon" />
-                  </button>
-                  <button
-                    className="socialLink"
-                    onClick={() => handleSocialClick(developer.linkedin)}
-                    aria-label={`Visit ${developer.name}'s LinkedIn`}
-                  >
-                    <Linkedin className="socialIcon" />
-                  </button>
+          <div className="developersGrid">
+            {developers.map((developer, index) => (
+              <div 
+                key={index}
+                className={`developerCard ${hoveredDeveloper === index ? 'developerCardHovered' : ''}`}
+                onMouseEnter={() => setHoveredDeveloper(index)}
+                onMouseLeave={() => setHoveredDeveloper(null)}
+                data-aos="fade-up"
+                data-aos-delay={index * 100}
+              >
+                <div className={`developerOverlay ${hoveredDeveloper === index ? 'developerOverlayVisible' : ''}`}>
+                  <div className="developerSocial">
+                    <button
+                      className="socialLink"
+                      onClick={() => handleSocialClick(developer.github)}
+                      aria-label={`Visit ${developer.name}'s GitHub`}
+                    >
+                      <Github className="socialIcon" />
+                    </button>
+                    <button
+                      className="socialLink"
+                      onClick={() => handleSocialClick(developer.linkedin)}
+                      aria-label={`Visit ${developer.name}'s LinkedIn`}
+                    >
+                      <Linkedin className="socialIcon" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="developerContent">
+                  <h3 className="developerName">{developer.name}</h3>
+                  <p className="developerRole">{developer.role}</p>
+                  <p className="developerBio">{developer.bio}</p>
+                  
+                  <div className="developerSkills">
+                    {developer.skills.map((skill, skillIndex) => (
+                      <span key={skillIndex} className="skillTag">{skill}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
-
-              {/* Card Content */}
-              <div className="developerContent">
-                <h3 className="developerName">{developer.name}</h3>
-                <p className="developerRole">{developer.role}</p>
-                <p className="developerBio">{developer.bio}</p>
-                
-                <div className="developerSkills">
-                  {developer.skills.map((skill, skillIndex) => (
-                    <span key={skillIndex} className="skillTag">{skill}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
       <section className="faqSection">
         <div className="faqContainer">
           <div className="sectionHeader" data-aos="fade-up">
@@ -488,6 +615,7 @@ export default function CampusBuddyHomepage() {
           </div>
         </div>
       </section>
+
       <section className="ctaSection">
         <div className="ctaContainer" data-aos="fade-up">
           <h2 className="ctaTitle">Ready to dive into campus life?</h2>
@@ -503,6 +631,13 @@ export default function CampusBuddyHomepage() {
           </Link>
         </div>
       </section>
+
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }

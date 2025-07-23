@@ -7,7 +7,8 @@ A centralized platform for **students and clubs at NST** to discover, manage, an
 
 ## 📌 Problem
 
-Students often **miss out on campus events** — workshops, fests, hackathons — due to **scattered communication** across Slack, WhatsApp, or word of mouth.
+At NST-ADYPU, students often miss out on exciting campus events — workshops, fests, and hackathons — due to scattered communication across Slack, WhatsApp, or word of mouth.
+At the same time, event organizers face difficulties in finding volunteers and estimating student turnout, relying on repeated Google Forms and guesswork to manage everything.
 
 ---
 
@@ -19,7 +20,9 @@ Students often **miss out on campus events** — workshops, fests, hackathons �
 * Allows **clubs to create/manage events**
 * Provides personalized **dashboards and profiles**
 * Lets students quickly **add events to their calendar** with one click
-* Will soon support features like **volunteering, gamification, and email reminders**
+* Features **role-based authentication** for secure access
+* Supports volunteer registrations for events
+* Will soon support features like **gamification, and email reminders**
 
 ---
 
@@ -27,40 +30,32 @@ Students often **miss out on campus events** — workshops, fests, hackathons �
 
 ### 👨‍🎓 Students
 
-* ✅ Login via Google Sign-in
-* 📅 Browse upcoming & past events
-* 🏷️ Filter by club, category, department
-* 📩 RSVP with "Going", "Not Going", "Maybe"
-* 📂 View your RSVP’d events in **My Events**
-* 🪪 **Student Mini Profile Card** showing:
-
-  * Name, Course, Year, etc.
-* 🗓️ **Add to Calendar** option for each event
+* ✅ **Google Sign-in Authentication**
+* 📅 **Browse Events**: Upcoming & past events in one place
+* 🏷️ **Smart Filtering**: Filter by club, category, department, date
+* 📩 **RSVP System**: "Going", "Not Going", "Maybe", "Volunteer"
+* 📂 **My Events Dashboard**: Track your RSVP’d events
+* 🪪 **Student Profile Card**: Course, year, and stats
+* 🗓️ **Add to Calendar**: One-click calendar integration
+* 📱 **Responsive Design**: Works well on all devices
 
 ---
 
 ### 🏛️ Clubs
 
-* ✅ Login via Google (verified club ID)
-* ➕ Create, edit, and delete events
-* 📊 Track RSVP stats (Going, Not Going, Maybe)
-* 🗂️ **Club Mini Profile Card** showing:
-
-  * Club Name, Department, Bio, etc.
-  * Total Events Created
-* 📋 **Club Dashboard** for quick access to:
-
-  * List of Events
-  * Event stats
-  * Create New Event
-  * Edit & Delete Events
+* ✅ **Verified Club Login** via Google
+* ➕ **Create/Edit/Delete Events** with ease
+* 📊 **RSVP Analytics**: Track event engagement
+* 🗂️ **Club Profile**: Club name, department, bio, stats
+* 📋 **Club Dashboard**: View and manage all events(Stats/Create/Edit/Delete)
+* 👥 **Attendee Management**: View RSVPs by type
 
 ---
 
 ### 💡 Future Additions
 
-* 🔔 Email reminders
-* 🏆 Gamification (points, badges, streaks)
+* 🔔 **Email Reminders**: Timely nudges before events
+* 🏆 **Gamification**: Points, badges, and participation streaks
 
 ---
 
@@ -68,10 +63,12 @@ Students often **miss out on campus events** — workshops, fests, hackathons �
 
 | Layer        | Technology                                                   |
 | ------------ | ------------------------------------------------------------ |
-| Frontend     | React (Vite), **External CSS**                               |
-| Auth & DB    | Supabase (PostgreSQL + Auth)                                 |
+| Frontend     | React (Vite), External CSS, React Router                     |
+| Backend      | json-server, Express.js, Node.js                             |
+| Auth & DB    | Supabase (PostgreSQL + Auth), Google OAuth                   |
 | UI Libraries | Selectively using components from Aceternity UI / React Bits |
-| Hosting      | Vercel                                                       |
+| Hosting      | Vercel (frontend), Render (backend)                          |
+| Dev Tools    | ESLint, npm                                                  |
 
 
 ---
@@ -87,33 +84,41 @@ Students often **miss out on campus events** — workshops, fests, hackathons �
    ```bash
    git clone https://github.com/your-username/campusbuddy.git
    ```
-3. Navigate to the frontend folder
+3. Install Frontend dependencies
 
    ```bash
-   cd campusbuddy/frontend
-   ```
-4. Install dependencies
-
-   ```bash
+   cd frontend
    npm install
    ```
-5. Start the dev server
+4. Install Backend dependencies
 
    ```bash
-   npm run dev
+   cd ../backend
+   npm install
    ```
-6. Create a new branch
+5. Setup Environment Variables
+
+6. Start Development
+
+Backend: npm start (from /backend)
+Frontend: npm run dev (from /frontend)
+   
+7. Create a new branch
 
    ```bash
    git checkout -b feature/your-feature-name
    ```
-7. Make your changes and push
+8. Make your changes and & commit 
 
    ```bash
-   git push origin feature/your-feature-name
+   git commit -m "Add: your feature description"
    ```
-8. Create a **Pull Request** and link to the corresponding issue (if any)
+9. Push and create PR
 
+   ```bash
+   git push origin feature/your-feature
+   ```
+   
 📌 **Note:** All `.env.local` files are ignored — never push secret keys or tokens.
 > 🔐 Don't forget to configure `.env.local` (and keep it out of version control).
 

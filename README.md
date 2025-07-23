@@ -100,20 +100,20 @@ At the same time, event organizers face difficulties in finding volunteers and e
 
 6. Start Development
 
-Backend: npm start (from /backend)
-Frontend: npm run dev (from /frontend)
+   **Backend**: npm start (/backend)
+   **Frontend**: npm run dev (/frontend)
    
-7. Create a new branch
+8. Create a new branch
 
    ```bash
    git checkout -b feature/your-feature-name
    ```
-8. Make your changes and & commit 
+9. Make your changes and & commit 
 
    ```bash
    git commit -m "Add: your feature description"
    ```
-9. Push and create PR
+10. Push and create PR
 
    ```bash
    git push origin feature/your-feature

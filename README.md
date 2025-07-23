@@ -100,9 +100,14 @@ At the same time, event organizers face difficulties in finding volunteers and e
 
 6. Start Development
 
-   **Backend**: npm start (/backend)
-   **Frontend**: npm run dev (/frontend)
-   
+   **Backend**: 
+   ```bash
+   npm start
+   ```
+   **Frontend**: 
+   ```bash
+   npm run dev
+   ```
 8. Create a new branch
 
    ```bash
